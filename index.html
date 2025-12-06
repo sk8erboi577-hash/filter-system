@@ -9,251 +9,259 @@
     <link rel="apple-touch-icon" href="https://img.icons8.com/color/180/water-filter.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">
-    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#007AFF', // iOS Blue
+                        secondary: '#5856D6',
+                        success: '#34C759',
+                        danger: '#FF3B30',
+                        background: '#F2F2F7',
+                        card: '#FFFFFF',
+                        text: '#1C1C1E',
+                        subtext: '#8E8E93',
+                        border: '#C6C6C8'
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        /* 全局設定：字體與背景 */
-        body { background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; padding-bottom: 100px; }
+        body { background-color: #F2F2F7; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; padding-bottom: 100px; color: #1C1C1E; }
         
-        /* 卡片與按鈕樣式 */
-        .card { background: white; border-radius: 20px; padding: 24px; margin-bottom: 20px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025); }
+        /* 統一卡片樣式 */
+        .card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
         
-        /* 主按鈕：漸層藍色，加大 */
-        .btn-primary { 
-            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%); 
-            color: white; padding: 18px; border-radius: 16px; 
-            font-weight: 800; font-size: 1.25rem; 
-            width: 100%; display: block; 
-            box-shadow: 0 8px 16px rgba(37, 99, 235, 0.25); 
-            transition: transform 0.1s;
-        }
-        .btn-primary:active { transform: scale(0.97); }
+        /* 統一按鈕樣式 */
+        .btn-primary { background-color: #007AFF; color: white; padding: 12px; border-radius: 10px; font-weight: 600; font-size: 16px; width: 100%; text-align: center; transition: opacity 0.2s; }
+        .btn-primary:active { opacity: 0.7; }
         
-        /* 懸浮按鈕 (FAB) */
-        .fab { 
-            position: fixed; bottom: 30px; right: 30px; 
-            width: 72px; height: 72px; 
-            background: linear-gradient(135deg, #2563eb, #1d4ed8); 
-            border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center; 
-            color: white; 
-            box-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.4); 
-            z-index: 50; cursor: pointer; transition: transform 0.2s;
-        }
-        .fab:active { transform: scale(0.9); }
-        .fab .material-icons { font-size: 40px; }
-
-        /* 輸入框通用樣式：巨大化 */
+        /* 統一輸入框樣式 (標準化) */
         input, textarea, select { 
             width: 100%; 
-            padding: 18px; /* 極度加高 */
-            border: 2px solid #e2e8f0; 
-            border-radius: 16px; 
-            margin-bottom: 16px; 
-            font-size: 20px; /* 字體加大 */
-            font-weight: 600;
-            color: #1e293b;
-            background-color: #f8fafc; 
-            transition: all 0.2s;
+            padding: 12px; 
+            border: 1px solid #C6C6C8; 
+            border-radius: 8px; 
+            margin-bottom: 12px; 
+            font-size: 16px; 
+            background-color: #FFFFFF;
+            color: #1C1C1E;
+            appearance: none; /* 移除原生樣式 */
         }
-        input:focus, textarea:focus { border-color: #3b82f6; background-color: white; outline: none; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
-        label { font-size: 1.1rem; font-weight: 700; color: #64748b; margin-bottom: 8px; display: block; padding-left: 4px; }
+        input:focus, textarea:focus { border-color: #007AFF; outline: none; }
+        label { font-size: 13px; color: #8E8E93; margin-bottom: 4px; display: block; font-weight: 500; }
 
-        /* 特殊欄位修正 */
-        .input-group-currency { position: relative; }
-        .currency-symbol { position: absolute; top: 56px; left: 20px; font-size: 20px; font-weight: bold; color: #94a3b8; pointer-events: none; }
-        .input-currency { padding-left: 65px !important; color: #16a34a; font-weight: 800; font-size: 24px; }
+        /* FAB 按鈕 */
+        .fab { position: fixed; bottom: 30px; right: 24px; width: 56px; height: 56px; background: #007AFF; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 4px 12px rgba(0,122,255,0.3); z-index: 50; cursor: pointer; transition: transform 0.1s; }
+        .fab:active { transform: scale(0.95); }
 
-        /* 照片牆 */
-        .photo-scroll-container { display: flex; gap: 12px; overflow-x: auto; padding: 4px; -webkit-overflow-scrolling: touch; }
-        .photo-scroll-container::-webkit-scrollbar { display: none; }
-        .photo-card-lg { width: 180px; height: 180px; flex-shrink: 0; border-radius: 16px; object-fit: cover; border: 4px solid white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        /* 列表項目樣式 */
+        .list-item { display: flex; align-items: center; padding: 16px; background: white; border-bottom: 1px solid #E5E5EA; transition: background 0.2s; }
+        .list-item:last-child { border-bottom: none; }
+        .list-item:active { background: #F2F2F7; }
+
+        /* 照片樣式 */
+        .photo-grid { display: flex; gap: 8px; overflow-x: auto; padding: 4px 0; }
+        .photo-thumb { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; background-color: #F2F2F7; border: 1px solid #E5E5EA; }
         
-        .photo-grid { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 10px; }
-        .photo-thumb { width: 100px; height: 100px; object-fit: cover; border-radius: 14px; flex-shrink: 0; border: 1px solid #ddd; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-
-        /* 詳情頁細節 */
-        .detail-label { font-size: 1rem; color: #64748b; font-weight: 600; margin-bottom: 4px; }
-        .detail-value { font-size: 1.35rem; color: #0f172a; line-height: 1.4; font-weight: 700; }
-        .detail-row { display: flex; align-items: flex-start; margin-bottom: 24px; border-bottom: 1px solid #f1f5f9; padding-bottom: 16px; }
-        .detail-icon { color: #94a3b8; margin-right: 16px; margin-top: 4px; font-size: 32px; }
-
-        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); display: flex; align-items: center; justify-content: center; z-index: 999; flex-direction: column; }
+        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 999; flex-direction: column; }
     </style>
 </head>
 <body>
 
     <div id="page-list">
-        <div class="bg-white pt-14 pb-6 px-6 sticky top-0 z-10 shadow-sm border-b border-gray-100">
-            <h1 class="text-3xl font-black text-slate-800 flex items-center mb-5 tracking-tight">
-                <span class="material-icons text-blue-600 mr-3 text-4xl">water_drop</span> 濾芯保養系統
-            </h1>
-            <div class="relative">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-5 text-gray-400"><span class="material-icons text-3xl">search</span></span>
-                <input type="text" id="search-input" placeholder="搜尋姓名、電話..." class="pl-16 mb-0 bg-slate-100 border-transparent focus:bg-white h-16 text-xl rounded-full">
+        <div class="bg-white/90 backdrop-blur-md sticky top-0 z-10 border-b border-gray-200">
+            <div class="pt-12 pb-3 px-4">
+                <h1 class="text-2xl font-bold text-black mb-3">濾芯保養系統</h1>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                        <span class="material-icons" style="font-size: 20px;">search</span>
+                    </span>
+                    <input type="text" id="search-input" placeholder="搜尋..." class="pl-10 mb-0 bg-gray-100 border-none h-10 rounded-lg text-base">
+                </div>
             </div>
-        </div>
-        <div id="customer-list" class="p-5 max-w-2xl mx-auto space-y-4">
-            <div class="text-center text-gray-400 mt-20">載入中...</div>
-        </div>
-        <div class="fab" onclick="showAddCustomerModal()"><span class="material-icons">add</span></div>
-    </div>
-
-    <div id="page-detail" class="hidden min-h-screen bg-slate-50">
-        <div class="bg-white pt-12 pb-4 px-4 shadow-sm flex items-center sticky top-0 z-20 border-b border-slate-100">
-            <button onclick="goBack()" class="p-3 mr-2 text-slate-600 rounded-full hover:bg-slate-100 active:bg-slate-200 transition-colors"><span class="material-icons text-3xl">arrow_back</span></button>
-            <h2 id="detail-header-name" class="text-2xl font-bold flex-1 truncate text-slate-800">客戶詳情</h2>
-            <button onclick="showEditCustomerModal()" class="text-blue-600 font-bold px-6 py-2 bg-blue-50 rounded-full text-lg active:bg-blue-100">編輯</button>
         </div>
         
-        <div class="p-5 max-w-2xl mx-auto">
-            <div id="customer-photos-container" class="photo-scroll-container mb-8"></div>
+        <div id="customer-list" class="max-w-md mx-auto">
+            <div class="text-center text-gray-400 mt-20 text-sm">載入中...</div>
+        </div>
+        
+        <div class="fab" onclick="showAddCustomerModal()">
+            <span class="material-icons">add</span>
+        </div>
+    </div>
 
-            <div class="card relative overflow-hidden">
-                <h2 id="detail-name" class="text-4xl font-black text-slate-900 mb-3 text-center tracking-tight"></h2>
-                <div class="text-center mb-8">
-                    <a id="detail-phone-link" class="inline-flex items-center text-2xl font-mono text-blue-600 font-black bg-blue-50 px-8 py-3 rounded-full shadow-sm active:scale-95 transition-transform">
-                        <span class="material-icons text-2xl mr-3">phone</span><span id="detail-phone"></span>
-                    </a>
-                </div>
+    <div id="page-detail" class="hidden min-h-screen bg-gray-100">
+        <div class="bg-white pt-10 pb-3 px-2 shadow-sm flex items-center sticky top-0 z-20">
+            <button onclick="goBack()" class="p-2 text-blue-500 flex items-center">
+                <span class="material-icons">arrow_back_ios</span> <span class="text-lg">返回</span>
+            </button>
+            <h2 class="text-lg font-semibold flex-1 text-center pr-12">客戶資料</h2>
+            <button onclick="showEditCustomerModal()" class="text-blue-500 font-medium text-lg px-2">編輯</button>
+        </div>
+        
+        <div class="p-4 max-w-md mx-auto space-y-4">
+            <div class="bg-white rounded-xl overflow-hidden shadow-sm">
+                <div id="customer-photos-container" class="h-48 bg-gray-200 flex overflow-x-auto snap-x snap-mandatory">
+                    </div>
                 
-                <div class="bg-slate-50 rounded-2xl p-6 space-y-2">
-                    <div class="detail-row"><span class="material-icons detail-icon">event_available</span><div><span class="detail-label">安裝日期</span><span id="detail-install-date" class="detail-value text-blue-700"></span></div></div>
-                    <div class="detail-row"><span class="material-icons detail-icon">location_on</span><div><span class="detail-label">安裝地址</span><span id="detail-address" class="detail-value"></span></div></div>
-                    <div class="detail-row"><span class="material-icons detail-icon">settings</span><div class="flex-1"><span class="detail-label">機器型號</span><span id="detail-machine" class="detail-value"></span></div></div>
-                    <div class="detail-row"><span class="material-icons detail-icon">filter_alt</span><div class="flex-1"><span class="detail-label">濾芯規格</span><span id="detail-filter" class="detail-value"></span></div></div>
-                    <div id="note-container" class="detail-row hidden border-none mb-0 pb-0"><span class="material-icons detail-icon text-orange-400">sticky_note_2</span><div><span class="detail-label text-orange-600">備註事項</span><span id="detail-note" class="detail-value text-orange-800"></span></div></div>
+                <div class="p-4">
+                    <div class="flex justify-between items-start mb-2">
+                        <h2 id="detail-name" class="text-2xl font-bold text-gray-900"></h2>
+                    </div>
+                    <a id="detail-phone-link" class="inline-flex items-center text-blue-600 text-lg font-medium mb-4">
+                        <span class="material-icons mr-1 text-base">phone</span> <span id="detail-phone"></span>
+                    </a>
+
+                    <div class="grid grid-cols-1 gap-y-3 text-sm">
+                        <div class="flex border-t border-gray-100 pt-3">
+                            <span class="text-gray-500 w-20 flex-shrink-0">安裝日期</span>
+                            <span id="detail-install-date" class="text-gray-900 font-medium"></span>
+                        </div>
+                        <div class="flex border-t border-gray-100 pt-3">
+                            <span class="text-gray-500 w-20 flex-shrink-0">地址</span>
+                            <span id="detail-address" class="text-gray-900"></span>
+                        </div>
+                        <div class="flex border-t border-gray-100 pt-3">
+                            <span class="text-gray-500 w-20 flex-shrink-0">機器</span>
+                            <span id="detail-machine" class="text-gray-900"></span>
+                        </div>
+                        <div class="flex border-t border-gray-100 pt-3">
+                            <span class="text-gray-500 w-20 flex-shrink-0">濾芯</span>
+                            <span id="detail-filter" class="text-gray-900"></span>
+                        </div>
+                        <div id="note-container" class="flex border-t border-gray-100 pt-3 hidden">
+                            <span class="text-orange-500 w-20 flex-shrink-0">備註</span>
+                            <span id="detail-note" class="text-gray-800"></span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="card bg-gradient-to-br from-blue-50 to-white border-2 border-blue-100">
-                <h3 class="font-bold text-blue-800 mb-6 flex items-center text-2xl">
-                    <span class="material-icons-outlined mr-3 text-3xl">post_add</span>新增保養紀錄
-                </h3>
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <h3 class="font-bold text-gray-800 mb-3 text-base">新增保養紀錄</h3>
                 
-                <div class="mb-2"><label>保養日期</label><input type="date" id="record-date"></div>
-                <div class="mb-2"><label>更換項目</label><input type="text" id="record-items" placeholder="例如: PP, 活性碳"></div>
-                <div class="mb-2 input-group-currency">
-                     <label>金額</label><span class="currency-symbol">NT$</span>
-                    <input type="number" id="record-amount" placeholder="0" inputmode="numeric" class="input-currency">
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                    <div><label>日期</label><input type="date" id="record-date" class="mb-0 h-10"></div>
+                    <div>
+                        <label>金額</label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-2 text-gray-500">NT$</span>
+                            <input type="number" id="record-amount" class="pl-12 mb-0 h-10 text-green-600 font-bold" placeholder="0">
+                        </div>
+                    </div>
                 </div>
-                <div class="mb-4"><label>備註</label><textarea id="record-note" placeholder="備註 (選填)" rows="3"></textarea></div>
                 
-                <div class="flex items-center justify-between mt-4 mb-6 p-5 bg-white rounded-2xl border-2 border-slate-100 shadow-sm active:bg-slate-50 transition-colors">
-                    <label class="flex items-center gap-3 text-blue-600 font-bold cursor-pointer text-xl w-full">
-                        <span class="material-icons text-4xl">add_a_photo</span>
-                        <span>點擊拍照 / 選圖</span>
+                <div class="mb-3">
+                    <label>更換項目</label>
+                    <input type="text" id="record-items" placeholder="例如: PP, 活性碳" class="mb-0 h-10 font-medium">
+                </div>
+                
+                <div class="mb-3">
+                    <label>備註 (選填)</label>
+                    <input type="text" id="record-note" class="mb-0 h-10">
+                </div>
+
+                <div class="flex items-center gap-3 mb-3">
+                    <label class="bg-gray-100 text-blue-600 px-4 py-2 rounded-lg text-sm font-medium flex items-center cursor-pointer active:bg-gray-200">
+                        <span class="material-icons mr-1 text-lg">camera_alt</span> 拍照
                         <input type="file" id="record-photo-input" accept="image/*" multiple class="hidden" onchange="handleRecordPhotoSelect(this)">
                     </label>
-                    <span id="record-photo-count" class="text-slate-400 bg-slate-100 px-4 py-2 rounded-full font-bold whitespace-nowrap">0 張</span>
+                    <span id="record-photo-count" class="text-xs text-gray-400">0 張</span>
                 </div>
-                <div id="new-record-photos" class="photo-grid mb-6"></div>
-                <button onclick="saveRecord()" class="btn-primary shadow-lg shadow-blue-200">確認儲存紀錄</button>
+                
+                <div id="new-record-photos" class="photo-grid mb-3"></div>
+                
+                <button onclick="saveRecord()" class="btn-primary">儲存紀錄</button>
             </div>
 
-            <h3 class="font-bold text-slate-600 text-2xl mb-5 ml-2 mt-10 flex items-center"><span class="material-icons mr-2">history</span>歷史紀錄</h3>
-            <div id="record-list" class="space-y-6"></div>
+            <div>
+                <h3 class="text-gray-500 text-sm font-bold mb-2 ml-1">歷史紀錄</h3>
+                <div id="record-list" class="space-y-3"></div>
+            </div>
         </div>
     </div>
 
-    <div id="customer-modal" class="fixed inset-0 bg-slate-900 bg-opacity-60 hidden z-50 flex items-end sm:items-center justify-center transition-opacity backdrop-blur-sm">
-        <div class="bg-white rounded-t-[32px] sm:rounded-3xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto animate-slide-up shadow-2xl">
+    <div id="customer-modal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-end sm:items-center justify-center">
+        <div class="bg-gray-100 w-full max-w-md rounded-t-2xl sm:rounded-2xl h-[90vh] overflow-hidden flex flex-col">
+            <div class="bg-white p-4 border-b border-gray-200 flex justify-between items-center shrink-0">
+                <button onclick="closeModal('customer-modal')" class="text-blue-500 text-lg">取消</button>
+                <h2 id="modal-title" class="font-bold text-lg">新增客戶</h2>
+                <button onclick="saveCustomer()" class="text-blue-600 font-bold text-lg">儲存</button>
+            </div>
             
-            <div class="w-16 h-1.5 bg-slate-200 rounded-full mx-auto mb-6"></div>
-            
-            <h2 id="modal-title" class="text-3xl font-black mb-8 text-center text-slate-800 tracking-tight">新增客戶資料</h2>
-            <input type="hidden" id="cust-id">
-            
-            <div class="space-y-5">
-                <div class="bg-blue-50 p-5 rounded-2xl border border-blue-100">
-                    <div>
-                        <label class="text-blue-800">客戶姓名 <span class="text-red-500">*</span></label>
-                        <input type="text" id="cust-name" placeholder="請輸入姓名" class="border-blue-200 focus:border-blue-500 mb-4">
-                    </div>
-                    <div>
-                        <label class="text-blue-800">電話號碼 <span class="text-red-500">*</span></label>
-                        <input type="tel" id="cust-phone" placeholder="09xx-xxx-xxx" inputmode="tel" class="font-mono text-2xl border-blue-200 focus:border-blue-500 text-blue-700 font-black mb-0">
-                    </div>
-                </div>
-
-                <div>
-                    <label>安裝日期</label>
-                    <input type="date" id="cust-install-date" class="font-mono">
-                </div>
-
-                <div>
-                    <label>安裝地址</label>
-                    <textarea id="cust-address" rows="2" placeholder="縣市/區域/街道..."></textarea>
-                </div>
+            <div class="p-4 overflow-y-auto flex-1 space-y-4">
+                <input type="hidden" id="cust-id">
                 
-                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div><label>機器型號</label><input type="text" id="cust-machine" placeholder="例: RO-500"></div>
-                    <div><label>濾芯規格</label><input type="text" id="cust-filter" placeholder="例: 10吋通用"></div>
+                <div class="bg-white rounded-lg p-3 space-y-3">
+                    <div><label>姓名 <span class="text-red-500">*</span></label><input type="text" id="cust-name" class="mb-0"></div>
+                    <div><label>電話 <span class="text-red-500">*</span></label><input type="tel" id="cust-phone" class="mb-0"></div>
+                    <div><label>安裝日期</label><input type="date" id="cust-install-date" class="mb-0"></div>
                 </div>
 
-                <div>
-                    <label>備註事項</label>
-                    <textarea id="cust-note" rows="2" placeholder="其他聯絡人、特殊需求..." class="bg-orange-50 border-orange-200 focus:border-orange-400 text-orange-900"></textarea>
+                <div class="bg-white rounded-lg p-3 space-y-3">
+                    <div><label>地址</label><input type="text" id="cust-address" class="mb-0"></div>
+                    <div><label>機器型號</label><input type="text" id="cust-machine" class="mb-0"></div>
+                    <div><label>濾芯規格</label><input type="text" id="cust-filter" class="mb-0"></div>
                 </div>
 
-                <div class="border-3 border-dashed border-blue-200 bg-blue-50 rounded-2xl p-6 text-center hover:bg-blue-100 transition-colors cursor-pointer relative">
-                    <label for="cust-photo-input" class="cursor-pointer block w-full h-full">
-                        <span class="material-icons text-blue-400 text-5xl mb-2">add_photo_alternate</span>
-                        <div class="text-blue-600 font-bold text-xl">點擊上傳機器照片</div>
-                        <div class="text-blue-400 text-sm font-bold mt-1">支援多張照片選擇</div>
+                <div class="bg-white rounded-lg p-3">
+                    <label>備註</label>
+                    <textarea id="cust-note" rows="2" class="mb-0"></textarea>
+                </div>
+
+                <div class="bg-white rounded-lg p-4 text-center">
+                    <label class="text-blue-600 font-medium flex items-center justify-center cursor-pointer">
+                        <span class="material-icons mr-2">add_photo_alternate</span> 選擇機器照片
                         <input type="file" id="cust-photo-input" accept="image/*" multiple class="hidden" onchange="handleCustPhotoSelect(this)">
                     </label>
-                    <div id="cust-photo-preview" class="photo-grid mt-4 justify-center"></div>
+                    <div id="cust-photo-preview" class="photo-grid mt-2 justify-center"></div>
                 </div>
+                
+                <button id="btn-delete-customer" onclick="deleteCustomer()" class="w-full bg-white text-red-500 py-3 rounded-lg font-medium hidden">刪除此客戶</button>
             </div>
-            
-            <div class="flex gap-4 mt-8 pt-4 border-t border-slate-100">
-                <button onclick="closeModal('customer-modal')" class="flex-1 bg-slate-100 text-slate-500 font-bold py-4 rounded-2xl text-xl hover:bg-slate-200">取消</button>
-                <button onclick="saveCustomer()" class="flex-1 bg-blue-600 text-white font-bold py-4 rounded-2xl text-xl shadow-lg shadow-blue-200 active:scale-95 transition-transform">確認儲存</button>
-            </div>
-            <button id="btn-delete-customer" onclick="deleteCustomer()" class="w-full mt-4 text-red-500 text-lg font-bold py-3 hidden bg-red-50 rounded-2xl hover:bg-red-100">刪除此客戶資料</button>
         </div>
     </div>
 
-    <div id="record-modal" class="fixed inset-0 bg-slate-900 bg-opacity-60 hidden z-50 flex items-end sm:items-center justify-center transition-opacity backdrop-blur-sm">
-        <div class="bg-white rounded-t-[32px] sm:rounded-3xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto animate-slide-up shadow-2xl">
-            <div class="w-16 h-1.5 bg-slate-200 rounded-full mx-auto mb-6"></div>
-            <h2 class="text-3xl font-black mb-8 text-center text-slate-800">修改保養紀錄</h2>
-            <input type="hidden" id="edit-record-id">
-            <div class="space-y-4">
-                <div><label>保養日期</label><input type="date" id="edit-record-date"></div>
-                <div><label>更換項目</label><input type="text" id="edit-record-items" class="font-bold text-slate-800"></div>
-                <div class="input-group-currency">
-                    <label>金額</label><span class="currency-symbol">NT$</span>
-                    <input type="number" id="edit-record-amount" inputmode="numeric" class="input-currency">
-                </div>
-                <div><label>備註</label><textarea id="edit-record-note" rows="3"></textarea></div>
+    <div id="record-modal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-end sm:items-center justify-center">
+        <div class="bg-gray-100 w-full max-w-md rounded-t-2xl sm:rounded-2xl h-auto max-h-[90vh] overflow-hidden flex flex-col">
+            <div class="bg-white p-4 border-b border-gray-200 flex justify-between items-center">
+                <button onclick="closeModal('record-modal')" class="text-blue-500 text-lg">取消</button>
+                <h2 class="font-bold text-lg">修改紀錄</h2>
+                <button onclick="saveEditedRecord()" class="text-blue-600 font-bold text-lg">完成</button>
+            </div>
+            
+            <div class="p-4 overflow-y-auto space-y-4">
+                <input type="hidden" id="edit-record-id">
                 
-                <div class="border-3 border-dashed border-slate-300 bg-slate-50 p-6 rounded-2xl text-center">
-                    <label class="text-slate-600 font-bold block flex flex-col items-center cursor-pointer">
-                        <span class="material-icons text-4xl mb-2 text-slate-400">add_a_photo</span>
-                        <span class="text-lg">加傳照片 (原有照片會保留)</span>
+                <div class="bg-white rounded-lg p-3 space-y-3">
+                    <div><label>日期</label><input type="date" id="edit-record-date" class="mb-0"></div>
+                    <div><label>項目</label><input type="text" id="edit-record-items" class="mb-0 font-medium"></div>
+                    <div><label>金額</label><input type="number" id="edit-record-amount" class="mb-0 text-green-600 font-bold"></div>
+                    <div><label>備註</label><textarea id="edit-record-note" rows="2" class="mb-0"></textarea></div>
+                </div>
+
+                <div class="bg-white rounded-lg p-3">
+                    <label class="text-blue-600 font-medium flex items-center justify-center cursor-pointer">
+                        <span class="material-icons mr-2">add_a_photo</span> 加傳照片
                         <input type="file" id="edit-record-photo-input" accept="image/*" multiple class="hidden" onchange="handleEditRecordPhotoSelect(this)">
                     </label>
-                    <div id="edit-record-photo-preview" class="photo-grid mt-4 justify-center"></div>
+                    <div id="edit-record-photo-preview" class="photo-grid mt-2 justify-center"></div>
                 </div>
-            </div>
-            <div class="flex gap-4 mt-8 pt-4 border-t border-slate-100">
-                <button onclick="closeModal('record-modal')" class="flex-1 bg-slate-100 text-slate-500 font-bold py-4 rounded-2xl text-xl">取消</button>
-                <button onclick="saveEditedRecord()" class="flex-1 bg-blue-600 text-white font-bold py-4 rounded-2xl text-xl shadow-lg">儲存修改</button>
             </div>
         </div>
     </div>
 
     <div id="loading" class="loading-overlay hidden">
-        <div class="bg-white p-8 rounded-3xl shadow-2xl flex flex-col items-center animate-bounce-small">
-            <div class="animate-spin rounded-full h-16 w-16 border-[6px] border-blue-100 border-t-blue-600 mb-6"></div>
-            <p class="text-slate-800 font-black text-2xl tracking-wide">資料同步中...</p>
-        </div>
+        <div class="animate-spin rounded-full h-10 w-10 border-4 border-gray-200 border-t-blue-500 mb-3"></div>
+        <p class="text-gray-500 font-medium text-sm">處理中...</p>
     </div>
 
     <script>
-        // ⚠️⚠️⚠️ 記得換成你的 Apps Script 網址 ⚠️⚠️⚠️
-        const API_URL = "https://script.google.com/macros/s/AKfycby0TrkaHnLe0UaZIGQ7DFKnq_1q_QbHWJsjxQ4YCstZ5i_U_OszwLnENXxUlSq_k_NT/exec"; 
+        // ⚠️⚠️⚠️ 記得換成你的 API 網址 ⚠️⚠️⚠️
+        const API_URL = "https://script.google.com/macros/s/AKfycbxGjV4c5m-a3c-f7a0g_e5u_d9i-o2n_k4e_y6u/exec"; 
 
         let customers = [];
         let currentCustomer = null;
@@ -276,7 +284,7 @@
                 const options = method === 'GET' ? {} : { method: 'POST', body: JSON.stringify({ action, ...payload }) };
                 const res = await fetch(url, options);
                 return await res.json();
-            } catch (e) { alert("連線錯誤: " + e.message); } finally { showLoading(false); }
+            } catch (e) { alert("連線錯誤"); } finally { showLoading(false); }
         }
 
         async function fetchCustomers() {
@@ -287,22 +295,27 @@
         function renderList(list) {
             const container = document.getElementById('customer-list');
             container.innerHTML = '';
-            if (list.length === 0) { container.innerHTML = '<div class="text-center text-gray-400 mt-20 text-xl font-bold">沒有資料，請新增客戶</div>'; return; }
+            if (list.length === 0) { container.innerHTML = '<div class="text-center text-gray-400 mt-20">暫無資料</div>'; return; }
+            
+            // 列表使用類似 iOS 通訊錄的清單樣式
+            const listGroup = document.createElement('div');
+            listGroup.className = 'bg-white rounded-xl overflow-hidden shadow-sm';
+            
             list.forEach(c => {
                 const div = document.createElement('div');
-                div.className = 'card flex justify-between items-center cursor-pointer hover:bg-slate-50 active:scale-[0.98] transition-transform py-6';
+                div.className = 'list-item cursor-pointer';
                 div.onclick = () => openDetail(c);
                 div.innerHTML = `
-                    <div class="flex items-center overflow-hidden">
-                        <div class="w-16 h-16 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center font-black text-3xl mr-5 flex-shrink-0 shadow-sm">${c.name.charAt(0)}</div>
-                        <div class="truncate">
-                            <div class="font-bold text-2xl text-slate-800 truncate mb-1">${c.name}</div>
-                            <div class="text-blue-600 font-mono font-bold text-xl">${c.phone}</div>
-                        </div>
+                    <div class="flex-1">
+                        <div class="font-bold text-lg text-gray-900">${c.name}</div>
+                        <div class="text-sm text-gray-500">${c.phone}</div>
+                        ${c.note ? `<div class="text-xs text-orange-500 mt-1 truncate">${c.note}</div>` : ''}
                     </div>
-                    <span class="material-icons text-slate-300 text-4xl">chevron_right</span>`;
-                container.appendChild(div);
+                    <span class="material-icons text-gray-300 text-sm">arrow_forward_ios</span>
+                `;
+                listGroup.appendChild(div);
             });
+            container.appendChild(listGroup);
         }
 
         document.getElementById('search-input').addEventListener('input', (e) => {
@@ -316,23 +329,17 @@
             document.getElementById('page-detail').classList.remove('hidden');
             window.scrollTo(0, 0);
 
-            document.getElementById('detail-header-name').innerText = customer.name;
             document.getElementById('detail-name').innerText = customer.name;
             document.getElementById('detail-phone').innerText = customer.phone;
             document.getElementById('detail-phone-link').href = `tel:${customer.phone}`;
             
             const dateEl = document.getElementById('detail-install-date');
-            if (customer.installDate) {
-                dateEl.innerText = customer.installDate.split('T')[0];
-                dateEl.classList.remove('italic', 'text-gray-400');
-            } else {
-                dateEl.innerText = '未記錄日期';
-                dateEl.classList.add('italic', 'text-gray-400');
-            }
+            dateEl.innerText = customer.installDate ? customer.installDate.split('T')[0] : '無紀錄';
+            dateEl.className = customer.installDate ? "text-gray-900 font-medium" : "text-gray-400 italic";
 
-            setTextOrPlaceholder('detail-address', customer.address, '未填寫地址');
-            setTextOrPlaceholder('detail-machine', customer.machine, '未填寫型號');
-            setTextOrPlaceholder('detail-filter', customer.filter, '未填寫規格');
+            setText('detail-address', customer.address);
+            setText('detail-machine', customer.machine);
+            setText('detail-filter', customer.filter);
             
             const noteContainer = document.getElementById('note-container');
             if (customer.note) {
@@ -350,20 +357,21 @@
             if (photos.length > 0) {
                 photos.forEach(url => {
                     const img = document.createElement('img');
-                    img.src = url; img.className = 'photo-card-lg';
+                    img.src = url; img.className = 'flex-shrink-0 h-full w-auto object-cover border-r border-white cursor-pointer';
                     img.onclick = () => window.open(url, '_blank');
                     photoContainer.appendChild(img);
                 });
-                photoContainer.classList.remove('hidden');
-            } else { photoContainer.innerHTML = '<div class="w-full text-center py-8 bg-slate-100 rounded-2xl text-slate-400 text-lg font-bold border-2 border-dashed border-slate-200">尚未上傳機器照片</div>'; }
+            } else {
+                photoContainer.innerHTML = '<div class="w-full h-full flex items-center justify-center text-gray-400 text-sm">無機器照片</div>';
+            }
 
             await fetchRecords(customer.id);
         }
 
-        function setTextOrPlaceholder(id, value, placeholder) {
+        function setText(id, value) {
             const el = document.getElementById(id);
-            if (value) { el.innerText = value; el.classList.remove('text-gray-400', 'italic'); }
-            else { el.innerText = placeholder; el.classList.add('text-gray-400', 'italic'); }
+            el.innerText = value || '未填寫';
+            el.className = value ? "text-gray-900" : "text-gray-400 italic";
         }
 
         function goBack() {
@@ -376,12 +384,12 @@
 
         async function fetchRecords(custId) {
             const listDiv = document.getElementById('record-list');
-            listDiv.innerHTML = '<div class="text-center py-6 text-xl text-slate-500 font-bold">讀取紀錄中...</div>';
+            listDiv.innerHTML = '<div class="text-center py-4 text-sm text-gray-400">讀取中...</div>';
             const records = await apiCall('getRecords', { customerId: custId }, 'GET');
             listDiv.innerHTML = '';
 
             if (!records || records.length === 0) {
-                listDiv.innerHTML = '<div class="text-center py-10 text-slate-400 text-xl font-bold">尚無保養紀錄</div>'; return;
+                listDiv.innerHTML = '<div class="text-center py-6 text-gray-400 text-sm">尚無紀錄</div>'; return;
             }
 
             records.forEach(r => {
@@ -389,40 +397,26 @@
                 const rData = JSON.stringify(r).replace(/"/g, '&quot;'); 
                 
                 const div = document.createElement('div');
-                div.className = 'card border-l-[8px] border-blue-500 pl-6 shadow-md mb-6';
+                div.className = 'bg-white p-4 rounded-xl shadow-sm border border-gray-100';
                 div.innerHTML = `
-                    <div class="flex justify-between items-start mb-4 border-b border-gray-100 pb-3">
-                        <div class="font-bold text-2xl text-slate-800">${r.date.split('T')[0]}</div>
-                        <div class="flex items-center gap-2">
-                            ${r.amount ? `<div class="text-green-600 font-bold font-mono text-3xl bg-green-50 px-3 py-1 rounded-lg">NT$${r.amount}</div>` : ''}
-                        </div>
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="font-bold text-lg text-gray-800">${r.date.split('T')[0]}</div>
+                        ${r.amount ? `<div class="text-green-600 font-bold">NT$${r.amount}</div>` : ''}
                     </div>
-                    <div class="mb-4">
-                        <div class="text-slate-500 text-lg font-bold mb-1">更換項目</div>
-                        <div class="text-3xl font-black text-slate-900 leading-snug tracking-wide">${r.items}</div>
-                    </div>
-                    ${r.note ? `
-                        <div class="mb-4 bg-orange-50 p-4 rounded-xl border border-orange-100">
-                             <div class="text-orange-600 text-lg font-bold mb-1 flex items-center"><span class="material-icons mr-1">sticky_note_2</span>備註</div>
-                             <div class="text-2xl font-bold text-slate-800 leading-relaxed">${r.note}</div>
-                        </div>` : ''}
+                    <div class="text-base font-bold text-gray-900 mb-2">${r.items}</div>
+                    ${r.note ? `<div class="text-sm text-gray-500 mb-2 bg-gray-50 p-2 rounded">備註: ${r.note}</div>` : ''}
+                    ${photos.length > 0 ? `<div class="photo-grid mb-3">${photos.map(url => `<img src="${url}" class="photo-thumb cursor-pointer" onclick="window.open('${url}')">`).join('')}</div>` : ''}
                     
-                    ${photos.length > 0 ? `<div class="photo-grid mb-4 pt-2">${photos.map(url => `<img src="${url}" class="photo-thumb cursor-pointer border-2 border-white shadow-sm w-24 h-24" onclick="window.open('${url}')">`).join('')}</div>` : ''}
-                    
-                    <div class="flex justify-end gap-4 mt-2 pt-2">
-                        <button onclick="openEditRecordModal('${rData}')" class="text-blue-600 text-xl font-bold flex items-center px-5 py-3 bg-blue-50 rounded-2xl hover:bg-blue-100 transition-colors">
-                            <span class="material-icons text-2xl mr-2">edit</span>編輯
-                        </button>
-                        <button onclick="deleteRecord('${r.id}')" class="text-red-500 text-xl font-bold flex items-center px-5 py-3 bg-red-50 rounded-2xl hover:bg-red-100 transition-colors">
-                            <span class="material-icons text-2xl mr-2">delete</span>刪除
-                        </button>
+                    <div class="flex justify-end gap-3 pt-2 border-t border-gray-50">
+                        <button onclick="openEditRecordModal('${rData}')" class="text-blue-500 text-sm font-medium px-2 py-1">編輯</button>
+                        <button onclick="deleteRecord('${r.id}')" class="text-red-500 text-sm font-medium px-2 py-1">刪除</button>
                     </div>
                 `;
                 listDiv.appendChild(div);
             });
         }
 
-        // --- 編輯紀錄功能 ---
+        // --- 編輯紀錄 ---
         function openEditRecordModal(recordStr) {
             const record = JSON.parse(recordStr);
             document.getElementById('edit-record-id').value = record.id;
@@ -460,10 +454,9 @@
 
             const res = await apiCall('updateRecord', payload);
             if (res.status === 'success') {
-                alert("修改成功");
                 closeModal('record-modal');
                 fetchRecords(currentCustomer.id);
-            } else { alert("修改失敗"); }
+            } else { alert("失敗"); }
         }
 
         function handleEditRecordPhotoSelect(input) {
@@ -502,15 +495,12 @@
 
             const res = await apiCall('addRecord', payload);
             if (res.status === 'success') {
-                alert("新增成功");
                 document.getElementById('record-items').value = '';
                 document.getElementById('record-amount').value = '';
                 document.getElementById('record-note').value = '';
                 selectedRecordPhotos = [];
                 renderRecordPhotoPreview();
                 fetchRecords(currentCustomer.id);
-                // Scroll to top of list
-                document.getElementById('record-list').scrollIntoView({ behavior: 'smooth' });
             } else { alert("失敗"); }
         }
 
@@ -561,7 +551,7 @@
         function renderPhotoList(divId, photoArray) {
             const div = document.getElementById(divId);
             div.innerHTML = photoArray.map((src, idx) => `
-                <div class="relative flex-shrink-0"><img src="${src}" class="photo-thumb"><button onclick="removePhoto('${divId}', ${idx})" class="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg shadow-md border-2 border-white">×</button></div>
+                <div class="relative flex-shrink-0"><img src="${src}" class="photo-thumb"><button onclick="removePhoto('${divId}', ${idx})" class="absolute -top-1 -right-1 bg-gray-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">×</button></div>
             `).join('');
         }
 
@@ -637,7 +627,7 @@
             const res = await apiCall(action, payload);
             
             if (res.status === 'success') {
-                alert("儲存成功"); closeModal('customer-modal'); fetchCustomers();
+                closeModal('customer-modal'); fetchCustomers();
                 if (id && currentCustomer) openDetail({ ...currentCustomer, ...payload, photos: photoUrls });
             } else { alert("失敗"); }
         }
@@ -645,7 +635,7 @@
         async function deleteCustomer() {
             if (confirm("確定刪除此客戶？")) {
                 await apiCall('deleteCustomer', { id: document.getElementById('cust-id').value });
-                alert("已刪除"); closeModal('customer-modal'); goBack(); fetchCustomers();
+                closeModal('customer-modal'); goBack(); fetchCustomers();
             }
         }
 
@@ -655,4 +645,3 @@
     </script>
 </body>
 </html>
-
