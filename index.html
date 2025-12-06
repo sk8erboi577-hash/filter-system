@@ -3,341 +3,830 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>濾芯保養系統 Pro</title>
+    <title>濾芯保養系統</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="https://img.icons8.com/fluency/180/water-filter.png">
+    <link rel="apple-touch-icon" href="https://img.icons8.com/color/180/water-filter.png">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Round" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: {
-                            50: '#ecfeff',
-                            100: '#cffafe',
-                            400: '#22d3ee',
-                            500: '#06b6d4', // 水藍主色
-                            600: '#0891b2',
-                            800: '#155e75',
-                            900: '#0e7490',
-                        },
-                        surface: '#F3F4F6',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-                    },
-                    boxShadow: {
-                        'soft': '0 10px 40px -10px rgba(0,0,0,0.08)',
-                        'glow': '0 0 20px rgba(6, 182, 212, 0.5)',
+                        primary: '#007AFF',
+                        secondary: '#5856D6',
+                        success: '#34C759',
+                        danger: '#FF3B30',
+                        background: '#020617',
+                        card: '#0F172A',
+                        text: '#E5E7EB',
+                        subtext: '#9CA3AF',
+                        border: '#334155'
                     }
                 }
             }
         }
     </script>
-
     <style>
-        body { 
-            background-color: #F3F4F6; 
-            padding-bottom: 120px; 
-            -webkit-font-smoothing: antialiased; 
-            color: #1f2937;
+        body {
+            background: radial-gradient(circle at top left, #1d4ed8 0, #0f172a 45%, #020617 100%);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang TC",
+            "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            padding-bottom: 100px;
+            color: #E5E7EB;
         }
-        
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-fade-in-up { animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        
-        @keyframes slideUpModal { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        .animate-slide-up { animation: slideUpModal 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+        #page-list, #page-detail {
+            min-height: 100vh;
+        }
 
-        .input-field {
-            width: 100%; padding: 16px 20px; border-radius: 16px;
-            background-color: #ffffff; border: 1px solid #e5e7eb;
-            color: #1f2937; font-size: 16px; transition: all 0.2s;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        /* App Header */
+        .app-header {
+            backdrop-filter: blur(18px);
+            background: linear-gradient(to bottom, rgba(15,23,42,0.95), rgba(15,23,42,0.6));
+            border-bottom: 1px solid rgba(148,163,184,0.4);
         }
-        .input-field:focus {
-            border-color: #06b6d4; box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.15); outline: none;
+
+        .app-header h1 {
+            letter-spacing: 0.02em;
         }
-        
-        /* 藍色卡片內的輸入框樣式 */
-        .blue-card-input {
+
+        /* 搜尋列：App Store 風格 */
+        .search-bar {
+            background: rgba(15,23,42,0.9);
+            border-radius: 14px;
+            padding: 8px 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(148,163,184,0.6);
+        }
+
+        .search-bar input {
+            background: transparent;
+            border: none;
+            padding: 0;
+            height: 32px;
+            font-size: 14px;
+            color: #e5e7eb;
             width: 100%;
-            background-color: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 12px;
-            padding: 12px 16px;
-            color: white;
-            font-size: 16px;
-            transition: all 0.2s;
         }
-        .blue-card-input::placeholder { color: rgba(255, 255, 255, 0.6); }
-        .blue-card-input:focus {
-            background-color: rgba(255, 255, 255, 0.25);
+
+        .search-bar input::placeholder {
+            color: rgba(148,163,184,0.9);
+        }
+
+        .search-bar input:focus {
             outline: none;
-            border-color: white;
+            box-shadow: none;
         }
 
+        /* Dashboard 卡片 */
+        .dashboard-card {
+            background: linear-gradient(135deg, #4A90E2, #007AFF);
+            border-radius: 20px;
+            padding: 16px 18px;
+            box-shadow: 0 14px 35px rgba(15, 23, 42, 0.55);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-card::before {
+            content: "";
+            position: absolute;
+            inset: -40%;
+            background:
+                radial-gradient(circle at top left, rgba(255,255,255,0.18) 0, transparent 55%),
+                radial-gradient(circle at bottom right, rgba(37,99,235,0.55) 0, transparent 60%);
+            opacity: 0.85;
+            pointer-events: none;
+        }
+
+        .dashboard-main {
+            position: relative;
+            z-index: 1;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .dashboard-name {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            margin-bottom: 4px;
+        }
+
+        .dashboard-tag {
+            display: inline-flex;
+            align-items: center;
+            height: 22px;
+            min-width: 40px;
+            padding: 0 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.45);
+            background: linear-gradient(to bottom right, rgba(15,23,42,0.35), rgba(15,23,42,0.0));
+            font-size: 11px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.96);
+            margin-bottom: 6px;
+            white-space: nowrap;
+        }
+
+        .dashboard-tag-empty {
+            color: transparent;
+            border-color: transparent;
+            background: transparent;
+        }
+
+        .dashboard-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            color: rgba(248,250,252,0.92);
+        }
+
+        .dashboard-meta span {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+
+        .dashboard-meta .material-icons {
+            font-size: 14px;
+        }
+
+        .dashboard-chevron {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            width: 30px;
+            height: 30px;
+            background: rgba(15,23,42,0.3);
+            border: 1px solid rgba(148,163,184,0.5);
+        }
+
+        .dashboard-chevron .material-icons {
+            font-size: 18px;
+            color: rgba(248,250,252,0.95);
+        }
+
+        .subtle-text {
+            font-size: 12px;
+            color: #E5E7EB;
+            opacity: 0.85;
+        }
+
+        /* 通用輸入框（iOS TextField 風） */
+        input, textarea, select {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid #4b5563;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            font-size: 15px;
+            background-color: #0b1120;
+            color: #E5E7EB;
+            appearance: none;
+            transition: border 0.2s, box-shadow 0.2s, background 0.2s;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: #0A84FF;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(10,132,255,0.3);
+            background-color: #020617;
+        }
+
+        label {
+            font-size: 12px;
+            color: #9CA3AF;
+            margin-bottom: 4px;
+            display: block;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+        }
+
+        /* 主按鈕 */
+        .btn-primary {
+            background: linear-gradient(135deg, #0A84FF, #2563EB);
+            color: white;
+            padding: 14px;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 17px;
+            width: 100%;
+            text-align: center;
+            transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+            box-shadow: 0 12px 28px rgba(37,99,235,0.55);
+            border: none;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.97) translateY(1px);
+            opacity: 0.9;
+            box-shadow: 0 6px 18px rgba(37,99,235,0.6);
+        }
+
+        /* FAB */
         .fab {
-            position: fixed; bottom: 32px; right: 24px; width: 64px; height: 64px;
-            background: linear-gradient(135deg, #22d3ee 0%, #0891b2 100%);
-            border-radius: 24px; display: flex; align-items: center; justify-content: center;
-            color: white; box-shadow: 0 12px 30px -8px rgba(6, 182, 212, 0.6);
-            z-index: 50; cursor: pointer; transition: transform 0.2s;
+            position: fixed;
+            bottom: 26px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #0A84FF, #4F46E5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 18px 40px rgba(37,99,235,0.8);
+            z-index: 50;
+            cursor: pointer;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
         }
-        .fab:active { transform: scale(0.9); }
 
-        label { font-size: 14px; font-weight: 600; color: #64748b; margin-bottom: 6px; display: block; margin-left: 4px; }
+        .fab:active {
+            transform: scale(0.95) translateY(1px);
+            box-shadow: 0 10px 26px rgba(37,99,235,0.9);
+        }
+
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15,23,42,0.82);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            flex-direction: column;
+            color: #e5e7eb;
+        }
+
+        /* Detail header */
+        .detail-header {
+            background: radial-gradient(circle at top left, #4F46E5 0, #0F172A 55%);
+            color: #E5E7EB;
+            box-shadow: 0 18px 35px rgba(15,23,42,0.85);
+        }
+
+        .detail-header button {
+            color: #BFDBFE;
+        }
+
+        .detail-header h2 {
+            letter-spacing: 0.03em;
+        }
+
+        /* 白底照片 Carousel 卡片 */
+        .machine-photo-card {
+            background: #ffffff;
+            margin-top: -52px;
+            margin-inline: auto;
+            border-radius: 24px;
+            padding: 12px;
+            box-shadow: 0 18px 40px rgba(15,23,42,0.65);
+            border: 1px solid rgba(148,163,184,0.4);
+            max-width: 480px;
+            position: relative;
+            z-index: 10;
+        }
+
+        #customer-photos-container {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+        }
+
+        #customer-photos-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .machine-photo-slide {
+            flex: 0 0 100%;
+            height: 190px;
+            border-radius: 18px;
+            overflow: hidden;
+            background: #0f172a;
+            position: relative;
+            scroll-snap-align: center;
+            border: 1px solid rgba(15,23,42,0.75);
+        }
+
+        .machine-photo-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .machine-photo-empty {
+            width: 100%;
+            height: 190px;
+            border-radius: 18px;
+            border: 1px dashed rgba(148,163,184,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(148,163,184,0.95);
+            font-size: 13px;
+            background: radial-gradient(circle at top, rgba(148,163,184,0.12), rgba(15,23,42,0.9));
+        }
+
+        /* Detail 下方內容卡 */
+        .detail-section {
+            max-width: 520px;
+            margin-inline: auto;
+            margin-top: 18px;
+        }
+
+        .detail-card {
+            background: rgba(15,23,42,0.96);
+            border-radius: 18px;
+            padding: 16px 16px 14px;
+            margin-bottom: 14px;
+            border: 1px solid rgba(75,85,99,0.8);
+            box-shadow: 0 14px 32px rgba(15,23,42,0.9);
+            color: #e5e7eb;
+        }
+
+        .detail-card h3 {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: #9CA3AF;
+            margin-bottom: 10px;
+        }
+
+        .detail-row {
+            display: flex;
+            gap: 10px;
+            font-size: 14px;
+            padding: 4px 0;
+            color: #E5E7EB;
+        }
+
+        .detail-row label {
+            font-size: 13px;
+            color: #9CA3AF;
+            margin-bottom: 0;
+            width: 72px;
+            flex-shrink: 0;
+        }
+
+        .detail-row span {
+            flex: 1;
+        }
+
+        .detail-note {
+            color: #FBBF24;
+        }
+
+        /* Timeline 保養紀錄卡 */
+        .timeline-wrapper {
+            position: relative;
+            padding-left: 16px;
+        }
+
+        .timeline-wrapper::before {
+            content: "";
+            position: absolute;
+            left: 6px;
+            top: 6px;
+            bottom: 6px;
+            width: 2px;
+            background: linear-gradient(to bottom, #38BDF8, #A855F7);
+            opacity: 0.5;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 14px;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -1px;
+            top: 10px;
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            border: 2px solid #0EA5E9;
+            background: #020617;
+            box-shadow: 0 0 0 4px rgba(56,189,248,0.35);
+        }
+
+        .record-card {
+            background: rgba(15,23,42,0.96);
+            border-radius: 16px;
+            padding: 12px 12px 10px;
+            border: 1px solid rgba(75,85,99,0.9);
+            box-shadow: 0 10px 26px rgba(15,23,42,0.9);
+            color: #E5E7EB;
+            margin-left: 14px;
+        }
+
+        .record-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 4px;
+        }
+
+        .record-date {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .record-amount {
+            font-size: 14px;
+            font-weight: 600;
+            color: #4ADE80;
+        }
+
+        .record-items {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .record-note {
+            font-size: 12px;
+            color: #9CA3AF;
+            background: rgba(15,23,42,0.9);
+            border-radius: 10px;
+            padding: 6px 8px;
+            margin-bottom: 6px;
+        }
+
+        .record-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            padding-top: 6px;
+            border-top: 1px solid rgba(55,65,81,0.8);
+            margin-top: 4px;
+            font-size: 12px;
+        }
+
+        .record-actions button {
+            padding: 3px 8px;
+            border-radius: 999px;
+        }
+
+        /* 照片縮圖 */
+        .photo-grid {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 4px 0;
+        }
+
+        .photo-thumb {
+            width: 82px;
+            height: 82px;
+            object-fit: cover;
+            border-radius: 12px;
+            background-color: #020617;
+            border: 1px solid rgba(75,85,99,0.9);
+        }
+
+        /* Bottom Sheet Modal */
+        .sheet-backdrop {
+            background: radial-gradient(circle at top, rgba(30,64,175,0.55), rgba(15,23,42,0.96));
+            backdrop-filter: blur(12px);
+        }
+
+        .sheet {
+            background: rgba(15,23,42,0.96);
+            border-radius: 24px 24px 0 0;
+            border-top: 1px solid rgba(75,85,99,0.9);
+            border-inline: 1px solid rgba(30,64,175,0.9);
+            box-shadow: 0 -22px 45px rgba(0,0,0,0.9);
+        }
+
+        @media (min-width: 640px) {
+            .sheet {
+                border-radius: 24px;
+                max-width: 420px;
+            }
+        }
+
+        .sheet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px 8px;
+            border-bottom: 1px solid rgba(55,65,81,0.9);
+            background: radial-gradient(circle at top left, rgba(37,99,235,0.3), transparent 60%);
+        }
+
+        .sheet-grabber {
+            width: 38px;
+            height: 4px;
+            border-radius: 999px;
+            background: rgba(148,163,184,0.7);
+            margin: 4px auto 10px;
+        }
+
+        .sheet-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #E5E7EB;
+        }
+
+        .sheet-btn-text {
+            font-size: 15px;
+            font-weight: 500;
+            color: #60A5FA;
+        }
+
+        .sheet-body {
+            padding: 12px 16px 18px;
+            overflow-y: auto;
+        }
+
+        .danger-btn {
+            width: 100%;
+            padding: 11px 0;
+            border-radius: 14px;
+            background: rgba(185,28,28,0.14);
+            color: #FCA5A5;
+            border: 1px solid rgba(239,68,68,0.7);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        #customer-modal, #record-modal {
+            align-items: flex-end;
+        }
     </style>
 </head>
 <body>
 
-    <div id="page-list" class="animate-fade-in-up">
-        <div class="pt-14 pb-4 px-6 sticky top-0 z-20 bg-[#F3F4F6]/80 backdrop-blur-xl border-b border-gray-200/50">
-            <div class="flex justify-between items-center mb-4">
-                <div>
-                    <h1 class="text-3xl font-extrabold text-gray-800 tracking-tight">濾芯保養</h1>
-                    <p class="text-gray-500 text-sm font-medium mt-1">管理您的客戶與紀錄</p>
+    <!-- 首頁（客戶列表） -->
+    <div id="page-list">
+        <div class="app-header sticky top-0 z-10">
+            <div class="pt-10 pb-4 px-4 max-w-md mx-auto">
+                <h1 class="text-2xl font-bold text-slate-50 mb-3">濾芯保養系統</h1>
+                <div class="search-bar">
+                    <span class="material-icons text-slate-300" style="font-size: 20px;">search</span>
+                    <input type="text" id="search-input" placeholder="搜尋客戶名稱、電話或備註...">
                 </div>
-                <div class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center text-primary-600">
-                    <span class="material-icons-round">water_drop</span>
-                </div>
-            </div>
-            
-            <div class="relative group">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 group-focus-within:text-primary-500 transition-colors">
-                    <span class="material-icons-round">search</span>
-                </span>
-                <input type="text" id="search-input" placeholder="搜尋客戶名稱、電話..." 
-                       class="w-full pl-12 pr-4 py-3.5 bg-white border-none rounded-2xl shadow-soft focus:ring-2 focus:ring-primary-400/50 transition-all text-gray-700 text-lg placeholder-gray-400">
             </div>
         </div>
-
-        <div id="customer-list" class="px-5 pt-4 pb-24 space-y-4 max-w-2xl mx-auto">
-            <div class="flex flex-col items-center justify-center py-20 text-gray-400">
-                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500 mb-4"></div>
-                <p>資料讀取中...</p>
-            </div>
+        
+        <div id="customer-list" class="max-w-md mx-auto px-4 pt-4 pb-10">
+            <div class="text-center text-slate-400 mt-20 text-sm">載入中...</div>
         </div>
         
         <div class="fab" onclick="showAddCustomerModal()">
-            <span class="material-icons-round text-3xl">add</span>
+            <span class="material-icons">add</span>
         </div>
     </div>
 
-    <div id="page-detail" class="hidden min-h-screen bg-[#F3F4F6]">
-        <div class="pt-12 pb-2 px-4 flex items-center sticky top-0 z-20 bg-[#F3F4F6]/90 backdrop-blur-xl">
-            <button onclick="goBack()" class="w-10 h-10 bg-white rounded-full shadow-sm flex items-center justify-center text-gray-700 active:scale-90 transition-transform">
-                <span class="material-icons-round">arrow_back</span>
+    <!-- 詳細頁 -->
+    <div id="page-detail" class="hidden min-h-screen">
+        <div class="detail-header pt-9 pb-3 px-2 flex items-center sticky top-0 z-20">
+            <button onclick="goBack()" class="p-2 flex items-center">
+                <span class="material-icons">arrow_back_ios</span>
+                <span class="text-lg ml-1">返回</span>
             </button>
-            <div class="flex-1 text-center font-bold text-lg text-gray-800 opacity-0 transition-opacity duration-300" id="detail-header-title">客戶詳情</div>
-            <button onclick="showEditCustomerModal()" class="text-primary-600 font-bold text-sm px-4 py-2 bg-primary-50 rounded-full active:bg-primary-100 transition-colors">
-                編輯
-            </button>
+            <h2 class="text-lg font-semibold flex-1 text-center pr-12">客戶資料</h2>
+            <button onclick="showEditCustomerModal()" class="font-medium text-lg px-2 text-sky-200">編輯</button>
         </div>
         
-        <div class="px-5 pb-10 max-w-2xl mx-auto space-y-6 animate-fade-in-up">
-            
-            <div class="bg-white rounded-3xl p-6 shadow-soft relative overflow-hidden">
-                <div class="absolute -top-10 -right-10 w-32 h-32 bg-primary-50 rounded-full blur-2xl opacity-60"></div>
-                <div class="relative z-10">
-                    <h2 id="detail-name" class="text-3xl font-extrabold text-gray-800 mb-1"></h2>
-                    <a id="detail-phone-link" class="inline-flex items-center text-xl font-bold text-primary-600 mb-6">
-                        <span id="detail-phone"></span>
-                        <span class="ml-2 w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center">
-                            <span class="material-icons-round text-sm">call</span>
-                        </span>
-                    </a>
-                    <div id="customer-photos-container" class="flex gap-3 overflow-x-auto pb-4 no-scrollbar -mx-6 px-6 mb-2"></div>
-                    <div class="grid grid-cols-1 gap-4 mt-2">
-                        <div class="flex items-start p-3 bg-gray-50 rounded-2xl">
-                            <span class="material-icons-round text-gray-400 mt-0.5 mr-3">calendar_today</span>
-                            <div>
-                                <p class="text-xs font-bold text-gray-400 uppercase tracking-wide">安裝日期</p>
-                                <p id="detail-install-date" class="text-gray-800 font-medium"></p>
-                            </div>
-                        </div>
-                        <div class="flex items-start p-3 bg-gray-50 rounded-2xl">
-                            <span class="material-icons-round text-gray-400 mt-0.5 mr-3">location_on</span>
-                            <div>
-                                <p class="text-xs font-bold text-gray-400 uppercase tracking-wide">地址</p>
-                                <p id="detail-address" class="text-gray-800 font-medium leading-relaxed"></p>
-                            </div>
-                        </div>
-                        <div class="flex items-start p-3 bg-gray-50 rounded-2xl">
-                            <span class="material-icons-round text-gray-400 mt-0.5 mr-3">settings_suggest</span>
-                            <div class="flex-1">
-                                <p class="text-xs font-bold text-gray-400 uppercase tracking-wide">設備規格</p>
-                                <div id="detail-machine" class="text-gray-800 font-bold"></div>
-                                <div id="detail-filter" class="text-sm text-gray-500 mt-0.5"></div>
-                            </div>
-                        </div>
-                        <div id="note-container" class="hidden flex items-start p-3 bg-yellow-50 rounded-2xl border border-yellow-100">
-                            <span class="material-icons-round text-yellow-500 mt-0.5 mr-3">sticky_note_2</span>
-                            <div>
-                                <p class="text-xs font-bold text-yellow-600 uppercase tracking-wide">備註</p>
-                                <p id="detail-note" class="text-gray-800"></p>
-                            </div>
-                        </div>
-                    </div>
+        <div class="pb-4 px-4 max-w-md mx-auto">
+            <!-- 白底照片卡片 -->
+            <div class="machine-photo-card">
+                <div id="customer-photos-container">
+                    <!-- JS 動態填入 slide -->
                 </div>
             </div>
 
-            <div class="rounded-3xl p-1 bg-gradient-to-br from-primary-400 to-blue-600 shadow-lg text-white">
-                <div class="bg-gray-900/10 backdrop-blur-sm p-5 rounded-[20px]">
-                    <h3 class="font-bold mb-4 flex items-center text-lg">
-                        <span class="bg-white/20 p-1.5 rounded-lg mr-2 flex items-center"><span class="material-icons-round text-lg">post_add</span></span>
-                        新增保養紀錄
-                    </h3>
-                    
-                    <div class="grid grid-cols-12 gap-3">
-                        <div class="col-span-12">
-                            <input type="date" id="record-date" class="blue-card-input">
+            <!-- 下方資訊區 -->
+            <div class="detail-section">
+                <div class="detail-card">
+                    <h3>基本資料</h3>
+                    <div class="detail-row">
+                        <label>姓名</label>
+                        <span id="detail-name"></span>
+                    </div>
+                    <div class="detail-row">
+                        <label>電話</label>
+                        <span>
+                            <a id="detail-phone-link" class="inline-flex items-center text-sky-400 text-base font-medium">
+                                <span class="material-icons mr-1 text-base">phone</span>
+                                <span id="detail-phone"></span>
+                            </a>
+                        </span>
+                    </div>
+                    <div class="detail-row">
+                        <label>安裝日期</label>
+                        <span id="detail-install-date"></span>
+                    </div>
+                </div>
+
+                <div class="detail-card">
+                    <h3>設備資訊</h3>
+                    <div class="detail-row">
+                        <label>地址</label>
+                        <span id="detail-address"></span>
+                    </div>
+                    <div class="detail-row">
+                        <label>機器</label>
+                        <span id="detail-machine"></span>
+                    </div>
+                    <div class="detail-row">
+                        <label>濾芯</label>
+                        <span id="detail-filter"></span>
+                    </div>
+                    <div id="note-container" class="detail-row hidden">
+                        <label class="detail-note">備註</label>
+                        <span id="detail-note" class="detail-note"></span>
+                    </div>
+                </div>
+
+                <div class="detail-card">
+                    <h3>新增保養紀錄</h3>
+                    <div class="grid grid-cols-2 gap-3 mb-3">
+                        <div>
+                            <label>日期</label>
+                            <input type="date" id="record-date" class="mb-0 h-10">
                         </div>
-                        <div class="col-span-12">
-                            <input type="text" id="record-items" placeholder="更換項目 (如: 活性碳...)" class="blue-card-input">
-                        </div>
-                        <div class="col-span-5">
-                            <input type="number" id="record-amount" placeholder="金額" inputmode="numeric" class="blue-card-input text-right font-bold text-green-300">
-                        </div>
-                        <div class="col-span-7">
-                            <input type="text" id="record-note" placeholder="備註 (選填)" class="blue-card-input">
+                        <div>
+                            <label>金額</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-2 text-gray-400 text-sm">NT$</span>
+                                <input type="number" id="record-amount" class="pl-10 mb-0 h-10 text-green-400 font-bold" placeholder="0">
+                            </div>
                         </div>
                     </div>
+                    
+                    <div class="mb-3">
+                        <label>更換項目</label>
+                        <input type="text" id="record-items" placeholder="例如: PP, 活性碳" class="mb-0 h-10 font-medium">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label>備註 (選填)</label>
+                        <input type="text" id="record-note" class="mb-0 h-10">
+                    </div>
 
-                    <div class="mt-4">
-                        <label class="flex items-center gap-2 text-sm font-medium text-white/80 mb-2 cursor-pointer w-fit hover:text-white transition-colors">
-                            <span class="material-icons-round">add_a_photo</span>
-                            拍照紀錄
+                    <div class="flex items-center gap-3 mb-3">
+                        <label class="bg-slate-800/80 text-sky-300 px-4 py-2 rounded-lg text-sm font-medium flex items-center cursor-pointer active:bg-slate-700/80">
+                            <span class="material-icons mr-1 text-lg">camera_alt</span> 拍照
                             <input type="file" id="record-photo-input" accept="image/*" multiple class="hidden" onchange="handleRecordPhotoSelect(this)">
                         </label>
-                        <div id="new-record-photos" class="flex gap-2 flex-wrap"></div>
+                        <span id="record-photo-count" class="text-xs text-slate-400">0 張</span>
                     </div>
                     
-                    <button onclick="saveRecord()" class="mt-5 w-full bg-white text-primary-600 py-3.5 rounded-xl font-bold text-lg shadow-lg active:scale-[0.98] transition-transform flex items-center justify-center gap-2">
-                        <span>確認儲存</span>
-                        <span class="material-icons-round text-sm">send</span>
-                    </button>
+                    <div id="new-record-photos" class="photo-grid mb-3"></div>
+                    
+                    <button onclick="saveRecord()" class="btn-primary">儲存紀錄</button>
+                </div>
+
+                <div class="mt-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-sm font-bold text-slate-300 tracking-[0.18em] uppercase">歷史紀錄</h3>
+                    </div>
+                    <div id="record-list" class="timeline-wrapper"></div>
                 </div>
             </div>
-
-            <div>
-                <h3 class="font-bold text-gray-800 text-xl mb-4 ml-1 flex items-center">
-                    <span class="w-1 h-6 bg-primary-500 rounded-full mr-3"></span>
-                    歷史紀錄
-                </h3>
-                <div id="record-list" class="space-y-4"></div>
-            </div>
-            <div class="h-10"></div>
         </div>
     </div>
 
-    <div id="customer-modal" class="fixed inset-0 bg-gray-900/60 hidden z-50 flex items-end sm:items-center justify-center backdrop-blur-sm transition-opacity">
-        <div class="bg-surface w-full max-w-lg rounded-t-[32px] sm:rounded-3xl max-h-[95vh] overflow-hidden flex flex-col shadow-2xl animate-slide-up">
-            
-            <div class="bg-white px-6 py-4 flex justify-between items-center shrink-0 border-b border-gray-100">
-                <button onclick="closeModal('customer-modal')" class="text-gray-500 font-medium hover:text-gray-700 p-2">取消</button>
-                <h2 id="modal-title" class="text-lg font-bold text-gray-800">新增客戶</h2>
-                <div class="w-10"></div> 
+    <!-- 客戶資料 Bottom Sheet -->
+    <div id="customer-modal" class="fixed inset-0 sheet-backdrop hidden z-50 flex items-end sm:items-center justify-center">
+        <div class="sheet w-full max-w-md h-[90vh] overflow-hidden flex flex-col">
+            <div class="sheet-grabber"></div>
+            <div class="sheet-header">
+                <button onclick="closeModal('customer-modal')" class="sheet-btn-text">取消</button>
+                <h2 id="modal-title" class="sheet-title">新增客戶</h2>
+                <button onclick="saveCustomer()" class="sheet-btn-text font-semibold">儲存</button>
             </div>
             
-            <div class="p-6 overflow-y-auto space-y-5 no-scrollbar flex-1">
+            <div class="sheet-body space-y-4">
                 <input type="hidden" id="cust-id">
                 
-                <div class="bg-white rounded-2xl p-5 shadow-sm space-y-4">
-                    <h4 class="text-xs font-bold text-gray-400 uppercase">基本資料</h4>
-                    <div><label>客戶姓名 <span class="text-red-400">*</span></label><input type="text" id="cust-name" placeholder="請輸入姓名" class="input-field"></div>
-                    <div><label>電話號碼 <span class="text-red-400">*</span></label><input type="tel" id="cust-phone" placeholder="09xx-xxx-xxx" inputmode="tel" class="input-field font-mono font-medium"></div>
-                </div>
-
-                <div class="bg-white rounded-2xl p-5 shadow-sm space-y-4">
-                    <h4 class="text-xs font-bold text-gray-400 uppercase">安裝資訊</h4>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="col-span-2"><label>地址</label><input type="text" id="cust-address" class="input-field" placeholder="縣市/區域..."></div>
-                        <div class="col-span-2"><label>安裝日期</label><input type="date" id="cust-install-date" class="input-field"></div>
-                        <div><label>機器型號</label><input type="text" id="cust-machine" class="input-field"></div>
-                        <div><label>濾芯規格</label><input type="text" id="cust-filter" class="input-field"></div>
+                <div class="space-y-3">
+                    <div>
+                        <label>姓名 <span class="text-red-400">*</span></label>
+                        <input type="text" id="cust-name" class="mb-0">
+                    </div>
+                    <div>
+                        <label>電話 <span class="text-red-400">*</span></label>
+                        <input type="tel" id="cust-phone" class="mb-0">
+                    </div>
+                    <div>
+                        <label>安裝日期</label>
+                        <input type="date" id="cust-install-date" class="mb-0">
                     </div>
                 </div>
 
-                <div class="bg-white rounded-2xl p-5 shadow-sm">
-                    <label>備註</label>
-                    <textarea id="cust-note" rows="2" class="input-field bg-yellow-50/50 border-yellow-100 focus:border-yellow-400" placeholder="選填..."></textarea>
+                <div class="space-y-3">
+                    <div>
+                        <label>地址</label>
+                        <input type="text" id="cust-address" class="mb-0">
+                    </div>
+                    <div>
+                        <label>機器型號</label>
+                        <input type="text" id="cust-machine" class="mb-0">
+                    </div>
+                    <div>
+                        <label>濾芯規格</label>
+                        <input type="text" id="cust-filter" class="mb-0">
+                    </div>
                 </div>
 
-                <div class="bg-white rounded-2xl p-5 shadow-sm">
-                    <label class="block text-center cursor-pointer py-6 border-2 border-dashed border-gray-200 rounded-xl hover:bg-gray-50 hover:border-primary-300 transition-all group">
-                        <span class="material-icons-round text-gray-300 group-hover:text-primary-500 text-4xl mb-2 transition-colors">add_photo_alternate</span>
-                        <div class="text-gray-500 font-medium">上傳機器照片</div>
+                <div>
+                    <label>備註</label>
+                    <textarea id="cust-note" rows="2" class="mb-0"></textarea>
+                </div>
+
+                <div class="text-center">
+                    <label class="text-sky-300 font-medium flex items-center justify-center cursor-pointer">
+                        <span class="material-icons mr-2">add_photo_alternate</span> 選擇機器照片
                         <input type="file" id="cust-photo-input" accept="image/*" multiple class="hidden" onchange="handleCustPhotoSelect(this)">
                     </label>
-                    <div id="cust-photo-preview" class="flex flex-wrap gap-2 mt-4 justify-center"></div>
+                    <div id="cust-photo-preview" class="photo-grid mt-2 justify-center"></div>
                 </div>
                 
-                <button id="btn-delete-customer" onclick="deleteCustomer()" class="w-full text-red-500 py-3 rounded-2xl font-bold bg-red-50 hover:bg-red-100 hidden transition-colors mb-2">刪除此客戶</button>
-
-                <button onclick="saveCustomer()" class="w-full bg-primary-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg active:scale-[0.98] transition-transform mb-6">
-                    儲存資料
-                </button>
-                <div class="h-10"></div> 
+                <button id="btn-delete-customer" onclick="deleteCustomer()" class="danger-btn hidden">刪除此客戶</button>
             </div>
         </div>
     </div>
 
-    <div id="record-modal" class="fixed inset-0 bg-gray-900/60 hidden z-50 flex items-end sm:items-center justify-center backdrop-blur-sm transition-opacity">
-        <div class="bg-surface w-full max-w-lg rounded-t-[32px] sm:rounded-3xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl animate-slide-up">
-            
-            <div class="bg-white px-6 py-4 flex justify-between items-center shrink-0 border-b border-gray-100">
-                <button onclick="closeModal('record-modal')" class="text-gray-500 font-medium p-2">取消</button>
-                <h2 class="text-lg font-bold text-gray-800">修改紀錄</h2>
-                <div class="w-10"></div>
+    <!-- 紀錄 Bottom Sheet -->
+    <div id="record-modal" class="fixed inset-0 sheet-backdrop hidden z-50 flex items-end sm:items-center justify-center">
+        <div class="sheet w-full max-w-md h-auto max-h-[90vh] overflow-hidden flex flex-col">
+            <div class="sheet-grabber"></div>
+            <div class="sheet-header">
+                <button onclick="closeModal('record-modal')" class="sheet-btn-text">取消</button>
+                <h2 class="sheet-title">修改紀錄</h2>
+                <button onclick="saveEditedRecord()" class="sheet-btn-text font-semibold">完成</button>
             </div>
             
-            <div class="p-6 overflow-y-auto space-y-5 flex-1">
+            <div class="sheet-body space-y-4">
                 <input type="hidden" id="edit-record-id">
-                <div class="bg-white rounded-2xl p-5 shadow-sm space-y-4">
-                    <div><label>保養日期</label><input type="date" id="edit-record-date" class="input-field"></div>
-                    <div><label>項目</label><input type="text" id="edit-record-items" class="input-field font-medium"></div>
-                    <div><label>金額</label><input type="number" id="edit-record-amount" inputmode="numeric" class="input-field text-green-600 font-bold text-right"></div>
-                    <div><label>備註</label><textarea id="edit-record-note" rows="2" class="input-field"></textarea></div>
-                </div>
                 
-                <div class="bg-white rounded-2xl p-5 shadow-sm">
-                    <label class="block text-center cursor-pointer py-4 border-2 border-dashed border-gray-200 rounded-xl hover:bg-gray-50">
-                        <span class="material-icons-round text-primary-300 text-3xl mb-1">add_a_photo</span>
-                        <div class="text-gray-400 text-sm">加傳照片</div>
+                <div class="space-y-3">
+                    <div>
+                        <label>日期</label>
+                        <input type="date" id="edit-record-date" class="mb-0">
+                    </div>
+                    <div>
+                        <label>項目</label>
+                        <input type="text" id="edit-record-items" class="mb-0 font-medium">
+                    </div>
+                    <div>
+                        <label>金額</label>
+                        <input type="number" id="edit-record-amount" class="mb-0 text-green-400 font-bold">
+                    </div>
+                    <div>
+                        <label>備註</label>
+                        <textarea id="edit-record-note" rows="2" class="mb-0"></textarea>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-sky-300 font-medium flex items-center justify-center cursor-pointer">
+                        <span class="material-icons mr-2">add_a_photo</span> 加傳照片
                         <input type="file" id="edit-record-photo-input" accept="image/*" multiple class="hidden" onchange="handleEditRecordPhotoSelect(this)">
                     </label>
-                    <div id="edit-record-photo-preview" class="flex flex-wrap gap-2 mt-3 justify-center"></div>
+                    <div id="edit-record-photo-preview" class="photo-grid mt-2 justify-center"></div>
                 </div>
-
-                <button onclick="saveEditedRecord()" class="w-full bg-primary-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg active:scale-[0.98] transition-transform mt-6 mb-6">
-                    完成修改
-                </button>
-                <div class="h-6"></div>
             </div>
         </div>
     </div>
 
-    <div id="loading" class="fixed inset-0 z-[999] bg-white/50 backdrop-blur-sm hidden flex items-center justify-center">
-        <div class="bg-white/90 p-8 rounded-3xl shadow-2xl flex flex-col items-center border border-white">
-            <div class="animate-spin rounded-full h-10 w-10 border-[3px] border-gray-200 border-t-primary-500 mb-4"></div>
-            <p class="text-gray-600 font-bold tracking-wide text-sm">資料同步中...</p>
-        </div>
+    <!-- Loading -->
+    <div id="loading" class="loading-overlay hidden">
+        <div class="animate-spin rounded-full h-10 w-10 border-4 border-slate-600 border-t-sky-400 mb-3"></div>
+        <p class="text-slate-200 font-medium text-sm">處理中...</p>
     </div>
 
     <script>
-        // ⚠️⚠️⚠️ 請確認這裡的 API 網址是正確的 ⚠️⚠️⚠️
+        // ⚠️ 記得換成你的 API 網址 ⚠️
         const API_URL = "https://script.google.com/macros/s/AKfycby0TrkaHnLe0UaZIGQ7DFKnq_1q_QbHWJsjxQ4YCstZ5i_U_OszwLnENXxUlSq_k_NT/exec"; 
 
         let customers = [];
-        let currentRecords = []; // 新增：用來儲存當前客戶的紀錄
         let currentCustomer = null;
         let selectedRecordPhotos = [];
         let selectedCustPhotos = [];
@@ -345,7 +834,8 @@
 
         window.onload = () => {
             fetchCustomers();
-            document.getElementById('record-date').valueAsDate = new Date();
+            const rd = document.getElementById('record-date');
+            if (rd) rd.valueAsDate = new Date();
         };
 
         async function apiCall(action, payload = {}, method = 'POST') {
@@ -358,39 +848,73 @@
                 const options = method === 'GET' ? {} : { method: 'POST', body: JSON.stringify({ action, ...payload }) };
                 const res = await fetch(url, options);
                 return await res.json();
-            } catch (e) { alert("連線錯誤，請檢查網路"); } finally { showLoading(false); }
+            } catch (e) { 
+                alert("連線錯誤"); 
+            } finally { 
+                showLoading(false); 
+            }
         }
 
         async function fetchCustomers() {
             const data = await apiCall('getCustomers', {}, 'GET');
-            if (Array.isArray(data)) { customers = data; renderList(customers); }
+            if (Array.isArray(data)) { 
+                customers = data; 
+                renderList(customers); 
+            }
         }
 
+        // 首頁列表渲染（Dashboard 卡片）
         function renderList(list) {
             const container = document.getElementById('customer-list');
             container.innerHTML = '';
-            if (list.length === 0) { container.innerHTML = '<div class="text-center text-gray-400 mt-20">尚無資料</div>'; return; }
-            
+            if (!list || list.length === 0) {
+                container.innerHTML = '<div class="text-center text-slate-400 mt-20 text-sm">暫無資料</div>';
+                return;
+            }
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'max-w-md mx-auto px-1 pt-2 space-y-3 pb-6';
+
             list.forEach(c => {
-                const div = document.createElement('div');
-                div.className = 'bg-white rounded-2xl p-4 flex items-center cursor-pointer active:scale-[0.98] transition-all shadow-sm hover:shadow-md border border-gray-100';
-                div.onclick = () => openDetail(c);
-                div.innerHTML = `
-                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-100 to-primary-50 text-primary-600 flex items-center justify-center font-bold text-xl mr-4 flex-shrink-0 shadow-inner">
-                        ${c.name.charAt(0)}
+                const card = document.createElement('div');
+                card.className = 'dashboard-card cursor-pointer active:scale-[0.98] transition-transform';
+                card.onclick = () => openDetail(c);
+
+                const machineTagClass = (c.machine && String(c.machine).trim()) ? 'dashboard-tag' : 'dashboard-tag dashboard-tag-empty';
+
+                const lastText = c.lastRecordDate
+                    ? c.lastRecordDate
+                    : '尚無保養紀錄';
+
+                card.innerHTML = `
+                    <div class="dashboard-main">
+                        <div class="dashboard-name truncate">${c.name || '未命名客戶'}</div>
+                        <div class="${machineTagClass}">
+                            ${c.machine ? c.machine : '　'}
+                        </div>
+                        <div class="dashboard-meta">
+                            <span><span class="material-icons">phone_iphone</span>${c.phone || '無電話'}</span>
+                            <span><span class="material-icons">history</span>${lastText}</span>
+                        </div>
+                        ${c.note ? `<div class="subtle-text mt-1 line-clamp-1">備註：${c.note}</div>` : ''}
                     </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="font-bold text-lg text-gray-800 truncate">${c.name}</div>
-                        <div class="text-gray-400 text-sm font-mono">${c.phone}</div>
+                    <div class="dashboard-chevron">
+                        <span class="material-icons">arrow_forward_ios</span>
                     </div>
-                    <span class="material-icons-round text-gray-300">chevron_right</span>`;
-                container.appendChild(div);
+                `;
+                wrapper.appendChild(card);
             });
+
+            container.appendChild(wrapper);
         }
 
         document.getElementById('search-input').addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase();
-            renderList(customers.filter(c => c.name.toLowerCase().includes(term) || String(c.phone).includes(term) || (c.note && c.note.toLowerCase().includes(term))));
+            renderList(customers.filter(c => 
+                (c.name && c.name.toLowerCase().includes(term)) ||
+                (c.phone && String(c.phone).includes(term)) ||
+                (c.note && c.note.toLowerCase().includes(term))
+            ));
         });
 
         async function openDetail(customer) {
@@ -399,15 +923,18 @@
             document.getElementById('page-detail').classList.remove('hidden');
             window.scrollTo(0, 0);
 
-            setTimeout(() => document.getElementById('detail-header-title').classList.remove('opacity-0'), 100);
-
-            document.getElementById('detail-name').innerText = customer.name;
-            document.getElementById('detail-phone').innerText = customer.phone;
-            document.getElementById('detail-phone-link').href = `tel:${customer.phone}`;
+            document.getElementById('detail-name').innerText = customer.name || '';
+            document.getElementById('detail-phone').innerText = customer.phone || '';
+            document.getElementById('detail-phone-link').href = customer.phone ? `tel:${customer.phone}` : 'javascript:void(0)';
             
             const dateEl = document.getElementById('detail-install-date');
-            dateEl.innerText = customer.installDate ? customer.installDate.split('T')[0] : '無紀錄';
-            dateEl.className = customer.installDate ? "text-gray-800 font-medium" : "text-gray-400 italic";
+            if (customer.installDate) {
+                dateEl.innerText = customer.installDate.split('T')[0];
+                dateEl.className = "";
+            } else {
+                dateEl.innerText = '無紀錄';
+                dateEl.className = "text-slate-500 italic";
+            }
 
             setText('detail-address', customer.address);
             setText('detail-machine', customer.machine);
@@ -417,105 +944,136 @@
             if (customer.note) {
                 document.getElementById('detail-note').innerText = customer.note;
                 noteContainer.classList.remove('hidden');
-                noteContainer.classList.add('flex');
-            } else { noteContainer.classList.add('hidden'); noteContainer.classList.remove('flex'); }
+            } else { 
+                noteContainer.classList.add('hidden'); 
+            }
             
+            // 照片 carousel
             const photoContainer = document.getElementById('customer-photos-container');
             photoContainer.innerHTML = '';
             let photos = [];
             if (customer.photos && Array.isArray(customer.photos)) photos = customer.photos;
-            else if (customer.photos && customer.photos.startsWith('[')) try { photos = JSON.parse(customer.photos); } catch(e) { photos = [customer.photos]; }
+            else if (customer.photos && typeof customer.photos === 'string' && customer.photos.startsWith('[')) {
+                try { photos = JSON.parse(customer.photos); } catch(e) { photos = [customer.photos]; }
+            }
             else if (customer.photos) photos = [customer.photos];
 
             if (photos.length > 0) {
-                photoContainer.classList.remove('hidden');
                 photos.forEach(url => {
-                    const img = document.createElement('img');
-                    img.src = url; 
-                    img.className = 'w-32 h-32 flex-shrink-0 rounded-2xl object-cover shadow-sm border border-gray-100 bg-gray-50';
-                    img.onclick = () => window.open(url, '_blank');
-                    photoContainer.appendChild(img);
+                    const slide = document.createElement('div');
+                    slide.className = 'machine-photo-slide cursor-pointer';
+                    slide.innerHTML = `<img src="${url}" alt="機器照片">`;
+                    slide.onclick = () => window.open(url, '_blank');
+                    photoContainer.appendChild(slide);
                 });
             } else {
-                photoContainer.classList.add('hidden');
+                const empty = document.createElement('div');
+                empty.className = 'machine-photo-empty';
+                empty.innerText = '無機器照片';
+                photoContainer.appendChild(empty);
             }
 
             await fetchRecords(customer.id);
+            // 更新首頁卡片的最近紀錄顯示
+            renderList(customers);
         }
 
         function setText(id, value) {
             const el = document.getElementById(id);
-            el.innerText = value || '未填寫';
-            el.className = value ? "text-gray-800 font-medium" : "text-gray-400 italic";
+            if (!value) {
+                el.innerText = '未填寫';
+                el.className = "text-slate-500 italic";
+            } else {
+                el.innerText = value;
+                el.className = "";
+            }
         }
 
         function goBack() {
             document.getElementById('page-detail').classList.add('hidden');
             document.getElementById('page-list').classList.remove('hidden');
-            document.getElementById('detail-header-title').classList.add('opacity-0');
             currentCustomer = null;
             selectedRecordPhotos = [];
             renderRecordPhotoPreview();
         }
 
+        // 取得保養紀錄 + 更新最近紀錄日期 + Timeline UI
         async function fetchRecords(custId) {
             const listDiv = document.getElementById('record-list');
-            listDiv.innerHTML = '<div class="text-center py-6 text-gray-400 text-sm">紀錄讀取中...</div>';
-            const records = await apiCall('getRecords', { customerId: custId }, 'GET');
-            
-            currentRecords = records; // ⚠️ 將紀錄存入全域變數，修正按鈕無效問題
+            listDiv.innerHTML = '<div class="text-center py-4 text-sm text-slate-500">讀取中...</div>';
 
+            const records = await apiCall('getRecords', { customerId: custId }, 'GET');
             listDiv.innerHTML = '';
 
             if (!records || records.length === 0) {
-                listDiv.innerHTML = '<div class="text-center py-8 text-gray-400 bg-white rounded-2xl border border-dashed border-gray-200">尚無保養紀錄</div>'; return;
+                listDiv.innerHTML = '<div class="text-center py-6 text-slate-500 text-sm">尚無紀錄</div>';
+                if (currentCustomer) currentCustomer.lastRecordDate = '';
+                return;
+            }
+
+            // 按日期新到舊排序
+            records.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            // 更新 currentCustomer.lastRecordDate
+            if (currentCustomer) {
+                const latest = records[0];
+                if (latest && latest.date) {
+                    currentCustomer.lastRecordDate = latest.date.split('T')[0];
+                }
             }
 
             records.forEach(r => {
-                const photos = r.photos ? JSON.parse(r.photos) : [];
-                // ⚠️ 注意：這裡不再直接傳遞 JSON 字串，而是傳遞 ID
-                
-                const div = document.createElement('div');
-                div.className = 'bg-white p-5 rounded-2xl shadow-sm border border-gray-100 relative';
-                div.innerHTML = `
-                    <div class="flex justify-between items-start mb-3 pb-3 border-b border-gray-50">
-                        <div class="flex items-center gap-2">
-                            <span class="material-icons-round text-primary-500 text-lg">event_available</span>
-                            <div class="font-bold text-lg text-gray-800">${r.date.split('T')[0]}</div>
+                let photos = [];
+                if (r.photos) {
+                    try { photos = Array.isArray(r.photos) ? r.photos : JSON.parse(r.photos); }
+                    catch(e) { photos = []; }
+                }
+
+                const rData = JSON.stringify(r).replace(/"/g, '&quot;');
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'timeline-item';
+
+                const dot = document.createElement('div');
+                dot.className = 'timeline-dot';
+
+                const card = document.createElement('div');
+                card.className = 'record-card';
+
+                card.innerHTML = `
+                    <div class="record-card-header">
+                        <div class="record-date">${r.date ? r.date.split('T')[0] : ''}</div>
+                        ${r.amount ? `<div class="record-amount">NT$${r.amount}</div>` : ''}
+                    </div>
+                    <div class="record-items">${r.items || ''}</div>
+                    ${r.note ? `<div class="record-note">備註：${r.note}</div>` : ''}
+                    ${photos.length > 0 ? `
+                        <div class="photo-grid mb-1">
+                            ${photos.map(url => `
+                                <img src="${url}" class="photo-thumb cursor-pointer" onclick="window.open('${url}', '_blank')">
+                            `).join('')}
                         </div>
-                        ${r.amount ? `<div class="text-green-600 font-bold font-mono text-lg bg-green-50 px-2 py-0.5 rounded-lg">NT$${r.amount}</div>` : ''}
-                    </div>
-                    <div class="mb-3">
-                        <div class="text-xs text-gray-400 font-bold uppercase mb-1 tracking-wider">更換項目</div>
-                        <div class="text-lg font-bold text-gray-700 leading-snug">${r.items}</div>
-                    </div>
-                    ${r.note ? `
-                        <div class="mb-3 bg-yellow-50 p-3 rounded-xl border border-yellow-100/50">
-                             <div class="text-yellow-600/70 text-xs font-bold uppercase mb-1">備註</div>
-                             <div class="text-sm text-yellow-800 font-medium">${r.note}</div>
-                        </div>` : ''}
-                    
-                    ${photos.length > 0 ? `<div class="flex flex-wrap gap-2 mb-3 pt-1">${photos.map(url => `<img src="${url}" class="w-16 h-16 rounded-lg object-cover cursor-pointer border border-gray-200" onclick="window.open('${url}')">`).join('')}</div>` : ''}
-                    
-                    <div class="flex justify-end gap-2 mt-2">
-                        <button onclick="openEditRecordModal('${r.id}')" class="text-gray-500 px-3 py-1.5 bg-gray-50 hover:bg-gray-100 rounded-lg font-bold text-sm transition-colors">編輯</button>
-                        <button onclick="deleteRecord('${r.id}')" class="text-red-400 px-3 py-1.5 bg-red-50 hover:bg-red-100 rounded-lg font-bold text-sm transition-colors">刪除</button>
+                    ` : ''}
+                    <div class="record-actions">
+                        <button onclick="openEditRecordModal('${rData}')" class="text-sky-300 hover:bg-slate-800/60 px-2 py-1">編輯</button>
+                        <button onclick="deleteRecord('${r.id}')" class="text-red-300 hover:bg-red-900/40 px-2 py-1">刪除</button>
                     </div>
                 `;
-                listDiv.appendChild(div);
+
+                wrapper.appendChild(dot);
+                wrapper.appendChild(card);
+                listDiv.appendChild(wrapper);
             });
         }
 
-        // ⚠️ 修正：透過 ID 查找資料，解決按鈕無反應問題
-        function openEditRecordModal(id) {
-            const record = currentRecords.find(r => r.id === id);
-            if (!record) return alert("找不到該紀錄");
-
+        // --- 編輯紀錄 ---
+        function openEditRecordModal(recordStr) {
+            const record = JSON.parse(recordStr);
             document.getElementById('edit-record-id').value = record.id;
-            document.getElementById('edit-record-date').value = record.date.split('T')[0];
-            document.getElementById('edit-record-items').value = record.items;
-            document.getElementById('edit-record-amount').value = record.amount;
-            document.getElementById('edit-record-note').value = record.note;
+            document.getElementById('edit-record-date').value = record.date ? record.date.split('T')[0] : '';
+            document.getElementById('edit-record-items').value = record.items || '';
+            document.getElementById('edit-record-amount').value = record.amount || '';
+            document.getElementById('edit-record-note').value = record.note || '';
             selectedEditRecordPhotos = []; 
             document.getElementById('edit-record-photo-preview').innerHTML = '';
             document.getElementById('record-modal').classList.remove('hidden');
@@ -531,7 +1089,7 @@
                 showLoading(true);
                 for (let base64 of selectedEditRecordPhotos) {
                     const res = await apiCall('uploadImage', { base64: base64, type: 'image/jpeg' });
-                    if (res.status === 'success') photoUrls.push(res.url);
+                    if (res && res.status === 'success') photoUrls.push(res.url);
                 }
             }
 
@@ -545,22 +1103,29 @@
             };
 
             const res = await apiCall('updateRecord', payload);
-            if (res.status === 'success') {
+            if (res && res.status === 'success') {
                 closeModal('record-modal');
                 fetchRecords(currentCustomer.id);
-            } else { alert("修改失敗"); }
+                renderList(customers);
+            } else { 
+                alert("失敗"); 
+            }
         }
 
         function handleEditRecordPhotoSelect(input) {
             const files = input.files; if (!files.length) return;
             Array.from(files).forEach(file => {
                 const reader = new FileReader();
-                reader.onload = e => resizeImage(e.target.result, 1024, res => { selectedEditRecordPhotos.push(res); renderPhotoList('edit-record-photo-preview', selectedEditRecordPhotos); });
+                reader.onload = e => resizeImage(e.target.result, 1024, res => { 
+                    selectedEditRecordPhotos.push(res); 
+                    renderPhotoList('edit-record-photo-preview', selectedEditRecordPhotos); 
+                });
                 reader.readAsDataURL(file);
             });
             input.value = '';
         }
 
+        // --- 新增紀錄 ---
         async function saveRecord() {
             if (!currentCustomer) return;
             const items = document.getElementById('record-items').value;
@@ -571,7 +1136,7 @@
                 showLoading(true);
                 for (let base64 of selectedRecordPhotos) {
                     const res = await apiCall('uploadImage', { base64: base64, type: 'image/jpeg' });
-                    if (res.status === 'success') photoUrls.push(res.url);
+                    if (res && res.status === 'success') photoUrls.push(res.url);
                 }
             }
 
@@ -585,21 +1150,24 @@
             };
 
             const res = await apiCall('addRecord', payload);
-            if (res.status === 'success') {
+            if (res && res.status === 'success') {
                 document.getElementById('record-items').value = '';
                 document.getElementById('record-amount').value = '';
                 document.getElementById('record-note').value = '';
                 selectedRecordPhotos = [];
                 renderRecordPhotoPreview();
                 fetchRecords(currentCustomer.id);
-                document.getElementById('record-list').scrollIntoView({ behavior: 'smooth' });
-            } else { alert("失敗"); }
+                renderList(customers);
+            } else { 
+                alert("失敗"); 
+            }
         }
 
         async function deleteRecord(id) {
             if (confirm("確定刪除此紀錄？")) {
                 await apiCall('deleteRecord', { id });
                 fetchRecords(currentCustomer.id);
+                renderList(customers);
             }
         }
 
@@ -620,20 +1188,28 @@
             const files = input.files; if (!files.length) return;
             Array.from(files).forEach(file => {
                 const reader = new FileReader();
-                reader.onload = e => resizeImage(e.target.result, 1024, res => { selectedRecordPhotos.push(res); renderRecordPhotoPreview(); });
+                reader.onload = e => resizeImage(e.target.result, 1024, res => { 
+                    selectedRecordPhotos.push(res); 
+                    renderRecordPhotoPreview(); 
+                });
                 reader.readAsDataURL(file);
             });
             input.value = '';
         }
+
         function renderRecordPhotoPreview() {
             renderPhotoList('new-record-photos', selectedRecordPhotos);
+            document.getElementById('record-photo-count').innerText = selectedRecordPhotos.length + ' 張';
         }
         
         function handleCustPhotoSelect(input) {
             const files = input.files; if (!files.length) return;
             Array.from(files).forEach(file => {
                 const reader = new FileReader();
-                reader.onload = e => resizeImage(e.target.result, 1024, res => { selectedCustPhotos.push(res); renderPhotoList('cust-photo-preview', selectedCustPhotos); });
+                reader.onload = e => resizeImage(e.target.result, 1024, res => { 
+                    selectedCustPhotos.push(res); 
+                    renderPhotoList('cust-photo-preview', selectedCustPhotos); 
+                });
                 reader.readAsDataURL(file);
             });
             input.value = '';
@@ -642,17 +1218,26 @@
         function renderPhotoList(divId, photoArray) {
             const div = document.getElementById(divId);
             div.innerHTML = photoArray.map((src, idx) => `
-                <div class="relative flex-shrink-0 w-16 h-16 group">
-                    <img src="${src}" class="w-full h-full object-cover rounded-lg border border-white/50 shadow-sm">
-                    <button onclick="removePhoto('${divId}', ${idx})" class="absolute -top-1.5 -right-1.5 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs shadow-md border border-white">×</button>
+                <div class="relative flex-shrink-0">
+                    <img src="${src}" class="photo-thumb">
+                    <button onclick="removePhoto('${divId}', ${idx})" class="absolute -top-1 -right-1 bg-slate-700 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">×</button>
                 </div>
             `).join('');
         }
 
         function removePhoto(divId, idx) {
-            if (divId === 'new-record-photos') { selectedRecordPhotos.splice(idx, 1); renderRecordPhotoPreview(); }
-            else if (divId === 'cust-photo-preview') { selectedCustPhotos.splice(idx, 1); renderPhotoList('cust-photo-preview', selectedCustPhotos); }
-            else if (divId === 'edit-record-photo-preview') { selectedEditRecordPhotos.splice(idx, 1); renderPhotoList('edit-record-photo-preview', selectedEditRecordPhotos); }
+            if (divId === 'new-record-photos') { 
+                selectedRecordPhotos.splice(idx, 1); 
+                renderRecordPhotoPreview(); 
+            }
+            else if (divId === 'cust-photo-preview') { 
+                selectedCustPhotos.splice(idx, 1); 
+                renderPhotoList('cust-photo-preview', selectedCustPhotos); 
+            }
+            else if (divId === 'edit-record-photo-preview') { 
+                selectedEditRecordPhotos.splice(idx, 1); 
+                renderPhotoList('edit-record-photo-preview', selectedEditRecordPhotos); 
+            }
         }
 
         function showAddCustomerModal() {
@@ -665,7 +1250,8 @@
             document.getElementById('cust-machine').value = '';
             document.getElementById('cust-filter').value = '';
             document.getElementById('cust-install-date').value = new Date().toISOString().split('T')[0];
-            selectedCustPhotos = []; renderPhotoList('cust-photo-preview', []);
+            selectedCustPhotos = []; 
+            renderPhotoList('cust-photo-preview', []);
             document.getElementById('btn-delete-customer').classList.add('hidden');
             document.getElementById('customer-modal').classList.remove('hidden');
         }
@@ -674,19 +1260,22 @@
             if (!currentCustomer) return;
             document.getElementById('modal-title').innerText = '編輯資料';
             document.getElementById('cust-id').value = currentCustomer.id;
-            document.getElementById('cust-name').value = currentCustomer.name;
-            document.getElementById('cust-phone').value = currentCustomer.phone;
-            document.getElementById('cust-address').value = currentCustomer.address;
-            document.getElementById('cust-note').value = currentCustomer.note;
-            document.getElementById('cust-machine').value = currentCustomer.machine;
-            document.getElementById('cust-filter').value = currentCustomer.filter;
+            document.getElementById('cust-name').value = currentCustomer.name || '';
+            document.getElementById('cust-phone').value = currentCustomer.phone || '';
+            document.getElementById('cust-address').value = currentCustomer.address || '';
+            document.getElementById('cust-note').value = currentCustomer.note || '';
+            document.getElementById('cust-machine').value = currentCustomer.machine || '';
+            document.getElementById('cust-filter').value = currentCustomer.filter || '';
             document.getElementById('cust-install-date').value = currentCustomer.installDate ? currentCustomer.installDate.split('T')[0] : '';
-            selectedCustPhotos = []; renderPhotoList('cust-photo-preview', []);
+            selectedCustPhotos = []; 
+            renderPhotoList('cust-photo-preview', []);
             document.getElementById('btn-delete-customer').classList.remove('hidden');
             document.getElementById('customer-modal').classList.remove('hidden');
         }
 
-        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+        function closeModal(id) { 
+            document.getElementById(id).classList.add('hidden'); 
+        }
 
         async function saveCustomer() {
             const id = document.getElementById('cust-id').value;
@@ -703,12 +1292,14 @@
                 showLoading(true);
                 for (let base64 of selectedCustPhotos) {
                     const res = await apiCall('uploadImage', { base64: base64, type: 'image/jpeg' });
-                    if (res.status === 'success') photoUrls.push(res.url);
+                    if (res && res.status === 'success') photoUrls.push(res.url);
                 }
             }
 
             const payload = {
-                id: id, name: name, phone: phone,
+                id: id, 
+                name: name, 
+                phone: phone,
                 address: document.getElementById('cust-address').value,
                 note: document.getElementById('cust-note').value,
                 machine: document.getElementById('cust-machine').value,
@@ -720,22 +1311,34 @@
             const action = id ? 'updateCustomer' : 'addCustomer';
             const res = await apiCall(action, payload);
             
-            if (res.status === 'success') {
-                closeModal('customer-modal'); fetchCustomers();
+            if (res && res.status === 'success') {
+                closeModal('customer-modal'); 
+                fetchCustomers();
                 if (id && currentCustomer) openDetail({ ...currentCustomer, ...payload, photos: photoUrls });
-            } else { alert("失敗"); }
+            } else { 
+                alert("失敗"); 
+            }
         }
 
         async function deleteCustomer() {
             if (confirm("確定刪除此客戶？")) {
                 await apiCall('deleteCustomer', { id: document.getElementById('cust-id').value });
-                closeModal('customer-modal'); goBack(); fetchCustomers();
+                closeModal('customer-modal'); 
+                goBack(); 
+                fetchCustomers();
             }
         }
 
-        function showLoading(show) { document.getElementById('loading').classList.toggle('hidden', !show); }
-        document.getElementById('customer-modal').addEventListener('click', e => { if (e.target.id === 'customer-modal') closeModal('customer-modal'); });
-        document.getElementById('record-modal').addEventListener('click', e => { if (e.target.id === 'record-modal') closeModal('record-modal'); });
+        function showLoading(show) { 
+            document.getElementById('loading').classList.toggle('hidden', !show); 
+        }
+
+        document.getElementById('customer-modal').addEventListener('click', e => { 
+            if (e.target.id === 'customer-modal') closeModal('customer-modal'); 
+        });
+        document.getElementById('record-modal').addEventListener('click', e => { 
+            if (e.target.id === 'record-modal') closeModal('record-modal'); 
+        });
     </script>
 </body>
 </html>
