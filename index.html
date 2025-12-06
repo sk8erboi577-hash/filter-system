@@ -3,33 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>濾芯保養系統</title>
+    <title>濾芯保養系統 Pro</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <link rel="apple-touch-icon" href="https://img.icons8.com/color/180/water-filter.png">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="https://img.icons8.com/fluency/180/water-filter.png">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Round" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        navy: {
-                            50: '#f0f4f8',
-                            100: '#d9e2ec',
-                            500: '#334e68',
-                            800: '#102a43', // 深藍主色
-                            900: '#06152a',
+                        primary: {
+                            50: '#ecfeff',
+                            100: '#cffafe',
+                            400: '#22d3ee',
+                            500: '#06b6d4', // 水藍主色
+                            600: '#0891b2',
+                            800: '#155e75',
+                            900: '#0e7490',
                         },
-                        ios: {
-                            bg: '#F2F2F7', // iOS 系統背景灰
-                            card: '#FFFFFF',
-                            input: '#F2F2F7', // 輸入框底色
-                        }
+                        surface: '#F3F4F6',
                     },
                     fontFamily: {
-                        sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Text"', 'Helvetica', 'Arial', 'sans-serif'],
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'soft': '0 10px 40px -10px rgba(0,0,0,0.08)',
+                        'glow': '0 0 20px rgba(6, 182, 212, 0.5)',
                     }
                 }
             }
@@ -37,315 +40,338 @@
     </script>
 
     <style>
-        body { background-color: #F2F2F7; padding-bottom: 120px; -webkit-font-smoothing: antialiased; }
-        
-        /* iOS 風格卡片：無邊框，純白，大圓角，極淡陰影 */
-        .card { 
-            background: white; 
-            border-radius: 24px; 
-            padding: 24px; 
-            margin-bottom: 24px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03); 
-            border: none;
+        body { 
+            background-color: #F3F4F6; 
+            padding-bottom: 120px; 
+            -webkit-font-smoothing: antialiased; 
+            color: #1f2937;
         }
         
-        /* 標題樣式 */
-        h1, h2 { letter-spacing: -0.5px; }
+        /* 隱藏 Scrollbar 但保留功能 */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* 動畫效果 */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up { animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         
-        /* 輸入框：iOS 風格 (灰色底，無邊框) */
-        input, textarea, select { 
-            width: 100%; 
-            padding: 18px 20px; 
-            border-radius: 16px; 
-            margin-bottom: 20px; 
-            font-size: 17px; 
-            background-color: #F2F2F7; /* 淺灰底 */
-            border: 1px solid transparent; /* 預設無框 */
-            color: #102a43;
+        @keyframes slideUpModal {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        .animate-slide-up { animation: slideUpModal 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+
+        /* 輸入框優化 */
+        .input-field {
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: 16px;
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            color: #1f2937;
+            font-size: 16px;
+            transition: all 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .input-field:focus {
+            border-color: #06b6d4;
+            box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.15);
+            outline: none;
+        }
+        
+        /* 漸層按鈕 */
+        .btn-gradient {
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            color: white;
+            box-shadow: 0 8px 20px -6px rgba(6, 182, 212, 0.5);
             transition: all 0.2s;
         }
-        input:focus, textarea:focus { 
-            background-color: #fff; 
-            border-color: #102a43; /* 深藍框 */
-            outline: none; 
-            box-shadow: 0 0 0 4px rgba(16, 42, 67, 0.1); 
-        }
-        label { 
-            font-size: 15px; 
-            font-weight: 600; 
-            color: #486581; 
-            margin-bottom: 8px; 
-            display: block; 
-            padding-left: 4px;
-        }
+        .btn-gradient:active { transform: scale(0.97); opacity: 0.9; }
 
-        /* 深藍色主按鈕 */
-        .btn-primary { 
-            background-color: #102a43; /* 深藍 */
-            color: white; 
-            padding: 18px; 
-            border-radius: 16px; 
-            font-weight: 600; 
-            font-size: 18px; 
-            width: 100%; 
-            display: block; 
-            text-align: center;
-            box-shadow: 0 8px 16px rgba(16, 42, 67, 0.2);
-            transition: transform 0.1s;
-        }
-        .btn-primary:active { transform: scale(0.98); background-color: #06152a; }
-
-        /* FAB 懸浮按鈕 */
-        .fab { 
-            position: fixed; bottom: 40px; right: 30px; 
-            width: 70px; height: 70px; 
-            background-color: #102a43; 
-            border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center; 
-            color: white; 
-            box-shadow: 0 10px 25px rgba(16, 42, 67, 0.4); 
+        /* FAB 按鈕 */
+        .fab {
+            position: fixed; bottom: 32px; right: 24px;
+            width: 64px; height: 64px;
+            background: linear-gradient(135deg, #22d3ee 0%, #0891b2 100%);
+            border-radius: 24px;
+            display: flex; align-items: center; justify-content: center;
+            color: white;
+            box-shadow: 0 12px 30px -8px rgba(6, 182, 212, 0.6);
             z-index: 50; cursor: pointer; transition: transform 0.2s;
         }
-        .fab:active { transform: scale(0.9); }
-        
-        /* 照片牆 */
-        .photo-scroll-container { display: flex; gap: 16px; overflow-x: auto; padding: 4px; -webkit-overflow-scrolling: touch; }
-        .photo-scroll-container::-webkit-scrollbar { display: none; }
-        .photo-card-lg { 
-            width: 200px; height: 200px; flex-shrink: 0; 
-            border-radius: 20px; object-fit: cover; 
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1); 
-        }
-        
-        .photo-grid { display: flex; gap: 12px; flex-wrap: wrap; }
-        .photo-thumb { 
-            width: 100px; height: 100px; object-fit: cover; 
-            border-radius: 16px; background: #eee; 
+        .fab:active { transform: scale(0.9) rotate(90deg); }
+
+        /* 客製化卡片 */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.6);
         }
 
-        /* 詳情頁細節 */
-        .detail-row { display: flex; align-items: flex-start; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #f0f4f8; }
-        .detail-row:last-child { border: none; margin-bottom: 0; padding-bottom: 0; }
-        .detail-label { font-size: 14px; color: #829ab1; font-weight: 600; margin-bottom: 4px; display: block; letter-spacing: 0.5px; text-transform: uppercase; }
-        .detail-value { font-size: 18px; color: #102a43; font-weight: 500; line-height: 1.6; }
-        .detail-icon { color: #102a43; background: #f0f4f8; padding: 10px; border-radius: 12px; margin-right: 16px; }
-
-        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 999; flex-direction: column; }
-        
-        /* Modal 動畫 */
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        .animate-slide-up { animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        /* 標籤樣式 */
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 6px;
+            display: block;
+            margin-left: 4px;
+        }
     </style>
 </head>
 <body>
 
-    <div id="page-list">
-        <div class="pt-16 pb-6 px-6 bg-transparent sticky top-0 z-10 backdrop-blur-md bg-opacity-90 bg-[#F2F2F7]">
-            <h1 class="text-4xl font-extrabold text-navy-900 mb-6 tracking-tight">濾芯保養</h1>
+    <div id="page-list" class="animate-fade-in-up">
+        <div class="pt-14 pb-4 px-6 sticky top-0 z-20 bg-[#F3F4F6]/80 backdrop-blur-xl border-b border-gray-200/50">
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <h1 class="text-3xl font-extrabold text-gray-800 tracking-tight">濾芯保養</h1>
+                    <p class="text-gray-500 text-sm font-medium mt-1">管理您的客戶與紀錄</p>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center text-primary-600">
+                    <span class="material-icons-round">water_drop</span>
+                </div>
+            </div>
             
-            <div class="relative shadow-sm rounded-2xl">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-navy-500">
-                    <span class="material-icons" style="font-size: 24px;">search</span>
+            <div class="relative group">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 group-focus-within:text-primary-500 transition-colors">
+                    <span class="material-icons-round">search</span>
                 </span>
-                <input type="text" id="search-input" placeholder="搜尋客戶..." 
-                       class="pl-12 mb-0 h-14 text-lg bg-white border-none focus:ring-0 rounded-2xl shadow-sm">
+                <input type="text" id="search-input" placeholder="搜尋客戶名稱、電話..." 
+                       class="w-full pl-12 pr-4 py-3.5 bg-white border-none rounded-2xl shadow-soft focus:ring-2 focus:ring-primary-400/50 transition-all text-gray-700 text-lg placeholder-gray-400">
             </div>
         </div>
 
-        <div id="customer-list" class="px-6 space-y-4 max-w-2xl mx-auto pb-20">
-            <div class="text-center text-gray-400 mt-20 text-lg">載入中...</div>
+        <div id="customer-list" class="px-5 pt-4 pb-24 space-y-4 max-w-2xl mx-auto">
+            <div class="flex flex-col items-center justify-center py-20 text-gray-400">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500 mb-4"></div>
+                <p>資料讀取中...</p>
+            </div>
         </div>
         
         <div class="fab" onclick="showAddCustomerModal()">
-            <span class="material-icons">add</span>
+            <span class="material-icons-round text-3xl">add</span>
         </div>
     </div>
 
-    <div id="page-detail" class="hidden min-h-screen bg-[#F2F2F7]">
-        <div class="pt-12 pb-4 px-4 flex items-center sticky top-0 z-20 bg-[#F2F2F7]/90 backdrop-blur-md">
-            <button onclick="goBack()" class="p-3 bg-white rounded-full shadow-sm text-navy-800 mr-4 active:scale-90 transition-transform">
-                <span class="material-icons">arrow_back</span>
+    <div id="page-detail" class="hidden min-h-screen bg-[#F3F4F6]">
+        <div class="pt-12 pb-2 px-4 flex items-center sticky top-0 z-20 bg-[#F3F4F6]/90 backdrop-blur-xl">
+            <button onclick="goBack()" class="w-10 h-10 bg-white rounded-full shadow-sm flex items-center justify-center text-gray-700 active:scale-90 transition-transform">
+                <span class="material-icons-round">arrow_back</span>
             </button>
-            <div class="flex-1"></div> <button onclick="showEditCustomerModal()" class="text-navy-800 font-bold text-lg px-4 py-2 bg-white rounded-xl shadow-sm active:scale-95 transition-transform">編輯</button>
+            <div class="flex-1 text-center font-bold text-lg text-gray-800 opacity-0 transition-opacity duration-300" id="detail-header-title">客戶詳情</div>
+            <button onclick="showEditCustomerModal()" class="text-primary-600 font-bold text-sm px-4 py-2 bg-primary-50 rounded-full active:bg-primary-100 transition-colors">
+                編輯
+            </button>
         </div>
         
-        <div class="px-5 pb-10 max-w-2xl mx-auto space-y-6">
+        <div class="px-5 pb-10 max-w-2xl mx-auto space-y-6 animate-fade-in-up">
             
-            <div class="card relative overflow-hidden !pb-0">
-                <div class="flex justify-between items-start mb-6">
-                    <div>
-                        <h2 id="detail-name" class="text-4xl font-extrabold text-navy-900 mb-2"></h2>
-                        <a id="detail-phone-link" class="inline-flex items-center text-2xl font-bold text-navy-500 hover:text-navy-800 transition-colors">
-                            <span id="detail-phone"></span>
-                            <span class="material-icons ml-2 text-xl bg-green-100 text-green-600 p-1 rounded-full">call</span>
-                        </a>
-                    </div>
-                </div>
+            <div class="bg-white rounded-3xl p-6 shadow-soft relative overflow-hidden">
+                <div class="absolute -top-10 -right-10 w-32 h-32 bg-primary-50 rounded-full blur-2xl opacity-60"></div>
 
-                <div id="customer-photos-container" class="photo-scroll-container -mx-6 mb-6 px-6"></div>
+                <div class="relative z-10">
+                    <h2 id="detail-name" class="text-3xl font-extrabold text-gray-800 mb-1"></h2>
+                    <a id="detail-phone-link" class="inline-flex items-center text-xl font-bold text-primary-600 mb-6">
+                        <span id="detail-phone"></span>
+                        <span class="ml-2 w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center">
+                            <span class="material-icons-round text-sm">call</span>
+                        </span>
+                    </a>
 
-                <div class="pt-2">
-                    <div class="detail-row">
-                        <span class="material-icons-outlined detail-icon">event</span>
-                        <div><span class="detail-label">安裝日期</span><span id="detail-install-date" class="detail-value"></span></div>
-                    </div>
-                    <div class="detail-row">
-                        <span class="material-icons-outlined detail-icon">location_on</span>
-                        <div><span class="detail-label">地址</span><span id="detail-address" class="detail-value"></span></div>
-                    </div>
-                    <div class="detail-row">
-                        <span class="material-icons-outlined detail-icon">settings</span>
-                        <div class="flex-1"><span class="detail-label">機器與濾芯</span>
-                            <div id="detail-machine" class="detail-value mb-1"></div>
-                            <div id="detail-filter" class="text-base text-gray-500"></div>
+                    <div id="customer-photos-container" class="flex gap-3 overflow-x-auto pb-4 no-scrollbar -mx-6 px-6 mb-2"></div>
+
+                    <div class="grid grid-cols-1 gap-4 mt-2">
+                        <div class="flex items-start p-3 bg-gray-50 rounded-2xl">
+                            <span class="material-icons-round text-gray-400 mt-0.5 mr-3">calendar_today</span>
+                            <div>
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-wide">安裝日期</p>
+                                <p id="detail-install-date" class="text-gray-800 font-medium"></p>
+                            </div>
+                        </div>
+                        <div class="flex items-start p-3 bg-gray-50 rounded-2xl">
+                            <span class="material-icons-round text-gray-400 mt-0.5 mr-3">location_on</span>
+                            <div>
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-wide">地址</p>
+                                <p id="detail-address" class="text-gray-800 font-medium leading-relaxed"></p>
+                            </div>
+                        </div>
+                        <div class="flex items-start p-3 bg-gray-50 rounded-2xl">
+                            <span class="material-icons-round text-gray-400 mt-0.5 mr-3">settings_suggest</span>
+                            <div class="flex-1">
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-wide">設備規格</p>
+                                <div id="detail-machine" class="text-gray-800 font-bold"></div>
+                                <div id="detail-filter" class="text-sm text-gray-500 mt-0.5"></div>
+                            </div>
+                        </div>
+                        <div id="note-container" class="hidden flex items-start p-3 bg-yellow-50 rounded-2xl border border-yellow-100">
+                            <span class="material-icons-round text-yellow-500 mt-0.5 mr-3">sticky_note_2</span>
+                            <div>
+                                <p class="text-xs font-bold text-yellow-600 uppercase tracking-wide">備註</p>
+                                <p id="detail-note" class="text-gray-800"></p>
+                            </div>
                         </div>
                     </div>
-                    <div id="note-container" class="detail-row hidden">
-                        <span class="material-icons-outlined detail-icon text-orange-500 bg-orange-50">sticky_note_2</span>
-                        <div><span class="detail-label text-orange-600">備註</span><span id="detail-note" class="detail-value text-gray-800"></span></div>
-                    </div>
                 </div>
             </div>
 
-            <div class="card !bg-navy-800 text-white">
-                <h3 class="font-bold mb-6 flex items-center text-xl text-white">
-                    <span class="material-icons-outlined mr-3 text-2xl bg-white/20 p-1 rounded-lg">post_add</span>新增紀錄
+            <div class="rounded-3xl p-1 bg-gradient-to-br from-primary-400 to-blue-600 shadow-lg text-white">
+                <div class="bg-gray-900/10 backdrop-blur-sm p-5 rounded-[20px]">
+                    <h3 class="font-bold mb-4 flex items-center text-lg">
+                        <span class="bg-white/20 p-1.5 rounded-lg mr-2 flex items-center"><span class="material-icons-round text-lg">post_add</span></span>
+                        新增保養紀錄
+                    </h3>
+                    
+                    <div class="space-y-3">
+                        <input type="date" id="record-date" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:bg-white/20 focus:outline-none transition-colors">
+                        
+                        <input type="text" id="record-items" placeholder="更換項目 (例如: 第一道, 活性碳)" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:bg-white/20 focus:outline-none transition-colors">
+                        
+                        <div class="flex gap-3">
+                            <input type="number" id="record-amount" placeholder="金額" inputmode="numeric" class="w-1/3 bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-right text-green-300 font-bold placeholder-white/50 focus:bg-white/20 focus:outline-none">
+                            <input type="text" id="record-note" placeholder="備註 (選填)" class="flex-1 bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:bg-white/20 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <label class="flex items-center gap-2 text-sm font-medium text-white/80 mb-2 cursor-pointer w-fit hover:text-white transition-colors">
+                            <span class="material-icons-round">add_a_photo</span>
+                            拍照紀錄
+                            <input type="file" id="record-photo-input" accept="image/*" multiple class="hidden" onchange="handleRecordPhotoSelect(this)">
+                        </label>
+                        <div id="new-record-photos" class="flex gap-2 flex-wrap"></div>
+                    </div>
+                    
+                    <button onclick="saveRecord()" class="mt-5 w-full bg-white text-primary-600 py-3.5 rounded-xl font-bold text-lg shadow-lg active:scale-[0.98] transition-transform flex items-center justify-center gap-2">
+                        <span>確認儲存</span>
+                        <span class="material-icons-round text-sm">send</span>
+                    </button>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="font-bold text-gray-800 text-xl mb-4 ml-1 flex items-center">
+                    <span class="w-1 h-6 bg-primary-500 rounded-full mr-3"></span>
+                    歷史紀錄
                 </h3>
-                
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="col-span-2">
-                        <label class="!text-navy-100">保養日期</label>
-                        <input type="date" id="record-date" class="!bg-navy-900 !text-white !border-none">
-                    </div>
-                    <div class="col-span-2">
-                        <label class="!text-navy-100">更換項目</label>
-                        <input type="text" id="record-items" placeholder="例如: PP, 活性碳" class="!bg-navy-900 !text-white !border-none">
-                    </div>
-                    <div class="col-span-1">
-                        <label class="!text-navy-100">金額 (NT$)</label>
-                        <input type="number" id="record-amount" placeholder="0" inputmode="numeric" class="!bg-navy-900 !text-green-400 font-bold !border-none text-right">
-                    </div>
-                    <div class="col-span-2">
-                        <label class="!text-navy-100">備註</label>
-                        <textarea id="record-note" placeholder="選填..." rows="2" class="!bg-navy-900 !text-white !border-none"></textarea>
-                    </div>
-                </div>
-                
-                <div class="mt-4 mb-6">
-                    <label class="flex items-center gap-3 text-white font-bold cursor-pointer p-4 rounded-xl border border-dashed border-white/30 hover:bg-white/10 transition-colors">
-                        <span class="material-icons text-3xl">add_a_photo</span>
-                        <span class="text-lg">點擊拍照</span>
-                        <input type="file" id="record-photo-input" accept="image/*" multiple class="hidden" onchange="handleRecordPhotoSelect(this)">
-                    </label>
-                    <div id="new-record-photos" class="photo-grid mt-4"></div>
-                </div>
-                
-                <button onclick="saveRecord()" class="bg-white text-navy-900 py-4 rounded-2xl font-bold text-lg w-full shadow-lg active:scale-95 transition-transform">確認儲存</button>
+                <div id="record-list" class="space-y-4"></div>
             </div>
-
-            <h3 class="font-bold text-navy-800 text-2xl mb-4 mt-8 ml-2">歷史紀錄</h3>
-            <div id="record-list" class="space-y-6"></div>
+            
+            <div class="h-10"></div>
         </div>
     </div>
 
-    <div id="customer-modal" class="fixed inset-0 bg-navy-900/40 hidden z-50 flex items-end sm:items-center justify-center backdrop-blur-sm transition-opacity">
-        <div class="bg-[#F2F2F7] w-full max-w-lg rounded-t-[32px] sm:rounded-3xl max-h-[92vh] overflow-hidden flex flex-col shadow-2xl animate-slide-up">
+    <div id="customer-modal" class="fixed inset-0 bg-gray-900/60 hidden z-50 flex items-end sm:items-center justify-center backdrop-blur-sm transition-opacity">
+        <div class="bg-surface w-full max-w-lg rounded-t-[32px] sm:rounded-3xl max-h-[95vh] overflow-hidden flex flex-col shadow-2xl animate-slide-up">
             
-            <div class="bg-white px-6 py-5 flex justify-between items-center shrink-0 border-b border-gray-100">
-                <button onclick="closeModal('customer-modal')" class="text-gray-500 font-medium text-lg">取消</button>
-                <h2 id="modal-title" class="text-xl font-bold text-navy-900">新增客戶</h2>
-                <button onclick="saveCustomer()" class="text-navy-800 font-bold text-lg bg-gray-100 px-4 py-1 rounded-lg">儲存</button>
+            <div class="bg-white px-6 py-4 flex justify-between items-center shrink-0 border-b border-gray-100">
+                <button onclick="closeModal('customer-modal')" class="text-gray-500 font-medium hover:text-gray-700 p-2">取消</button>
+                <h2 id="modal-title" class="text-lg font-bold text-gray-800">新增客戶</h2>
+                <button onclick="saveCustomer()" class="text-white font-bold bg-gray-800 px-4 py-1.5 rounded-full text-sm shadow-md active:scale-95 transition-transform">儲存</button>
             </div>
             
-            <div class="p-6 overflow-y-auto space-y-6">
+            <div class="p-6 overflow-y-auto space-y-5 no-scrollbar">
                 <input type="hidden" id="cust-id">
                 
-                <div class="bg-white rounded-2xl p-5 shadow-sm space-y-5">
+                <div class="bg-white rounded-2xl p-5 shadow-sm space-y-4">
+                    <h4 class="text-xs font-bold text-gray-400 uppercase">基本資料</h4>
                     <div>
-                        <label>客戶姓名 <span class="text-red-500">*</span></label>
-                        <input type="text" id="cust-name" placeholder="請輸入姓名" class="mb-0">
+                        <label>客戶姓名 <span class="text-red-400">*</span></label>
+                        <input type="text" id="cust-name" placeholder="請輸入姓名" class="input-field">
                     </div>
                     <div>
-                        <label>電話號碼 <span class="text-red-500">*</span></label>
-                        <input type="tel" id="cust-phone" placeholder="09xx-xxx-xxx" inputmode="tel" class="font-mono text-xl mb-0 font-bold">
+                        <label>電話號碼 <span class="text-red-400">*</span></label>
+                        <input type="tel" id="cust-phone" placeholder="09xx-xxx-xxx" inputmode="tel" class="input-field font-mono font-medium">
                     </div>
                 </div>
 
-                <div class="bg-white rounded-2xl p-5 shadow-sm space-y-5">
-                    <div><label>安裝日期</label><input type="date" id="cust-install-date" class="mb-0"></div>
-                    <div><label>地址</label><textarea id="cust-address" rows="2" class="mb-0" placeholder="縣市/區域..."></textarea></div>
-                </div>
-                
-                <div class="bg-white rounded-2xl p-5 shadow-sm space-y-5">
-                    <div class="grid grid-cols-1 gap-5">
-                        <div><label>機器型號</label><input type="text" id="cust-machine" class="mb-0"></div>
-                        <div><label>濾芯規格</label><input type="text" id="cust-filter" class="mb-0"></div>
+                <div class="bg-white rounded-2xl p-5 shadow-sm space-y-4">
+                    <h4 class="text-xs font-bold text-gray-400 uppercase">安裝資訊</h4>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="col-span-2">
+                            <label>地址</label>
+                            <input type="text" id="cust-address" class="input-field" placeholder="縣市/區域...">
+                        </div>
+                        <div class="col-span-2">
+                            <label>安裝日期</label>
+                            <input type="date" id="cust-install-date" class="input-field">
+                        </div>
+                        <div>
+                            <label>機器型號</label>
+                            <input type="text" id="cust-machine" class="input-field">
+                        </div>
+                        <div>
+                            <label>濾芯規格</label>
+                            <input type="text" id="cust-filter" class="input-field">
+                        </div>
                     </div>
                 </div>
 
                 <div class="bg-white rounded-2xl p-5 shadow-sm">
                     <label>備註</label>
-                    <textarea id="cust-note" rows="2" class="mb-0 bg-orange-50/50 border-orange-100" placeholder="選填..."></textarea>
+                    <textarea id="cust-note" rows="2" class="input-field bg-yellow-50/50 border-yellow-100 focus:border-yellow-400 focus:shadow-[0_0_0_4px_rgba(250,204,21,0.1)]" placeholder="選填..."></textarea>
                 </div>
 
-                <div class="bg-white rounded-2xl p-6 shadow-sm text-center">
-                    <label class="flex flex-col items-center justify-center cursor-pointer py-4 border-2 border-dashed border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
-                        <span class="material-icons text-navy-300 text-5xl mb-2">add_photo_alternate</span>
-                        <span class="text-navy-600 font-bold text-lg">上傳機器照片</span>
-                        <span class="text-gray-400 text-sm mt-1">支援多選</span>
+                <div class="bg-white rounded-2xl p-5 shadow-sm">
+                    <label class="block text-center cursor-pointer py-6 border-2 border-dashed border-gray-200 rounded-xl hover:bg-gray-50 hover:border-primary-300 transition-all group">
+                        <span class="material-icons-round text-gray-300 group-hover:text-primary-500 text-4xl mb-2 transition-colors">add_photo_alternate</span>
+                        <div class="text-gray-500 font-medium">上傳機器照片</div>
                         <input type="file" id="cust-photo-input" accept="image/*" multiple class="hidden" onchange="handleCustPhotoSelect(this)">
                     </label>
-                    <div id="cust-photo-preview" class="photo-grid mt-4 justify-center"></div>
+                    <div id="cust-photo-preview" class="flex flex-wrap gap-2 mt-4 justify-center"></div>
                 </div>
                 
-                <button id="btn-delete-customer" onclick="deleteCustomer()" class="w-full bg-white text-red-500 py-4 rounded-2xl font-bold text-lg shadow-sm hidden">刪除客戶資料</button>
-                <div class="h-10"></div> </div>
+                <button id="btn-delete-customer" onclick="deleteCustomer()" class="w-full text-red-500 py-3 rounded-2xl font-bold bg-red-50 hover:bg-red-100 hidden transition-colors">刪除此客戶</button>
+                <div class="h-10"></div> 
+            </div>
         </div>
     </div>
 
-    <div id="record-modal" class="fixed inset-0 bg-navy-900/40 hidden z-50 flex items-end sm:items-center justify-center backdrop-blur-sm transition-opacity">
-        <div class="bg-[#F2F2F7] w-full max-w-lg rounded-t-[32px] sm:rounded-3xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl animate-slide-up">
-            <div class="bg-white px-6 py-5 flex justify-between items-center shrink-0 border-b border-gray-100">
-                <button onclick="closeModal('record-modal')" class="text-gray-500 font-medium text-lg">取消</button>
-                <h2 class="text-xl font-bold text-navy-900">修改紀錄</h2>
-                <button onclick="saveEditedRecord()" class="text-navy-800 font-bold text-lg bg-gray-100 px-4 py-1 rounded-lg">完成</button>
+    <div id="record-modal" class="fixed inset-0 bg-gray-900/60 hidden z-50 flex items-end sm:items-center justify-center backdrop-blur-sm transition-opacity">
+        <div class="bg-surface w-full max-w-lg rounded-t-[32px] sm:rounded-3xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl animate-slide-up">
+            <div class="bg-white px-6 py-4 flex justify-between items-center shrink-0 border-b border-gray-100">
+                <button onclick="closeModal('record-modal')" class="text-gray-500 font-medium p-2">取消</button>
+                <h2 class="text-lg font-bold text-gray-800">修改紀錄</h2>
+                <button onclick="saveEditedRecord()" class="text-white font-bold bg-primary-600 px-4 py-1.5 rounded-full text-sm shadow-md active:scale-95 transition-transform">完成</button>
             </div>
             
             <div class="p-6 overflow-y-auto space-y-5">
                 <input type="hidden" id="edit-record-id">
-                
-                <div class="bg-white rounded-2xl p-5 shadow-sm space-y-5">
-                    <div><label>保養日期</label><input type="date" id="edit-record-date" class="mb-0"></div>
-                    <div><label>項目</label><input type="text" id="edit-record-items" class="mb-0 font-bold"></div>
+                <div class="bg-white rounded-2xl p-5 shadow-sm space-y-4">
+                    <div><label>保養日期</label><input type="date" id="edit-record-date" class="input-field"></div>
+                    <div><label>項目</label><input type="text" id="edit-record-items" class="input-field font-medium"></div>
                     <div>
                         <label>金額</label>
-                        <input type="number" id="edit-record-amount" inputmode="numeric" class="mb-0 text-green-600 font-bold text-xl text-right">
+                        <input type="number" id="edit-record-amount" inputmode="numeric" class="input-field text-green-600 font-bold text-right">
                     </div>
-                    <div><label>備註</label><textarea id="edit-record-note" rows="2" class="mb-0"></textarea></div>
+                    <div><label>備註</label><textarea id="edit-record-note" rows="2" class="input-field"></textarea></div>
                 </div>
                 
-                <div class="bg-white rounded-2xl p-5 shadow-sm text-center">
-                    <label class="flex flex-col items-center justify-center cursor-pointer py-4 border-2 border-dashed border-gray-200 rounded-xl">
-                        <span class="material-icons text-navy-300 text-4xl mb-2">add_a_photo</span>
-                        <span class="text-navy-600 font-bold">加傳照片</span>
+                <div class="bg-white rounded-2xl p-5 shadow-sm">
+                    <label class="block text-center cursor-pointer py-4 border-2 border-dashed border-gray-200 rounded-xl hover:bg-gray-50">
+                        <span class="material-icons-round text-primary-300 text-3xl mb-1">add_a_photo</span>
+                        <div class="text-gray-400 text-sm">加傳照片</div>
                         <input type="file" id="edit-record-photo-input" accept="image/*" multiple class="hidden" onchange="handleEditRecordPhotoSelect(this)">
                     </label>
-                    <div id="edit-record-photo-preview" class="photo-grid mt-4 justify-center"></div>
+                    <div id="edit-record-photo-preview" class="flex flex-wrap gap-2 mt-3 justify-center"></div>
                 </div>
-                <div class="h-10"></div>
+                <div class="h-6"></div>
             </div>
         </div>
     </div>
 
-    <div id="loading" class="loading-overlay hidden">
-        <div class="bg-navy-800 p-8 rounded-3xl shadow-2xl flex flex-col items-center">
-            <div class="animate-spin rounded-full h-12 w-12 border-4 border-navy-600 border-t-white mb-4"></div>
-            <p class="text-white font-bold text-lg tracking-wide">同步中...</p>
+    <div id="loading" class="fixed inset-0 z-[999] bg-white/50 backdrop-blur-sm hidden flex items-center justify-center">
+        <div class="bg-white/90 p-8 rounded-3xl shadow-2xl flex flex-col items-center border border-white">
+            <div class="animate-spin rounded-full h-10 w-10 border-[3px] border-gray-200 border-t-primary-500 mb-4"></div>
+            <p class="text-gray-600 font-bold tracking-wide text-sm">資料同步中...</p>
         </div>
     </div>
 
     <script>
-        // ⚠️⚠️⚠️ 這裡務必換成你的 API 網址 ⚠️⚠️⚠️
+        // ⚠️⚠️⚠️ 請確認這裡的 API 網址是正確的 ⚠️⚠️⚠️
         const API_URL = "https://script.google.com/macros/s/AKfycby0TrkaHnLe0UaZIGQ7DFKnq_1q_QbHWJsjxQ4YCstZ5i_U_OszwLnENXxUlSq_k_NT/exec"; 
 
         let customers = [];
@@ -369,7 +395,7 @@
                 const options = method === 'GET' ? {} : { method: 'POST', body: JSON.stringify({ action, ...payload }) };
                 const res = await fetch(url, options);
                 return await res.json();
-            } catch (e) { alert("連線錯誤"); } finally { showLoading(false); }
+            } catch (e) { alert("連線錯誤，請檢查網路"); } finally { showLoading(false); }
         }
 
         async function fetchCustomers() {
@@ -384,17 +410,17 @@
             
             list.forEach(c => {
                 const div = document.createElement('div');
-                div.className = 'card flex items-center p-5 cursor-pointer active:scale-[0.98] transition-transform hover:shadow-md';
+                div.className = 'bg-white rounded-2xl p-4 flex items-center cursor-pointer active:scale-[0.98] transition-all shadow-sm hover:shadow-md border border-gray-100';
                 div.onclick = () => openDetail(c);
                 div.innerHTML = `
-                    <div class="w-14 h-14 rounded-2xl bg-navy-50 text-navy-800 flex items-center justify-center font-bold text-2xl mr-5 flex-shrink-0 shadow-sm border border-navy-100">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-100 to-primary-50 text-primary-600 flex items-center justify-center font-bold text-xl mr-4 flex-shrink-0 shadow-inner">
                         ${c.name.charAt(0)}
                     </div>
                     <div class="flex-1 min-w-0">
-                        <div class="font-bold text-xl text-navy-900 truncate mb-1">${c.name}</div>
-                        <div class="text-navy-500 font-medium text-base">${c.phone}</div>
+                        <div class="font-bold text-lg text-gray-800 truncate">${c.name}</div>
+                        <div class="text-gray-400 text-sm font-mono">${c.phone}</div>
                     </div>
-                    <span class="material-icons text-gray-300">chevron_right</span>`;
+                    <span class="material-icons-round text-gray-300">chevron_right</span>`;
                 container.appendChild(div);
             });
         }
@@ -410,13 +436,16 @@
             document.getElementById('page-detail').classList.remove('hidden');
             window.scrollTo(0, 0);
 
+            // 淡入標題
+            setTimeout(() => document.getElementById('detail-header-title').classList.remove('opacity-0'), 100);
+
             document.getElementById('detail-name').innerText = customer.name;
             document.getElementById('detail-phone').innerText = customer.phone;
             document.getElementById('detail-phone-link').href = `tel:${customer.phone}`;
             
             const dateEl = document.getElementById('detail-install-date');
             dateEl.innerText = customer.installDate ? customer.installDate.split('T')[0] : '無紀錄';
-            dateEl.className = customer.installDate ? "detail-value" : "detail-value text-gray-400 italic";
+            dateEl.className = customer.installDate ? "text-gray-800 font-medium" : "text-gray-400 italic";
 
             setText('detail-address', customer.address);
             setText('detail-machine', customer.machine);
@@ -426,7 +455,8 @@
             if (customer.note) {
                 document.getElementById('detail-note').innerText = customer.note;
                 noteContainer.classList.remove('hidden');
-            } else { noteContainer.classList.add('hidden'); }
+                noteContainer.classList.add('flex');
+            } else { noteContainer.classList.add('hidden'); noteContainer.classList.remove('flex'); }
             
             const photoContainer = document.getElementById('customer-photos-container');
             photoContainer.innerHTML = '';
@@ -436,14 +466,16 @@
             else if (customer.photos) photos = [customer.photos];
 
             if (photos.length > 0) {
+                photoContainer.classList.remove('hidden');
                 photos.forEach(url => {
                     const img = document.createElement('img');
-                    img.src = url; img.className = 'photo-card-lg';
+                    img.src = url; 
+                    img.className = 'w-32 h-32 flex-shrink-0 rounded-2xl object-cover shadow-sm border border-gray-100 bg-gray-50';
                     img.onclick = () => window.open(url, '_blank');
                     photoContainer.appendChild(img);
                 });
             } else {
-                photoContainer.innerHTML = '<div class="w-full text-center py-8 bg-gray-50 rounded-2xl text-gray-400 border border-dashed border-gray-200">無照片</div>';
+                photoContainer.classList.add('hidden');
             }
 
             await fetchRecords(customer.id);
@@ -452,12 +484,13 @@
         function setText(id, value) {
             const el = document.getElementById(id);
             el.innerText = value || '未填寫';
-            el.className = value ? "detail-value" : "detail-value text-gray-400 italic";
+            el.className = value ? "text-gray-800 font-medium" : "text-gray-400 italic";
         }
 
         function goBack() {
             document.getElementById('page-detail').classList.add('hidden');
             document.getElementById('page-list').classList.remove('hidden');
+            document.getElementById('detail-header-title').classList.add('opacity-0');
             currentCustomer = null;
             selectedRecordPhotos = [];
             renderRecordPhotoPreview();
@@ -465,12 +498,12 @@
 
         async function fetchRecords(custId) {
             const listDiv = document.getElementById('record-list');
-            listDiv.innerHTML = '<div class="text-center py-6 text-gray-400">讀取中...</div>';
+            listDiv.innerHTML = '<div class="text-center py-6 text-gray-400 text-sm">紀錄讀取中...</div>';
             const records = await apiCall('getRecords', { customerId: custId }, 'GET');
             listDiv.innerHTML = '';
 
             if (!records || records.length === 0) {
-                listDiv.innerHTML = '<div class="text-center py-10 text-gray-400">尚無保養紀錄</div>'; return;
+                listDiv.innerHTML = '<div class="text-center py-8 text-gray-400 bg-white rounded-2xl border border-dashed border-gray-200">尚無保養紀錄</div>'; return;
             }
 
             records.forEach(r => {
@@ -478,27 +511,30 @@
                 const rData = JSON.stringify(r).replace(/"/g, '&quot;'); 
                 
                 const div = document.createElement('div');
-                div.className = 'card !p-5 relative';
+                div.className = 'bg-white p-5 rounded-2xl shadow-sm border border-gray-100 relative';
                 div.innerHTML = `
-                    <div class="flex justify-between items-start mb-4 pb-3 border-b border-gray-100">
-                        <div class="font-bold text-2xl text-navy-900">${r.date.split('T')[0]}</div>
-                        ${r.amount ? `<div class="text-green-600 font-bold font-mono text-2xl">NT$${r.amount}</div>` : ''}
+                    <div class="flex justify-between items-start mb-3 pb-3 border-b border-gray-50">
+                        <div class="flex items-center gap-2">
+                            <span class="material-icons-round text-primary-500 text-lg">event_available</span>
+                            <div class="font-bold text-lg text-gray-800">${r.date.split('T')[0]}</div>
+                        </div>
+                        ${r.amount ? `<div class="text-green-600 font-bold font-mono text-lg bg-green-50 px-2 py-0.5 rounded-lg">NT$${r.amount}</div>` : ''}
                     </div>
-                    <div class="mb-4">
-                        <div class="text-gray-400 text-sm font-bold uppercase mb-1 tracking-wide">項目</div>
-                        <div class="text-2xl font-bold text-navy-800 leading-snug">${r.items}</div>
+                    <div class="mb-3">
+                        <div class="text-xs text-gray-400 font-bold uppercase mb-1 tracking-wider">更換項目</div>
+                        <div class="text-lg font-bold text-gray-700 leading-snug">${r.items}</div>
                     </div>
                     ${r.note ? `
-                        <div class="mb-4 bg-orange-50 p-3 rounded-xl border border-orange-100/50">
-                             <div class="text-orange-400 text-xs font-bold uppercase mb-1">備註</div>
-                             <div class="text-lg text-orange-900 font-medium">${r.note}</div>
+                        <div class="mb-3 bg-yellow-50 p-3 rounded-xl border border-yellow-100/50">
+                             <div class="text-yellow-600/70 text-xs font-bold uppercase mb-1">備註</div>
+                             <div class="text-sm text-yellow-800 font-medium">${r.note}</div>
                         </div>` : ''}
                     
-                    ${photos.length > 0 ? `<div class="photo-grid mb-4 pt-2">${photos.map(url => `<img src="${url}" class="photo-thumb cursor-pointer border-2 border-white shadow-sm w-20 h-20" onclick="window.open('${url}')">`).join('')}</div>` : ''}
+                    ${photos.length > 0 ? `<div class="flex flex-wrap gap-2 mb-3 pt-1">${photos.map(url => `<img src="${url}" class="w-16 h-16 rounded-lg object-cover cursor-pointer border border-gray-200" onclick="window.open('${url}')">`).join('')}</div>` : ''}
                     
-                    <div class="flex justify-end gap-3 mt-2">
-                        <button onclick="openEditRecordModal('${rData}')" class="text-navy-500 px-3 py-2 bg-gray-100 rounded-lg font-bold text-sm">編輯</button>
-                        <button onclick="deleteRecord('${r.id}')" class="text-red-500 px-3 py-2 bg-red-50 rounded-lg font-bold text-sm">刪除</button>
+                    <div class="flex justify-end gap-2 mt-2">
+                        <button onclick="openEditRecordModal('${rData}')" class="text-gray-500 px-3 py-1.5 bg-gray-50 hover:bg-gray-100 rounded-lg font-bold text-sm transition-colors">編輯</button>
+                        <button onclick="deleteRecord('${r.id}')" class="text-red-400 px-3 py-1.5 bg-red-50 hover:bg-red-100 rounded-lg font-bold text-sm transition-colors">刪除</button>
                     </div>
                 `;
                 listDiv.appendChild(div);
@@ -640,7 +676,10 @@
         function renderPhotoList(divId, photoArray) {
             const div = document.getElementById(divId);
             div.innerHTML = photoArray.map((src, idx) => `
-                <div class="relative flex-shrink-0"><img src="${src}" class="photo-thumb"><button onclick="removePhoto('${divId}', ${idx})" class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs shadow-sm">×</button></div>
+                <div class="relative flex-shrink-0 w-16 h-16 group">
+                    <img src="${src}" class="w-full h-full object-cover rounded-lg border border-white/50 shadow-sm">
+                    <button onclick="removePhoto('${divId}', ${idx})" class="absolute -top-1.5 -right-1.5 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs shadow-md border border-white">×</button>
+                </div>
             `).join('');
         }
 
