@@ -18,11 +18,11 @@
                         secondary: '#5856D6',
                         success: '#34C759',
                         danger: '#FF3B30',
-                        background: '#020617',
-                        card: '#0F172A',
-                        text: '#E5E7EB',
-                        subtext: '#9CA3AF',
-                        border: '#334155'
+                        background: '#F2F2F7',
+                        card: '#FFFFFF',
+                        text: '#1C1C1E',
+                        subtext: '#8E8E93',
+                        border: '#D1D1D6'
                     }
                 }
             }
@@ -30,38 +30,39 @@
     </script>
     <style>
         body {
-            background: radial-gradient(circle at top left, #1d4ed8 0, #0f172a 45%, #020617 100%);
+            background: #F2F2F7;
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang TC",
             "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             -webkit-tap-highlight-color: transparent;
             padding-bottom: 100px;
-            color: #E5E7EB;
+            color: #1C1C1E;
         }
 
         #page-list, #page-detail {
             min-height: 100vh;
         }
 
-        /* App Header */
+        /* App Header（淺色） */
         .app-header {
-            backdrop-filter: blur(18px);
-            background: linear-gradient(to bottom, rgba(15,23,42,0.95), rgba(15,23,42,0.6));
-            border-bottom: 1px solid rgba(148,163,184,0.4);
+            backdrop-filter: blur(16px);
+            background: rgba(249,250,251,0.9);
+            border-bottom: 1px solid rgba(229,231,235,0.9);
         }
 
         .app-header h1 {
             letter-spacing: 0.02em;
         }
 
-        /* 搜尋列：App Store 風格 */
+        /* 搜尋列：白底 + 淺灰邊（樣式 A） */
         .search-bar {
-            background: rgba(15,23,42,0.9);
-            border-radius: 14px;
+            background: #FFFFFF;
+            border-radius: 12px;
             padding: 8px 10px;
             display: flex;
             align-items: center;
             gap: 8px;
-            border: 1px solid rgba(148,163,184,0.6);
+            border: 1px solid #E5E7EB;
+            box-shadow: 0 1px 2px rgba(15,23,42,0.03);
         }
 
         .search-bar input {
@@ -70,12 +71,12 @@
             padding: 0;
             height: 32px;
             font-size: 14px;
-            color: #e5e7eb;
+            color: #111827;
             width: 100%;
         }
 
         .search-bar input::placeholder {
-            color: rgba(148,163,184,0.9);
+            color: #9CA3AF;
         }
 
         .search-bar input:focus {
@@ -83,30 +84,20 @@
             box-shadow: none;
         }
 
-        /* Dashboard 卡片 */
+        /* Dashboard 卡片：白卡 + 淺陰影 */
         .dashboard-card {
-            background: linear-gradient(135deg, #4A90E2, #007AFF);
-            border-radius: 20px;
-            padding: 16px 18px;
-            box-shadow: 0 14px 35px rgba(15, 23, 42, 0.55);
-            color: #ffffff;
+            background: #FFFFFF;
+            border-radius: 16px;
+            padding: 14px 16px;
+            box-shadow: 0 6px 12px rgba(15,23,42,0.06);
+            border: 1px solid #E5E7EB;
+            color: #111827;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 12px;
+            gap: 10px;
             position: relative;
             overflow: hidden;
-        }
-
-        .dashboard-card::before {
-            content: "";
-            position: absolute;
-            inset: -40%;
-            background:
-                radial-gradient(circle at top left, rgba(255,255,255,0.18) 0, transparent 55%),
-                radial-gradient(circle at bottom right, rgba(37,99,235,0.55) 0, transparent 60%);
-            opacity: 0.85;
-            pointer-events: none;
         }
 
         .dashboard-main {
@@ -117,10 +108,11 @@
         }
 
         .dashboard-name {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
-            letter-spacing: 0.02em;
+            letter-spacing: 0.01em;
             margin-bottom: 4px;
+            color: #111827;
         }
 
         .dashboard-tag {
@@ -130,11 +122,11 @@
             min-width: 40px;
             padding: 0 8px;
             border-radius: 999px;
-            border: 1px solid rgba(255,255,255,0.45);
-            background: linear-gradient(to bottom right, rgba(15,23,42,0.35), rgba(15,23,42,0.0));
+            border: 1px solid #E5E7EB;
+            background: #F3F4F6;
             font-size: 11px;
             font-weight: 500;
-            color: rgba(255,255,255,0.96);
+            color: #4B5563;
             margin-bottom: 6px;
             white-space: nowrap;
         }
@@ -150,7 +142,7 @@
             align-items: center;
             gap: 10px;
             font-size: 12px;
-            color: rgba(248,250,252,0.92);
+            color: #6B7280;
         }
 
         .dashboard-meta span {
@@ -171,72 +163,71 @@
             align-items: center;
             justify-content: center;
             border-radius: 999px;
-            width: 30px;
-            height: 30px;
-            background: rgba(15,23,42,0.3);
-            border: 1px solid rgba(148,163,184,0.5);
+            width: 28px;
+            height: 28px;
+            background: #F3F4F6;
+            border: 1px solid #E5E7EB;
         }
 
         .dashboard-chevron .material-icons {
             font-size: 18px;
-            color: rgba(248,250,252,0.95);
+            color: #9CA3AF;
         }
 
         .subtle-text {
             font-size: 12px;
-            color: #E5E7EB;
-            opacity: 0.85;
+            color: #9CA3AF;
         }
 
-        /* 通用輸入框（iOS TextField 風） */
+        /* 通用輸入框（淺色 iOS TextField） */
         input, textarea, select {
             width: 100%;
             padding: 11px 12px;
-            border: 1px solid #4b5563;
-            border-radius: 12px;
+            border: 1px solid #D1D5DB;
+            border-radius: 10px;
             margin-bottom: 12px;
             font-size: 15px;
-            background-color: #0b1120;
-            color: #E5E7EB;
+            background-color: #F9FAFB;
+            color: #111827;
             appearance: none;
             transition: border 0.2s, box-shadow 0.2s, background 0.2s;
         }
 
         input:focus, textarea:focus, select:focus {
-            border-color: #0A84FF;
+            border-color: #007AFF;
             outline: none;
-            box-shadow: 0 0 0 3px rgba(10,132,255,0.3);
-            background-color: #020617;
+            box-shadow: 0 0 0 3px rgba(0,122,255,0.2);
+            background-color: #FFFFFF;
         }
 
         label {
             font-size: 12px;
-            color: #9CA3AF;
+            color: #6B7280;
             margin-bottom: 4px;
             display: block;
             font-weight: 500;
             letter-spacing: 0.02em;
         }
 
-        /* 主按鈕 */
+        /* 主按鈕：iOS 藍色實心 */
         .btn-primary {
-            background: linear-gradient(135deg, #0A84FF, #2563EB);
+            background: linear-gradient(135deg, #0A84FF, #007AFF);
             color: white;
-            padding: 14px;
-            border-radius: 16px;
+            padding: 13px;
+            border-radius: 14px;
             font-weight: 600;
-            font-size: 17px;
+            font-size: 16px;
             width: 100%;
             text-align: center;
             transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
-            box-shadow: 0 12px 28px rgba(37,99,235,0.55);
+            box-shadow: 0 10px 20px rgba(37,99,235,0.35);
             border: none;
         }
 
         .btn-primary:active {
             transform: scale(0.97) translateY(1px);
             opacity: 0.9;
-            box-shadow: 0 6px 18px rgba(37,99,235,0.6);
+            box-shadow: 0 6px 12px rgba(37,99,235,0.4);
         }
 
         /* FAB */
@@ -244,15 +235,15 @@
             position: fixed;
             bottom: 26px;
             right: 20px;
-            width: 60px;
-            height: 60px;
+            width: 54px;
+            height: 54px;
             background: linear-gradient(135deg, #0A84FF, #4F46E5);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            box-shadow: 0 18px 40px rgba(37,99,235,0.8);
+            box-shadow: 0 16px 26px rgba(37,99,235,0.5);
             z-index: 50;
             cursor: pointer;
             transition: transform 0.1s ease, box-shadow 0.1s ease;
@@ -260,47 +251,48 @@
 
         .fab:active {
             transform: scale(0.95) translateY(1px);
-            box-shadow: 0 10px 26px rgba(37,99,235,0.9);
+            box-shadow: 0 10px 18px rgba(37,99,235,0.6);
         }
 
         /* Loading overlay */
         .loading-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(15,23,42,0.82);
-            backdrop-filter: blur(8px);
+            background: rgba(249,250,251,0.8);
+            backdrop-filter: blur(6px);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 999;
             flex-direction: column;
-            color: #e5e7eb;
+            color: #4B5563;
         }
 
-        /* Detail header */
+        /* Detail header（淺色） */
         .detail-header {
-            background: radial-gradient(circle at top left, #4F46E5 0, #0F172A 55%);
-            color: #E5E7EB;
-            box-shadow: 0 18px 35px rgba(15,23,42,0.85);
+            background: rgba(249,250,251,0.96);
+            color: #111827;
+            box-shadow: 0 1px 0 rgba(229,231,235,0.9);
         }
 
         .detail-header button {
-            color: #BFDBFE;
+            color: #007AFF;
         }
 
         .detail-header h2 {
             letter-spacing: 0.03em;
+            color: #111827;
         }
 
-        /* 白底照片 Carousel 卡片 */
+        /* 白底照片卡片 */
         .machine-photo-card {
-            background: #ffffff;
-            margin-top: -52px;
+            background: #FFFFFF;
+            margin-top: -32px;
             margin-inline: auto;
-            border-radius: 24px;
-            padding: 12px;
-            box-shadow: 0 18px 40px rgba(15,23,42,0.65);
-            border: 1px solid rgba(148,163,184,0.4);
+            border-radius: 20px;
+            padding: 10px;
+            box-shadow: 0 12px 25px rgba(15,23,42,0.16);
+            border: 1px solid #E5E7EB;
             max-width: 480px;
             position: relative;
             z-index: 10;
@@ -321,12 +313,12 @@
         .machine-photo-slide {
             flex: 0 0 100%;
             height: 190px;
-            border-radius: 18px;
+            border-radius: 16px;
             overflow: hidden;
-            background: #0f172a;
+            background: #E5E7EB;
             position: relative;
             scroll-snap-align: center;
-            border: 1px solid rgba(15,23,42,0.75);
+            border: 1px solid #E5E7EB;
         }
 
         .machine-photo-slide img {
@@ -338,14 +330,14 @@
         .machine-photo-empty {
             width: 100%;
             height: 190px;
-            border-radius: 18px;
-            border: 1px dashed rgba(148,163,184,0.8);
+            border-radius: 16px;
+            border: 1px dashed #D1D5DB;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: rgba(148,163,184,0.95);
+            color: #9CA3AF;
             font-size: 13px;
-            background: radial-gradient(circle at top, rgba(148,163,184,0.12), rgba(15,23,42,0.9));
+            background: #F9FAFB;
         }
 
         /* Detail 下方內容卡 */
@@ -356,22 +348,22 @@
         }
 
         .detail-card {
-            background: rgba(15,23,42,0.96);
-            border-radius: 18px;
-            padding: 16px 16px 14px;
-            margin-bottom: 14px;
-            border: 1px solid rgba(75,85,99,0.8);
-            box-shadow: 0 14px 32px rgba(15,23,42,0.9);
-            color: #e5e7eb;
+            background: #FFFFFF;
+            border-radius: 16px;
+            padding: 14px 14px 12px;
+            margin-bottom: 12px;
+            border: 1px solid #E5E7EB;
+            box-shadow: 0 4px 10px rgba(15,23,42,0.04);
+            color: #111827;
         }
 
         .detail-card h3 {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
-            letter-spacing: 0.06em;
+            letter-spacing: 0.16em;
             text-transform: uppercase;
             color: #9CA3AF;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .detail-row {
@@ -379,14 +371,14 @@
             gap: 10px;
             font-size: 14px;
             padding: 4px 0;
-            color: #E5E7EB;
+            color: #111827;
         }
 
         .detail-row label {
             font-size: 13px;
-            color: #9CA3AF;
+            color: #6B7280;
             margin-bottom: 0;
-            width: 72px;
+            width: 68px;
             flex-shrink: 0;
         }
 
@@ -395,10 +387,10 @@
         }
 
         .detail-note {
-            color: #FBBF24;
+            color: #D97706;
         }
 
-        /* Timeline 保養紀錄卡 */
+        /* Timeline（樣式 A：淺灰線 + 白卡） */
         .timeline-wrapper {
             position: relative;
             padding-left: 16px;
@@ -411,34 +403,33 @@
             top: 6px;
             bottom: 6px;
             width: 2px;
-            background: linear-gradient(to bottom, #38BDF8, #A855F7);
-            opacity: 0.5;
+            background: #E5E7EB;
         }
 
         .timeline-item {
             position: relative;
-            margin-bottom: 14px;
+            margin-bottom: 12px;
         }
 
         .timeline-dot {
             position: absolute;
-            left: -1px;
+            left: 2px;
             top: 10px;
-            width: 10px;
-            height: 10px;
+            width: 9px;
+            height: 9px;
             border-radius: 999px;
             border: 2px solid #0EA5E9;
-            background: #020617;
-            box-shadow: 0 0 0 4px rgba(56,189,248,0.35);
+            background: #FFFFFF;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
         }
 
         .record-card {
-            background: rgba(15,23,42,0.96);
-            border-radius: 16px;
-            padding: 12px 12px 10px;
-            border: 1px solid rgba(75,85,99,0.9);
-            box-shadow: 0 10px 26px rgba(15,23,42,0.9);
-            color: #E5E7EB;
+            background: #FFFFFF;
+            border-radius: 14px;
+            padding: 10px 10px 8px;
+            border: 1px solid #E5E7EB;
+            box-shadow: 0 3px 8px rgba(15,23,42,0.05);
+            color: #111827;
             margin-left: 14px;
         }
 
@@ -450,27 +441,29 @@
         }
 
         .record-date {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
+            color: #374151;
         }
 
         .record-amount {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
-            color: #4ADE80;
+            color: #16A34A;
         }
 
         .record-items {
             font-size: 14px;
             font-weight: 500;
             margin-bottom: 4px;
+            color: #111827;
         }
 
         .record-note {
             font-size: 12px;
-            color: #9CA3AF;
-            background: rgba(15,23,42,0.9);
-            border-radius: 10px;
+            color: #6B7280;
+            background: #F9FAFB;
+            border-radius: 8px;
             padding: 6px 8px;
             margin-bottom: 6px;
         }
@@ -480,7 +473,7 @@
             justify-content: flex-end;
             gap: 8px;
             padding-top: 6px;
-            border-top: 1px solid rgba(55,65,81,0.8);
+            border-top: 1px solid #E5E7EB;
             margin-top: 4px;
             font-size: 12px;
         }
@@ -499,31 +492,30 @@
         }
 
         .photo-thumb {
-            width: 82px;
-            height: 82px;
+            width: 80px;
+            height: 80px;
             object-fit: cover;
-            border-radius: 12px;
-            background-color: #020617;
-            border: 1px solid rgba(75,85,99,0.9);
+            border-radius: 10px;
+            background-color: #F3F4F6;
+            border: 1px solid #E5E7EB;
         }
 
-        /* Bottom Sheet Modal */
+        /* Bottom Sheet Modal（白色） */
         .sheet-backdrop {
-            background: radial-gradient(circle at top, rgba(30,64,175,0.55), rgba(15,23,42,0.96));
-            backdrop-filter: blur(12px);
+            background: rgba(17,24,39,0.25);
+            backdrop-filter: blur(10px);
         }
 
         .sheet {
-            background: rgba(15,23,42,0.96);
-            border-radius: 24px 24px 0 0;
-            border-top: 1px solid rgba(75,85,99,0.9);
-            border-inline: 1px solid rgba(30,64,175,0.9);
-            box-shadow: 0 -22px 45px rgba(0,0,0,0.9);
+            background: #FFFFFF;
+            border-radius: 18px 18px 0 0;
+            border-top: 1px solid #E5E7EB;
+            box-shadow: 0 -12px 30px rgba(15,23,42,0.35);
         }
 
         @media (min-width: 640px) {
             .sheet {
-                border-radius: 24px;
+                border-radius: 18px;
                 max-width: 420px;
             }
         }
@@ -533,42 +525,43 @@
             justify-content: space-between;
             align-items: center;
             padding: 10px 14px 8px;
-            border-bottom: 1px solid rgba(55,65,81,0.9);
-            background: radial-gradient(circle at top left, rgba(37,99,235,0.3), transparent 60%);
+            border-bottom: 1px solid #E5E7EB;
+            background: #F9FAFB;
         }
 
         .sheet-grabber {
-            width: 38px;
+            width: 36px;
             height: 4px;
             border-radius: 999px;
-            background: rgba(148,163,184,0.7);
-            margin: 4px auto 10px;
+            background: #D1D5DB;
+            margin: 4px auto 8px;
         }
 
         .sheet-title {
             font-size: 16px;
             font-weight: 600;
-            color: #E5E7EB;
+            color: #111827;
         }
 
         .sheet-btn-text {
             font-size: 15px;
             font-weight: 500;
-            color: #60A5FA;
+            color: #007AFF;
         }
 
         .sheet-body {
             padding: 12px 16px 18px;
             overflow-y: auto;
+            background: #F3F4F6;
         }
 
         .danger-btn {
             width: 100%;
             padding: 11px 0;
-            border-radius: 14px;
-            background: rgba(185,28,28,0.14);
-            color: #FCA5A5;
-            border: 1px solid rgba(239,68,68,0.7);
+            border-radius: 12px;
+            background: #FEF2F2;
+            color: #DC2626;
+            border: 1px solid #FECACA;
             font-size: 14px;
             margin-top: 4px;
         }
@@ -584,16 +577,16 @@
     <div id="page-list">
         <div class="app-header sticky top-0 z-10">
             <div class="pt-10 pb-4 px-4 max-w-md mx-auto">
-                <h1 class="text-2xl font-bold text-slate-50 mb-3">濾芯保養系統</h1>
+                <h1 class="text-2xl font-bold text-gray-900 mb-3">濾芯保養系統</h1>
                 <div class="search-bar">
-                    <span class="material-icons text-slate-300" style="font-size: 20px;">search</span>
+                    <span class="material-icons text-gray-400" style="font-size: 20px;">search</span>
                     <input type="text" id="search-input" placeholder="搜尋客戶名稱、電話或備註...">
                 </div>
             </div>
         </div>
         
         <div id="customer-list" class="max-w-md mx-auto px-4 pt-4 pb-10">
-            <div class="text-center text-slate-400 mt-20 text-sm">載入中...</div>
+            <div class="text-center text-gray-400 mt-20 text-sm">載入中...</div>
         </div>
         
         <div class="fab" onclick="showAddCustomerModal()">
@@ -609,7 +602,7 @@
                 <span class="text-lg ml-1">返回</span>
             </button>
             <h2 class="text-lg font-semibold flex-1 text-center pr-12">客戶資料</h2>
-            <button onclick="showEditCustomerModal()" class="font-medium text-lg px-2 text-sky-200">編輯</button>
+            <button onclick="showEditCustomerModal()" class="font-medium text-lg px-2">編輯</button>
         </div>
         
         <div class="pb-4 px-4 max-w-md mx-auto">
@@ -631,7 +624,7 @@
                     <div class="detail-row">
                         <label>電話</label>
                         <span>
-                            <a id="detail-phone-link" class="inline-flex items-center text-sky-400 text-base font-medium">
+                            <a id="detail-phone-link" class="inline-flex items-center text-primary text-base font-medium">
                                 <span class="material-icons mr-1 text-base">phone</span>
                                 <span id="detail-phone"></span>
                             </a>
@@ -674,7 +667,7 @@
                             <label>金額</label>
                             <div class="relative">
                                 <span class="absolute left-3 top-2 text-gray-400 text-sm">NT$</span>
-                                <input type="number" id="record-amount" class="pl-10 mb-0 h-10 text-green-400 font-bold" placeholder="0">
+                                <input type="number" id="record-amount" class="pl-10 mb-0 h-10 text-green-600 font-bold" placeholder="0">
                             </div>
                         </div>
                     </div>
@@ -690,11 +683,11 @@
                     </div>
 
                     <div class="flex items-center gap-3 mb-3">
-                        <label class="bg-slate-800/80 text-sky-300 px-4 py-2 rounded-lg text-sm font-medium flex items-center cursor-pointer active:bg-slate-700/80">
+                        <label class="bg-gray-100 text-primary px-4 py-2 rounded-lg text-sm font-medium flex items-center cursor-pointer active:bg-gray-200">
                             <span class="material-icons mr-1 text-lg">camera_alt</span> 拍照
                             <input type="file" id="record-photo-input" accept="image/*" multiple class="hidden" onchange="handleRecordPhotoSelect(this)">
                         </label>
-                        <span id="record-photo-count" class="text-xs text-slate-400">0 張</span>
+                        <span id="record-photo-count" class="text-xs text-gray-400">0 張</span>
                     </div>
                     
                     <div id="new-record-photos" class="photo-grid mb-3"></div>
@@ -704,7 +697,7 @@
 
                 <div class="mt-4">
                     <div class="flex items-center justify-between mb-2">
-                        <h3 class="text-sm font-bold text-slate-300 tracking-[0.18em] uppercase">歷史紀錄</h3>
+                        <h3 class="text-xs font-bold text-gray-500 tracking-[0.18em] uppercase">歷史紀錄</h3>
                     </div>
                     <div id="record-list" class="timeline-wrapper"></div>
                 </div>
@@ -725,13 +718,13 @@
             <div class="sheet-body space-y-4">
                 <input type="hidden" id="cust-id">
                 
-                <div class="space-y-3">
+                <div class="space-y-3 bg-white rounded-xl p-3 shadow-sm">
                     <div>
-                        <label>姓名 <span class="text-red-400">*</span></label>
+                        <label>姓名 <span class="text-red-500">*</span></label>
                         <input type="text" id="cust-name" class="mb-0">
                     </div>
                     <div>
-                        <label>電話 <span class="text-red-400">*</span></label>
+                        <label>電話 <span class="text-red-500">*</span></label>
                         <input type="tel" id="cust-phone" class="mb-0">
                     </div>
                     <div>
@@ -740,7 +733,7 @@
                     </div>
                 </div>
 
-                <div class="space-y-3">
+                <div class="space-y-3 bg-white rounded-xl p-3 shadow-sm">
                     <div>
                         <label>地址</label>
                         <input type="text" id="cust-address" class="mb-0">
@@ -755,13 +748,13 @@
                     </div>
                 </div>
 
-                <div>
+                <div class="bg-white rounded-xl p-3 shadow-sm">
                     <label>備註</label>
                     <textarea id="cust-note" rows="2" class="mb-0"></textarea>
                 </div>
 
-                <div class="text-center">
-                    <label class="text-sky-300 font-medium flex items-center justify-center cursor-pointer">
+                <div class="bg-white rounded-xl p-4 shadow-sm text-center">
+                    <label class="text-primary font-medium flex items-center justify-center cursor-pointer">
                         <span class="material-icons mr-2">add_photo_alternate</span> 選擇機器照片
                         <input type="file" id="cust-photo-input" accept="image/*" multiple class="hidden" onchange="handleCustPhotoSelect(this)">
                     </label>
@@ -786,7 +779,7 @@
             <div class="sheet-body space-y-4">
                 <input type="hidden" id="edit-record-id">
                 
-                <div class="space-y-3">
+                <div class="space-y-3 bg-white rounded-xl p-3 shadow-sm">
                     <div>
                         <label>日期</label>
                         <input type="date" id="edit-record-date" class="mb-0">
@@ -797,7 +790,7 @@
                     </div>
                     <div>
                         <label>金額</label>
-                        <input type="number" id="edit-record-amount" class="mb-0 text-green-400 font-bold">
+                        <input type="number" id="edit-record-amount" class="mb-0 text-green-600 font-bold">
                     </div>
                     <div>
                         <label>備註</label>
@@ -805,8 +798,8 @@
                     </div>
                 </div>
 
-                <div>
-                    <label class="text-sky-300 font-medium flex items-center justify-center cursor-pointer">
+                <div class="bg-white rounded-xl p-3 shadow-sm">
+                    <label class="text-primary font-medium flex items-center justify-center cursor-pointer">
                         <span class="material-icons mr-2">add_a_photo</span> 加傳照片
                         <input type="file" id="edit-record-photo-input" accept="image/*" multiple class="hidden" onchange="handleEditRecordPhotoSelect(this)">
                     </label>
@@ -818,13 +811,13 @@
 
     <!-- Loading -->
     <div id="loading" class="loading-overlay hidden">
-        <div class="animate-spin rounded-full h-10 w-10 border-4 border-slate-600 border-t-sky-400 mb-3"></div>
-        <p class="text-slate-200 font-medium text-sm">處理中...</p>
+        <div class="animate-spin rounded-full h-8 w-8 border-4 border-gray-200 border-t-primary mb-3"></div>
+        <p class="text-gray-600 font-medium text-sm">處理中...</p>
     </div>
 
     <script>
         // ⚠️ 記得換成你的 API 網址 ⚠️
-        const API_URL = "https://script.google.com/macros/s/AKfycby0TrkaHnLe0UaZIGQ7DFKnq_1q_QbHWJsjxQ4YCstZ5i_U_OszwLnENXxUlSq_k_NT/exec"; 
+        const API_URL = "https://script.google.com/macros/s/AKfycbxGjV4c5m-a3c-f7a0g_e5u_d9i-o2n_k4e_y6u/exec"; 
 
         let customers = [];
         let currentCustomer = null;
@@ -868,7 +861,7 @@
             const container = document.getElementById('customer-list');
             container.innerHTML = '';
             if (!list || list.length === 0) {
-                container.innerHTML = '<div class="text-center text-slate-400 mt-20 text-sm">暫無資料</div>';
+                container.innerHTML = '<div class="text-center text-gray-400 mt-20 text-sm">暫無資料</div>';
                 return;
             }
 
@@ -933,7 +926,7 @@
                 dateEl.className = "";
             } else {
                 dateEl.innerText = '無紀錄';
-                dateEl.className = "text-slate-500 italic";
+                dateEl.className = "text-gray-400 italic";
             }
 
             setText('detail-address', customer.address);
@@ -982,7 +975,7 @@
             const el = document.getElementById(id);
             if (!value) {
                 el.innerText = '未填寫';
-                el.className = "text-slate-500 italic";
+                el.className = "text-gray-400 italic";
             } else {
                 el.innerText = value;
                 el.className = "";
@@ -1000,13 +993,13 @@
         // 取得保養紀錄 + 更新最近紀錄日期 + Timeline UI
         async function fetchRecords(custId) {
             const listDiv = document.getElementById('record-list');
-            listDiv.innerHTML = '<div class="text-center py-4 text-sm text-slate-500">讀取中...</div>';
+            listDiv.innerHTML = '<div class="text-center py-4 text-sm text-gray-400">讀取中...</div>';
 
             const records = await apiCall('getRecords', { customerId: custId }, 'GET');
             listDiv.innerHTML = '';
 
             if (!records || records.length === 0) {
-                listDiv.innerHTML = '<div class="text-center py-6 text-slate-500 text-sm">尚無紀錄</div>';
+                listDiv.innerHTML = '<div class="text-center py-6 text-gray-400 text-sm">尚無紀錄</div>';
                 if (currentCustomer) currentCustomer.lastRecordDate = '';
                 return;
             }
@@ -1055,8 +1048,8 @@
                         </div>
                     ` : ''}
                     <div class="record-actions">
-                        <button onclick="openEditRecordModal('${rData}')" class="text-sky-300 hover:bg-slate-800/60 px-2 py-1">編輯</button>
-                        <button onclick="deleteRecord('${r.id}')" class="text-red-300 hover:bg-red-900/40 px-2 py-1">刪除</button>
+                        <button onclick="openEditRecordModal('${rData}')" class="text-primary hover:bg-gray-100 px-2 py-1">編輯</button>
+                        <button onclick="deleteRecord('${r.id}')" class="text-red-500 hover:bg-red-50 px-2 py-1">刪除</button>
                     </div>
                 `;
 
@@ -1220,7 +1213,7 @@
             div.innerHTML = photoArray.map((src, idx) => `
                 <div class="relative flex-shrink-0">
                     <img src="${src}" class="photo-thumb">
-                    <button onclick="removePhoto('${divId}', ${idx})" class="absolute -top-1 -right-1 bg-slate-700 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">×</button>
+                    <button onclick="removePhoto('${divId}', ${idx})" class="absolute -top-1 -right-1 bg-gray-700 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">×</button>
                 </div>
             `).join('');
         }
