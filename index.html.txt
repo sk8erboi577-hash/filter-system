@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>濾芯保養系統</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="濾芯保養">
+    <link rel="apple-touch-icon" href="https://img.icons8.com/color/180/water-filter.png">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <style>
+        body { background-color: #f3f4f6; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; padding-bottom: 80px; }
+        .card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .btn-primary { background-color: #2563eb; color: white; padding: 10px 20px; border-radius: 8px; font-weight: 600; text-align: center; width: 100%; display: block; }
+        .btn-danger { background-color: #ef4444; color: white; }
+        .fab { position: fixed; bottom: 20px; right: 20px; width: 56px; height: 56px; background: #2563eb; border-radius: 50%; display: flex; align-items: center; justifyContent: center; color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.3); z-index: 50; cursor: pointer; }
+        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); display: flex; align-items: center; justify-content: center; z-index: 999; flex-direction: column;}
+        .hidden { display: none !important; }
+        input, textarea, select { width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; margin-bottom: 10px; font-size: 16px; }
+        /* 照片預覽 */
+        .photo-grid { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; }
+        .photo-thumb { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; flex-shrink: 0; border: 1px solid #eee; }
+    </style>
+</head>
+<body>
+
+    <div id="page-list">
+        <div class="bg-white p-4 sticky top-0 z-10 shadow-sm">
+            <h1 class="text-xl font-bold text-center mb-3 text-gray-800">💧 濾芯保養系統</h1>
+            <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                    <span class="material-icons">search</span>
+                </span>
+                <input type="text" id="search-input" placeholder="搜尋姓名、電話或備註..." class="pl-10 mb-0">
+            </div>
+        </div>
+        <div id="customer-list" class="p-4">
+            <div class="text-center text-gray-400 mt-10">載入中...</div>
+        </div>
+        <div class="fab" onclick="showAddCustomerModal()">
+            <span class="material-icons" style="font-size: 32px;">add</span>
+        </div>
+    </div>
+
+    <div id="page-detail" class="hidden min-h-screen bg-gray-50">
+        <div class="bg-white p-3 shadow-sm flex items-center sticky top-0 z-10">
+            <button onclick="goBack()" class="p-2 mr-2 text-gray-600"><span class="material-icons">arrow_back</span></button>
+            <h2 id="detail-name" class="text-lg font-bold flex-1">客戶詳情</h2>
+            <button onclick="showEditCustomerModal()" class="text-blue-600 font-bold px-3">編輯</button>
+        </div>
+        
+        <div class="p-4">
+            <div class="card">
+                <div class="flex justify-between items-start">
+                    <h3 class="font-bold text-gray-500 mb-2">👤 基本資料</h3>
+                    <div id="customer-install-photo" class="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden cursor-pointer" onclick="viewImage(this.src)"></div>
+                </div>
+                <p id="detail-phone" class="text-lg font-mono mb-1"></p>
+                <p id="detail-address" class="text-gray-600 mb-1"></p>
+                <p id="detail-machine" class="text-gray-600"></p>
+                <p id="detail-filter" class="text-gray-600"></p>
+                <p id="detail-note" class="text-orange-500 text-sm mt-2"></p>
+            </div>
+
+            <div class="card bg-blue-50 border border-blue-100">
+                <h3 class="font-bold text-blue-800 mb-3">➕ 新增保養紀錄</h3>
+                <input type="date" id="record-date">
+                <input type="text" id="record-items" placeholder="更換項目 (如: PP, 活性碳)">
+                <input type="number" id="record-amount" placeholder="金額 (NT$)" inputmode="numeric">
+                <input type="text" id="record-note" placeholder="備註">
+                
+                <div class="flex items-center gap-2 mb-3">
+                    <label class="bg-white border border-gray-300 text-gray-700 px-3 py-2 rounded-lg cursor-pointer flex items-center gap-1 shadow-sm">
+                        <span class="material-icons text-sm">photo_camera</span> 拍照
+                        <input type="file" id="record-photo-input" accept="image/*" multiple class="hidden" onchange="handlePhotoSelect(this)">
+                    </label>
+                    <span id="photo-count" class="text-sm text-gray-500">未選擇照片</span>
+                </div>
+                <div id="new-record-photos" class="photo-grid mb-3"></div>
+
+                <button onclick="saveRecord()" class="btn-primary">儲存紀錄</button>
+            </div>
+
+            <h3 class="font-bold text-gray-700 ml-1 mb-2">📜 歷史紀錄</h3>
+            <div id="record-list">
+                </div>
+        </div>
+    </div>
+
+    <div id="customer-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl w-full max-w-md p-5 max-h-[90vh] overflow-y-auto">
+            <h2 id="modal-title" class="text-xl font-bold mb-4 text-center">新增客戶</h2>
+            <input type="hidden" id="cust-id">
+            <label class="text-sm text-gray-500">姓名</label>
+            <input type="text" id="cust-name">
+            <label class="text-sm text-gray-500">電話</label>
+            <input type="tel" id="cust-phone">
+            <label class="text-sm text-gray-500">地址</label>
+            <input type="text" id="cust-address">
+            <label class="text-sm text-gray-500">備註 (其他聯絡人)</label>
+            <textarea id="cust-note" rows="2" class="w-full p-2 border rounded mb-2"></textarea>
+            <label class="text-sm text-gray-500">機器型號</label>
+            <input type="text" id="cust-machine">
+            <label class="text-sm text-gray-500">濾芯規格</label>
+            <input type="text" id="cust-filter">
+            
+            <label class="text-sm text-gray-500 block mb-1">安裝照片</label>
+            <input type="file" id="cust-photo-input" accept="image/*" class="mb-3">
+            
+            <div class="flex gap-2 mt-4">
+                <button onclick="closeModal()" class="flex-1 bg-gray-200 text-gray-800 py-2 rounded-lg">取消</button>
+                <button onclick="saveCustomer()" class="flex-1 bg-blue-600 text-white py-2 rounded-lg">儲存</button>
+            </div>
+            <button id="btn-delete-customer" onclick="deleteCustomer()" class="w-full mt-3 text-red-500 text-sm hidden">刪除此客戶</button>
+        </div>
+    </div>
+
+    <div id="loading" class="loading-overlay hidden">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-3"></div>
+        <p class="text-gray-600 font-bold">資料處理中...</p>
+    </div>
+
+    <script>
+        // ⚠️ 請把下面這行換成你的 Apps Script 網址！
+        const API_URL = "https://script.google.com/macros/s/AKfycbyqNNmOA2r2UmbYWStobysExwYHuiDQOeEfFY66qKG2dpuVvq0cET0vsFTlOqIcUMU6/exec"; 
+
+        let customers = [];
+        let currentCustomer = null;
+        let selectedPhotos = []; // 暫存新增紀錄的照片 (base64)
+
+        // --- 初始化 ---
+        window.onload = () => {
+            fetchCustomers();
+            // 設定日期預設為今天
+            document.getElementById('record-date').valueAsDate = new Date();
+        };
+
+        // --- API 呼叫 ---
+        async function apiCall(action, payload = {}, method = 'POST') {
+            showLoading(true);
+            try {
+                if (method === 'GET') {
+                    // Apps Script 的 GET 需要用 query string
+                    const query = new URLSearchParams({ action, ...payload }).toString();
+                    const res = await fetch(`${API_URL}?${query}`);
+                    return await res.json();
+                } else {
+                    // POST 請求 (使用 no-cors 模式會拿不到回應，所以我們用標準 fetch，但 Apps Script 要設定好回應標頭)
+                    // 為了簡單起見，我們用 text/plain 傳送 JSON 避免 CORS 預檢 (Simple Request)
+                    const res = await fetch(API_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({ action, ...payload })
+                    });
+                    return await res.json();
+                }
+            } catch (e) {
+                alert("連線錯誤: " + e.message);
+                console.error(e);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // --- 客戶列表功能 ---
+        async function fetchCustomers() {
+            const data = await apiCall('getCustomers', {}, 'GET');
+            if (Array.isArray(data)) {
+                customers = data;
+                renderList(customers);
+            }
+        }
+
+        function renderList(list) {
+            const container = document.getElementById('customer-list');
+            container.innerHTML = '';
+            
+            if (list.length === 0) {
+                container.innerHTML = '<div class="text-center text-gray-400 mt-10">沒有資料</div>';
+                return;
+            }
+
+            list.forEach(c => {
+                const div = document.createElement('div');
+                div.className = 'card flex justify-between items-center active:bg-gray-50 cursor-pointer';
+                div.onclick = () => openDetail(c);
+                div.innerHTML = `
+                    <div>
+                        <div class="font-bold text-lg">${c.name}</div>
+                        <div class="text-gray-500 font-mono">${c.phone}</div>
+                        ${c.note ? `<div class="text-orange-500 text-xs mt-1">📝 ${c.note}</div>` : ''}
+                    </div>
+                    <span class="material-icons text-gray-300">chevron_right</span>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // 搜尋功能
+        document.getElementById('search-input').addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = customers.filter(c => 
+                c.name.toLowerCase().includes(term) || 
+                String(c.phone).includes(term) ||
+                (c.note && c.note.toLowerCase().includes(term))
+            );
+            renderList(filtered);
+        });
+
+        // --- 詳情頁功能 ---
+        async function openDetail(customer) {
+            currentCustomer = customer;
+            document.getElementById('page-list').classList.add('hidden');
+            document.getElementById('page-detail').classList.remove('hidden');
+            window.scrollTo(0, 0);
+
+            // 填入資料
+            document.getElementById('detail-name').innerText = customer.name;
+            document.getElementById('detail-phone').innerText = customer.phone;
+            document.getElementById('detail-address').innerText = `🏠 ${customer.address || '無地址'}`;
+            document.getElementById('detail-note').innerText = customer.note ? `📝 ${customer.note}` : '';
+            document.getElementById('detail-machine').innerText = `⚙️ ${customer.machine || '未填寫'}`;
+            document.getElementById('detail-filter').innerText = `📏 ${customer.filter || '未填寫'}`;
+            
+            const photoDiv = document.getElementById('customer-install-photo');
+            if (customer.photo) {
+                photoDiv.style.backgroundImage = `url('${customer.photo}')`;
+                photoDiv.style.backgroundSize = 'cover';
+                photoDiv.onclick = () => window.open(customer.photo, '_blank');
+            } else {
+                photoDiv.style.background = '#eee';
+                photoDiv.onclick = null;
+            }
+
+            // 載入紀錄
+            await fetchRecords(customer.id);
+        }
+
+        function goBack() {
+            document.getElementById('page-detail').classList.add('hidden');
+            document.getElementById('page-list').classList.remove('hidden');
+            currentCustomer = null;
+            // 清空新增紀錄欄位
+            document.getElementById('record-items').value = '';
+            document.getElementById('record-amount').value = '';
+            document.getElementById('record-note').value = '';
+            selectedPhotos = [];
+            renderPhotoPreview();
+        }
+
+        // --- 紀錄功能 ---
+        async function fetchRecords(custId) {
+            const listDiv = document.getElementById('record-list');
+            listDiv.innerHTML = '<div class="text-center py-4">載入紀錄中...</div>';
+            
+            const records = await apiCall('getRecords', { customerId: custId }, 'GET');
+            listDiv.innerHTML = '';
+
+            if (!records || records.length === 0) {
+                listDiv.innerHTML = '<div class="text-gray-400 text-center py-4">尚無保養紀錄</div>';
+                return;
+            }
+
+            records.forEach(r => {
+                const photos = r.photos ? JSON.parse(r.photos) : [];
+                const div = document.createElement('div');
+                div.className = 'card border-l-4 border-blue-500';
+                div.innerHTML = `
+                    <div class="flex justify-between">
+                        <div class="font-bold text-lg">${r.date.split('T')[0]}</div>
+                        ${r.amount ? `<div class="text-green-600 font-bold">$${r.amount}</div>` : ''}
+                    </div>
+                    <div class="text-blue-800 my-1">${r.items}</div>
+                    ${r.note ? `<div class="text-gray-500 text-sm mb-2">備註: ${r.note}</div>` : ''}
+                    
+                    ${photos.length > 0 ? `
+                        <div class="photo-grid mt-2">
+                            ${photos.map(url => `<img src="${url}" class="photo-thumb" onclick="window.open('${url}')">`).join('')}
+                        </div>
+                    ` : ''}
+                    <div class="text-right mt-2">
+                        <button onclick="deleteRecord('${r.id}')" class="text-red-400 text-sm">刪除</button>
+                    </div>
+                `;
+                listDiv.appendChild(div);
+            });
+        }
+
+        async function saveRecord() {
+            if (!currentCustomer) return;
+            const items = document.getElementById('record-items').value;
+            if (!items) return alert("請輸入項目");
+
+            // 先上傳照片 (如果有)
+            let photoUrls = [];
+            if (selectedPhotos.length > 0) {
+                showLoading(true); // 強制顯示 loading
+                for (let base64 of selectedPhotos) {
+                    // 上傳每張照片到 Apps Script
+                    const res = await apiCall('uploadImage', { base64: base64, type: 'image/jpeg' });
+                    if (res.status === 'success') {
+                        photoUrls.push(res.url);
+                    }
+                }
+            }
+
+            const payload = {
+                customerId: currentCustomer.id,
+                date: document.getElementById('record-date').value,
+                items: items,
+                amount: document.getElementById('record-amount').value,
+                note: document.getElementById('record-note').value,
+                photos: photoUrls
+            };
+
+            const res = await apiCall('addRecord', payload);
+            if (res.status === 'success') {
+                alert("紀錄新增成功！");
+                document.getElementById('record-items').value = '';
+                document.getElementById('record-amount').value = '';
+                document.getElementById('record-note').value = '';
+                selectedPhotos = [];
+                renderPhotoPreview();
+                fetchRecords(currentCustomer.id);
+            } else {
+                alert("失敗");
+            }
+        }
+
+        async function deleteRecord(id) {
+            if (!confirm("確定刪除此紀錄？")) return;
+            await apiCall('deleteRecord', { id });
+            fetchRecords(currentCustomer.id);
+        }
+
+        // --- 照片處理 ---
+        function handlePhotoSelect(input) {
+            const files = input.files;
+            if (!files.length) return;
+
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    // 壓縮圖片 (非常重要，不然 Excel 會爆) - 這裡我們雖然存雲端，但縮小一點上傳比較快
+                    resizeImage(e.target.result, 800, (resizedBase64) => {
+                        selectedPhotos.push(resizedBase64);
+                        renderPhotoPreview();
+                    });
+                };
+                reader.readAsDataURL(file);
+            });
+            input.value = ''; // 重置
+        }
+
+        function renderPhotoPreview() {
+            const div = document.getElementById('new-record-photos');
+            const countSpan = document.getElementById('photo-count');
+            div.innerHTML = '';
+            countSpan.innerText = selectedPhotos.length ? `已選 ${selectedPhotos.length} 張` : '未選擇照片';
+            
+            selectedPhotos.forEach((src, idx) => {
+                const imgContainer = document.createElement('div');
+                imgContainer.className = 'relative flex-shrink-0';
+                imgContainer.innerHTML = `
+                    <img src="${src}" class="photo-thumb">
+                    <button onclick="removePhoto(${idx})" class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">×</button>
+                `;
+                div.appendChild(imgContainer);
+            });
+        }
+
+        function removePhoto(idx) {
+            selectedPhotos.splice(idx, 1);
+            renderPhotoPreview();
+        }
+
+        // 圖片壓縮函式
+        function resizeImage(base64, maxWidth, callback) {
+            const img = new Image();
+            img.src = base64;
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                let width = img.width;
+                let height = img.height;
+                if (width > maxWidth) {
+                    height *= maxWidth / width;
+                    width = maxWidth;
+                }
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                callback(canvas.toDataURL('image/jpeg', 0.7)); // 0.7 品質
+            };
+        }
+
+        // --- 新增/編輯客戶 Modal ---
+        function showAddCustomerModal() {
+            document.getElementById('modal-title').innerText = '新增客戶';
+            document.getElementById('cust-id').value = '';
+            document.getElementById('cust-name').value = '';
+            document.getElementById('cust-phone').value = '';
+            document.getElementById('cust-address').value = '';
+            document.getElementById('cust-note').value = '';
+            document.getElementById('cust-machine').value = '';
+            document.getElementById('cust-filter').value = '';
+            document.getElementById('cust-photo-input').value = '';
+            document.getElementById('btn-delete-customer').classList.add('hidden');
+            document.getElementById('customer-modal').classList.remove('hidden');
+        }
+
+        function showEditCustomerModal() {
+            if (!currentCustomer) return;
+            document.getElementById('modal-title').innerText = '編輯資料';
+            document.getElementById('cust-id').value = currentCustomer.id;
+            document.getElementById('cust-name').value = currentCustomer.name;
+            document.getElementById('cust-phone').value = currentCustomer.phone;
+            document.getElementById('cust-address').value = currentCustomer.address;
+            document.getElementById('cust-note').value = currentCustomer.note;
+            document.getElementById('cust-machine').value = currentCustomer.machine;
+            document.getElementById('cust-filter').value = currentCustomer.filter;
+            document.getElementById('btn-delete-customer').classList.remove('hidden');
+            document.getElementById('customer-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('customer-modal').classList.add('hidden');
+        }
+
+        async function saveCustomer() {
+            const id = document.getElementById('cust-id').value;
+            const photoInput = document.getElementById('cust-photo-input');
+            
+            let photoUrl = "";
+            // 如果有選新照片，先上傳
+            if (photoInput.files.length > 0) {
+                showLoading(true);
+                const file = photoInput.files[0];
+                const base64 = await new Promise(resolve => {
+                    const reader = new FileReader();
+                    reader.onload = e => resizeImage(e.target.result, 800, resolve);
+                    reader.readAsDataURL(file);
+                });
+                const res = await apiCall('uploadImage', { base64: base64, type: 'image/jpeg' });
+                if (res.status === 'success') photoUrl = res.url;
+            }
+
+            const payload = {
+                id: id, // 如果是空的就是新增
+                name: document.getElementById('cust-name').value,
+                phone: document.getElementById('cust-phone').value,
+                address: document.getElementById('cust-address').value,
+                note: document.getElementById('cust-note').value,
+                machine: document.getElementById('cust-machine').value,
+                filter: document.getElementById('cust-filter').value,
+                photo: photoUrl || (currentCustomer ? currentCustomer.photo : "") // 有新圖用新圖，沒新圖用舊圖
+            };
+
+            const action = id ? 'updateCustomer' : 'addCustomer';
+            const res = await apiCall(action, payload);
+            
+            if (res.status === 'success') {
+                alert("儲存成功！");
+                closeModal();
+                fetchCustomers();
+                if (id && currentCustomer) {
+                    // 如果是編輯模式，更新當前顯示
+                    openDetail({ ...currentCustomer, ...payload }); 
+                }
+            } else {
+                alert("儲存失敗");
+            }
+        }
+
+        async function deleteCustomer() {
+            if (!confirm("確定要刪除此客戶嗎？(無法復原)")) return;
+            const id = document.getElementById('cust-id').value;
+            await apiCall('deleteCustomer', { id });
+            alert("已刪除");
+            closeModal();
+            goBack();
+            fetchCustomers();
+        }
+
+        function showLoading(show) {
+            const el = document.getElementById('loading');
+            if (show) el.classList.remove('hidden');
+            else el.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
