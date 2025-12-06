@@ -13,7 +13,7 @@
     <style>
         body { background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; padding-bottom: 100px; }
         .card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
-        .btn-primary { background: linear-gradient(to right, #2563eb, #3b82f6); color: white; padding: 14px; border-radius: 14px; font-weight: 600; font-size: 1.1rem; width: 100%; display: block; box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2); }
+        .btn-primary { background: linear-gradient(to right, #2563eb, #3b82f6); color: white; padding: 16px; border-radius: 14px; font-weight: 700; font-size: 1.2rem; width: 100%; display: block; box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2); }
         .btn-primary:active { transform: scale(0.98); }
         
         .fab { position: fixed; bottom: 30px; right: 30px; width: 64px; height: 64px; background: linear-gradient(135deg, #2563eb, #1d4ed8); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 15px 25px -5px rgba(37, 99, 235, 0.4); z-index: 50; cursor: pointer; transition: all 0.2s ease; }
@@ -23,18 +23,33 @@
         .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); display: flex; align-items: center; justify-content: center; z-index: 999; flex-direction: column; backdrop-filter: blur(2px); }
         .hidden { display: none !important; }
         
-        /* ✨ 調整輸入框樣式：加高、加大字體 */
+        /* ✨ 輸入框樣式全面升級 */
         input, textarea, select { 
             width: 100%; 
             padding: 16px; /* 加高 */
-            border: 1px solid #e2e8f0; 
+            border: 2px solid #e2e8f0; /* 邊框加粗 */
             border-radius: 14px; 
             margin-bottom: 12px; 
-            font-size: 18px; /* 加大字體 */
+            font-size: 20px; /* 字體加大 */
+            font-weight: 500;
             background-color: #f8fafc; 
+            line-height: 1.5;
         }
         input:focus, textarea:focus { border-color: #3b82f6; outline: none; background-color: white; }
-        label { font-size: 1rem; font-weight: 600; color: #475569; margin-bottom: 6px; display: block; padding-left: 4px; }
+        label { font-size: 1.1rem; font-weight: 700; color: #475569; margin-bottom: 8px; display: block; padding-left: 4px; }
+
+        /* 金額欄位修正 */
+        .input-group-currency { position: relative; }
+        .currency-symbol { 
+            position: absolute; 
+            top: 52px; /* 修正位置 */
+            left: 16px; 
+            font-size: 20px; 
+            font-weight: bold; 
+            color: #64748b; 
+            pointer-events: none;
+        }
+        .input-currency { padding-left: 60px !important; color: #16a34a; font-weight: bold; }
 
         .photo-scroll-container { display: flex; gap: 12px; overflow-x: auto; padding: 4px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
         .photo-scroll-container::-webkit-scrollbar { display: none; }
@@ -43,22 +58,22 @@
         .photo-grid { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; }
         .photo-thumb { width: 90px; height: 90px; object-fit: cover; border-radius: 12px; flex-shrink: 0; border: 1px solid #ddd; }
 
-        .detail-label { font-size: 0.9rem; color: #64748b; font-weight: 600; margin-bottom: 2px; display: block; }
-        .detail-value { font-size: 1.15rem; color: #1e293b; line-height: 1.5; font-weight: 500; }
+        .detail-label { font-size: 0.95rem; color: #64748b; font-weight: 600; margin-bottom: 2px; display: block; }
+        .detail-value { font-size: 1.25rem; color: #1e293b; line-height: 1.5; font-weight: 500; }
         .detail-row { display: flex; align-items: flex-start; margin-bottom: 16px; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px; }
-        .detail-icon { color: #94a3b8; margin-right: 12px; margin-top: 4px; font-size: 24px; }
+        .detail-icon { color: #94a3b8; margin-right: 12px; margin-top: 4px; font-size: 28px; }
     </style>
 </head>
 <body>
 
     <div id="page-list">
         <div class="bg-white pt-12 pb-4 px-6 sticky top-0 z-10 shadow-sm">
-            <h1 class="text-2xl font-bold text-gray-800 flex items-center mb-4">
-                <span class="material-icons text-blue-600 mr-2">water_drop</span> 濾芯保養系統
+            <h1 class="text-3xl font-bold text-gray-800 flex items-center mb-4">
+                <span class="material-icons text-blue-600 mr-2 text-4xl">water_drop</span> 濾芯保養系統
             </h1>
             <div class="relative">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400"><span class="material-icons">search</span></span>
-                <input type="text" id="search-input" placeholder="搜尋姓名、電話或備註..." class="pl-12 mb-0 bg-gray-100 border-none">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400"><span class="material-icons text-2xl">search</span></span>
+                <input type="text" id="search-input" placeholder="搜尋姓名、電話..." class="pl-14 mb-0 bg-gray-100 border-none h-14 text-xl">
             </div>
         </div>
         <div id="customer-list" class="p-4 max-w-2xl mx-auto">
@@ -69,24 +84,24 @@
 
     <div id="page-detail" class="hidden min-h-screen bg-gray-50">
         <div class="bg-white pt-10 pb-3 px-4 shadow-sm flex items-center sticky top-0 z-20">
-            <button onclick="goBack()" class="p-2 mr-1 text-gray-600 rounded-full hover:bg-gray-100"><span class="material-icons">arrow_back</span></button>
-            <h2 id="detail-header-name" class="text-lg font-bold flex-1 truncate">客戶詳情</h2>
-            <button onclick="showEditCustomerModal()" class="text-blue-600 font-bold px-4 py-1 bg-blue-50 rounded-full">編輯</button>
+            <button onclick="goBack()" class="p-2 mr-1 text-gray-600 rounded-full hover:bg-gray-100"><span class="material-icons text-3xl">arrow_back</span></button>
+            <h2 id="detail-header-name" class="text-xl font-bold flex-1 truncate">客戶詳情</h2>
+            <button onclick="showEditCustomerModal()" class="text-blue-600 font-bold px-5 py-2 bg-blue-50 rounded-full text-lg">編輯</button>
         </div>
         
         <div class="p-4 max-w-2xl mx-auto">
             <div id="customer-photos-container" class="photo-scroll-container mb-6"></div>
 
             <div class="card relative overflow-hidden">
-                <h2 id="detail-name" class="text-3xl font-bold text-gray-900 mb-1 text-center"></h2>
+                <h2 id="detail-name" class="text-4xl font-bold text-gray-900 mb-2 text-center"></h2>
                 <div class="text-center mb-6">
-                    <a id="detail-phone-link" class="inline-flex items-center text-xl font-mono text-blue-600 font-bold bg-blue-50 px-4 py-1 rounded-full">
-                        <span class="material-icons text-sm mr-2">phone</span><span id="detail-phone"></span>
+                    <a id="detail-phone-link" class="inline-flex items-center text-2xl font-mono text-blue-600 font-bold bg-blue-50 px-6 py-2 rounded-full">
+                        <span class="material-icons text-xl mr-2">phone</span><span id="detail-phone"></span>
                     </a>
                 </div>
                 
-                <div class="bg-gray-50 rounded-xl p-5 space-y-4">
-                    <div class="detail-row"><span class="material-icons detail-icon">event_available</span><div><span class="detail-label">安裝日期</span><span id="detail-install-date" class="detail-value text-blue-800"></span></div></div>
+                <div class="bg-gray-50 rounded-xl p-5 space-y-5">
+                    <div class="detail-row"><span class="material-icons detail-icon">event_available</span><div><span class="detail-label">安裝日期</span><span id="detail-install-date" class="detail-value text-blue-800 font-bold"></span></div></div>
                     <div class="detail-row"><span class="material-icons detail-icon">home</span><div><span class="detail-label">安裝地址</span><span id="detail-address" class="detail-value"></span></div></div>
                     <div class="detail-row"><span class="material-icons detail-icon">settings</span><div class="flex-1"><span class="detail-label">機器型號</span><span id="detail-machine" class="detail-value"></span></div></div>
                     <div class="detail-row"><span class="material-icons detail-icon">filter_alt</span><div class="flex-1"><span class="detail-label">濾芯規格</span><span id="detail-filter" class="detail-value"></span></div></div>
@@ -94,95 +109,109 @@
                 </div>
             </div>
 
-            <div class="card bg-gradient-to-br from-blue-50 to-white border border-blue-100">
-                <h3 class="font-bold text-blue-800 mb-4 flex items-center text-lg">
-                    <span class="material-icons-outlined mr-2">post_add</span>新增保養紀錄
+            <div class="card bg-gradient-to-br from-blue-50 to-white border-2 border-blue-100">
+                <h3 class="font-bold text-blue-800 mb-4 flex items-center text-xl">
+                    <span class="material-icons-outlined mr-2 text-2xl">post_add</span>新增保養紀錄
                 </h3>
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="col-span-2"><label>日期</label><input type="date" id="record-date"></div>
-                    <div class="col-span-2"><label>項目</label><input type="text" id="record-items" placeholder="更換項目 (如: PP, 活性碳)"></div>
-                    <div class="relative col-span-2">
-                         <label>金額</label>
-                         <span class="absolute top-[45px] left-4 text-gray-500 font-bold z-10">NT$</span>
-                        <input type="number" id="record-amount" placeholder="0" inputmode="numeric" class="pl-14 text-green-600 font-bold">
-                    </div>
-                    <div class="col-span-2"><label>備註</label><textarea id="record-note" placeholder="備註 (選填)" rows="2"></textarea></div>
+                
+                <div class="mb-4">
+                    <label>保養日期</label>
+                    <input type="date" id="record-date">
                 </div>
                 
-                <div class="flex items-center justify-between mt-2 mb-4 p-3 bg-white rounded-xl border border-gray-100">
-                    <label class="flex items-center gap-2 text-blue-600 font-bold cursor-pointer text-lg">
-                        <span class="material-icons text-3xl">add_a_photo</span>
+                <div class="mb-4">
+                    <label>更換項目</label>
+                    <input type="text" id="record-items" placeholder="例如: PP, 活性碳" style="padding: 20px;">
+                </div>
+                
+                <div class="mb-4 input-group-currency">
+                     <label>金額</label>
+                     <span class="currency-symbol">NT$</span>
+                    <input type="number" id="record-amount" placeholder="0" inputmode="numeric" class="input-currency" style="padding: 20px 20px 20px 70px;">
+                </div>
+                
+                <div class="mb-4">
+                    <label>備註</label>
+                    <textarea id="record-note" placeholder="備註 (選填)" rows="3" style="padding: 20px;"></textarea>
+                </div>
+                
+                <div class="flex items-center justify-between mt-4 mb-6 p-4 bg-white rounded-xl border border-gray-200">
+                    <label class="flex items-center gap-2 text-blue-600 font-bold cursor-pointer text-xl">
+                        <span class="material-icons text-4xl">add_a_photo</span>
                         <span>現場拍照</span>
                         <input type="file" id="record-photo-input" accept="image/*" multiple class="hidden" onchange="handleRecordPhotoSelect(this)">
                     </label>
-                    <span id="record-photo-count" class="text-gray-400 bg-gray-100 px-3 py-1 rounded-full">0 張</span>
+                    <span id="record-photo-count" class="text-gray-500 bg-gray-100 px-4 py-2 rounded-full font-bold">0 張</span>
                 </div>
-                <div id="new-record-photos" class="photo-grid mb-4"></div>
-                <button onclick="saveRecord()" class="btn-primary text-lg py-3 shadow-lg">確認儲存紀錄</button>
+                <div id="new-record-photos" class="photo-grid mb-6"></div>
+                <button onclick="saveRecord()" class="btn-primary shadow-lg">確認儲存紀錄</button>
             </div>
 
-            <h3 class="font-bold text-gray-700 text-lg mb-3 ml-1">歷史紀錄</h3>
-            <div id="record-list" class="space-y-4"></div>
+            <h3 class="font-bold text-gray-700 text-xl mb-4 ml-1 mt-8">歷史紀錄</h3>
+            <div id="record-list" class="space-y-5"></div>
         </div>
     </div>
 
-    <div id="customer-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-end sm:items-center justify-center transition-opacity">
+    <div id="customer-modal" class="fixed inset-0 bg-black bg-opacity-60 hidden z-50 flex items-end sm:items-center justify-center transition-opacity">
         <div class="bg-white rounded-t-3xl sm:rounded-2xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto animate-slide-up">
-            <h2 id="modal-title" class="text-2xl font-bold mb-6 text-center text-gray-800">新增客戶</h2>
+            <h2 id="modal-title" class="text-3xl font-bold mb-6 text-center text-gray-800">新增客戶</h2>
             <input type="hidden" id="cust-id">
-            <div class="space-y-2">
+            <div class="space-y-4">
                 <div><label>客戶姓名 <span class="text-red-500">*</span></label><input type="text" id="cust-name"></div>
-                <div><label>電話號碼 <span class="text-red-500">*</span></label><input type="tel" id="cust-phone" inputmode="tel"></div>
+                <div><label>電話號碼 <span class="text-red-500">*</span></label><input type="tel" id="cust-phone" inputmode="tel" class="font-mono"></div>
                 <div><label>安裝日期</label><input type="date" id="cust-install-date"></div>
-                <div><label>安裝地址</label><textarea id="cust-address" rows="2"></textarea></div>
+                <div><label>安裝地址</label><textarea id="cust-address" rows="3"></textarea></div>
                 <div><label>機器型號</label><input type="text" id="cust-machine"></div>
                 <div><label>濾芯規格</label><input type="text" id="cust-filter"></div>
-                <div><label>備註事項</label><textarea id="cust-note" rows="2"></textarea></div>
-                <div class="bg-gray-50 p-4 rounded-xl border border-dashed border-gray-300">
-                    <label class="text-blue-600 font-bold block flex items-center cursor-pointer mb-2">
-                        <span class="material-icons mr-2">add_photo_alternate</span> 選擇機器照片 (可多選)
+                <div><label>備註事項</label><textarea id="cust-note" rows="3"></textarea></div>
+                <div class="bg-gray-50 p-4 rounded-xl border-2 border-dashed border-gray-300">
+                    <label class="text-blue-600 font-bold block flex items-center cursor-pointer mb-2 text-lg">
+                        <span class="material-icons mr-2 text-3xl">add_photo_alternate</span> 機器照片 (可多選)
                         <input type="file" id="cust-photo-input" accept="image/*" multiple class="hidden" onchange="handleCustPhotoSelect(this)">
                     </label>
                     <div id="cust-photo-preview" class="photo-grid"></div>
                 </div>
             </div>
-            <div class="flex gap-3 mt-8">
-                <button onclick="closeModal('customer-modal')" class="flex-1 bg-gray-100 text-gray-600 font-bold py-3 rounded-xl">取消</button>
-                <button onclick="saveCustomer()" class="flex-1 bg-blue-600 text-white font-bold py-3 rounded-xl shadow-md">確認儲存</button>
+            <div class="flex gap-4 mt-8">
+                <button onclick="closeModal('customer-modal')" class="flex-1 bg-gray-100 text-gray-600 font-bold py-4 rounded-xl text-lg">取消</button>
+                <button onclick="saveCustomer()" class="flex-1 bg-blue-600 text-white font-bold py-4 rounded-xl shadow-md text-lg">確認儲存</button>
             </div>
-            <button id="btn-delete-customer" onclick="deleteCustomer()" class="w-full mt-4 text-red-500 text-sm font-bold py-2 hidden">刪除此客戶</button>
+            <button id="btn-delete-customer" onclick="deleteCustomer()" class="w-full mt-6 text-red-500 text-base font-bold py-3 hidden bg-red-50 rounded-xl">刪除此客戶資料</button>
         </div>
     </div>
 
-    <div id="record-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-end sm:items-center justify-center transition-opacity">
+    <div id="record-modal" class="fixed inset-0 bg-black bg-opacity-60 hidden z-50 flex items-end sm:items-center justify-center transition-opacity">
         <div class="bg-white rounded-t-3xl sm:rounded-2xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto animate-slide-up">
-            <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">修改紀錄</h2>
+            <h2 class="text-3xl font-bold mb-6 text-center text-gray-800">修改紀錄</h2>
             <input type="hidden" id="edit-record-id">
-            <div class="space-y-2">
+            <div class="space-y-4">
                 <div><label>日期</label><input type="date" id="edit-record-date"></div>
                 <div><label>項目</label><input type="text" id="edit-record-items"></div>
-                <div><label>金額</label><input type="number" id="edit-record-amount" inputmode="numeric"></div>
-                <div><label>備註</label><textarea id="edit-record-note" rows="2"></textarea></div>
+                <div class="input-group-currency">
+                    <label>金額</label><span class="currency-symbol">NT$</span>
+                    <input type="number" id="edit-record-amount" inputmode="numeric" class="input-currency" style="padding-left: 70px;">
+                </div>
+                <div><label>備註</label><textarea id="edit-record-note" rows="3"></textarea></div>
                 
-                <div class="bg-gray-50 p-4 rounded-xl border border-dashed border-gray-300 mt-4">
-                    <label class="text-blue-600 font-bold block flex items-center cursor-pointer mb-2">
-                        <span class="material-icons mr-2">add_a_photo</span> 加傳照片 (原有照片會保留)
+                <div class="bg-gray-50 p-4 rounded-xl border-2 border-dashed border-gray-300 mt-4">
+                    <label class="text-blue-600 font-bold block flex items-center cursor-pointer mb-2 text-lg">
+                        <span class="material-icons mr-2 text-3xl">add_a_photo</span> 加傳照片 (原有照片會保留)
                         <input type="file" id="edit-record-photo-input" accept="image/*" multiple class="hidden" onchange="handleEditRecordPhotoSelect(this)">
                     </label>
                     <div id="edit-record-photo-preview" class="photo-grid"></div>
                 </div>
             </div>
-            <div class="flex gap-3 mt-8">
-                <button onclick="closeModal('record-modal')" class="flex-1 bg-gray-100 text-gray-600 font-bold py-3 rounded-xl">取消</button>
-                <button onclick="saveEditedRecord()" class="flex-1 bg-blue-600 text-white font-bold py-3 rounded-xl shadow-md">儲存修改</button>
+            <div class="flex gap-4 mt-8">
+                <button onclick="closeModal('record-modal')" class="flex-1 bg-gray-100 text-gray-600 font-bold py-4 rounded-xl text-lg">取消</button>
+                <button onclick="saveEditedRecord()" class="flex-1 bg-blue-600 text-white font-bold py-4 rounded-xl shadow-md text-lg">儲存修改</button>
             </div>
         </div>
     </div>
 
     <div id="loading" class="loading-overlay hidden">
-        <div class="bg-white p-6 rounded-2xl shadow-xl flex flex-col items-center">
-            <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-100 border-t-blue-600 mb-4"></div>
-            <p class="text-gray-800 font-bold text-lg">資料同步中...</p>
+        <div class="bg-white p-8 rounded-3xl shadow-2xl flex flex-col items-center">
+            <div class="animate-spin rounded-full h-16 w-16 border-4 border-blue-100 border-t-blue-600 mb-6"></div>
+            <p class="text-gray-800 font-bold text-xl">資料同步中...</p>
         </div>
     </div>
 
@@ -222,20 +251,20 @@
         function renderList(list) {
             const container = document.getElementById('customer-list');
             container.innerHTML = '';
-            if (list.length === 0) { container.innerHTML = '<div class="text-center text-gray-400 mt-20">沒有資料</div>'; return; }
+            if (list.length === 0) { container.innerHTML = '<div class="text-center text-gray-400 mt-20 text-xl">沒有資料</div>'; return; }
             list.forEach(c => {
                 const div = document.createElement('div');
-                div.className = 'card flex justify-between items-center cursor-pointer hover:bg-gray-50';
+                div.className = 'card flex justify-between items-center cursor-pointer hover:bg-gray-50 active:scale-[0.98] transition-transform py-5';
                 div.onclick = () => openDetail(c);
                 div.innerHTML = `
                     <div class="flex items-center overflow-hidden">
-                        <div class="w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xl mr-4 flex-shrink-0">${c.name.charAt(0)}</div>
+                        <div class="w-14 h-14 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-2xl mr-5 flex-shrink-0">${c.name.charAt(0)}</div>
                         <div class="truncate">
-                            <div class="font-bold text-xl text-gray-800 truncate">${c.name}</div>
-                            <div class="text-blue-600 font-mono font-bold">${c.phone}</div>
+                            <div class="font-bold text-2xl text-gray-800 truncate mb-1">${c.name}</div>
+                            <div class="text-blue-600 font-mono font-bold text-lg">${c.phone}</div>
                         </div>
                     </div>
-                    <span class="material-icons text-gray-300">chevron_right</span>`;
+                    <span class="material-icons text-gray-300 text-3xl">chevron_right</span>`;
                 container.appendChild(div);
             });
         }
@@ -290,7 +319,7 @@
                     photoContainer.appendChild(img);
                 });
                 photoContainer.classList.remove('hidden');
-            } else { photoContainer.innerHTML = '<div class="w-full text-center py-4 bg-gray-100 rounded-xl text-gray-400">尚未上傳機器照片</div>'; }
+            } else { photoContainer.innerHTML = '<div class="w-full text-center py-6 bg-gray-100 rounded-xl text-gray-400 text-lg">尚未上傳機器照片</div>'; }
 
             await fetchRecords(customer.id);
         }
@@ -311,38 +340,37 @@
 
         async function fetchRecords(custId) {
             const listDiv = document.getElementById('record-list');
-            listDiv.innerHTML = '<div class="text-center py-4">讀取中...</div>';
+            listDiv.innerHTML = '<div class="text-center py-6 text-lg text-gray-500">讀取中...</div>';
             const records = await apiCall('getRecords', { customerId: custId }, 'GET');
             listDiv.innerHTML = '';
 
             if (!records || records.length === 0) {
-                listDiv.innerHTML = '<div class="text-center py-8 text-gray-400">尚無保養紀錄</div>'; return;
+                listDiv.innerHTML = '<div class="text-center py-10 text-gray-400 text-lg">尚無保養紀錄</div>'; return;
             }
 
             records.forEach(r => {
                 const photos = r.photos ? JSON.parse(r.photos) : [];
-                // 把紀錄資料存到 div 的 data 屬性，方便編輯時讀取
-                const rData = JSON.stringify(r).replace(/"/g, '&quot;');
+                const rData = JSON.stringify(r).replace(/"/g, '&quot;'); // Escape for HTML
                 
                 const div = document.createElement('div');
-                div.className = 'card border-l-[6px] border-blue-500 pl-5';
+                div.className = 'card border-l-[8px] border-blue-500 pl-6 shadow-md';
                 div.innerHTML = `
-                    <div class="flex justify-between items-start mb-2">
-                        <div class="font-bold text-xl text-gray-800">${r.date.split('T')[0]}</div>
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="font-bold text-2xl text-gray-800">${r.date.split('T')[0]}</div>
                         <div class="flex items-center gap-2">
-                            ${r.amount ? `<div class="text-green-600 font-bold font-mono text-xl bg-green-50 px-2 rounded">NT$${r.amount}</div>` : ''}
+                            ${r.amount ? `<div class="text-green-600 font-bold font-mono text-2xl bg-green-50 px-3 py-1 rounded-lg">NT$${r.amount}</div>` : ''}
                         </div>
                     </div>
-                    <div class="bg-gray-50 p-3 rounded-lg font-bold text-gray-800 mb-2 text-lg">${r.items}</div>
-                    ${r.note ? `<div class="text-sm text-gray-600 mb-2">備註: ${r.note}</div>` : ''}
-                    ${photos.length > 0 ? `<div class="photo-grid">${photos.map(url => `<img src="${url}" class="photo-thumb cursor-pointer" onclick="window.open('${url}')">`).join('')}</div>` : ''}
+                    <div class="bg-gray-50 p-4 rounded-xl font-bold text-gray-800 mb-3 text-xl leading-relaxed border border-gray-100">${r.items}</div>
+                    ${r.note ? `<div class="text-base text-gray-600 mb-3 px-1"><span class="font-bold">備註:</span> ${r.note}</div>` : ''}
+                    ${photos.length > 0 ? `<div class="photo-grid mb-3">${photos.map(url => `<img src="${url}" class="photo-thumb cursor-pointer border-2 border-white shadow-sm" onclick="window.open('${url}')">`).join('')}</div>` : ''}
                     
-                    <div class="flex justify-end gap-3 mt-3 pt-3 border-t border-gray-100">
-                        <button onclick="openEditRecordModal('${rData}')" class="text-blue-500 text-sm font-bold flex items-center px-3 py-1 bg-blue-50 rounded-full">
-                            <span class="material-icons text-sm mr-1">edit</span>編輯
+                    <div class="flex justify-end gap-3 mt-4 pt-3 border-t border-gray-100">
+                        <button onclick="openEditRecordModal('${rData}')" class="text-blue-600 text-base font-bold flex items-center px-4 py-2 bg-blue-50 rounded-full hover:bg-blue-100">
+                            <span class="material-icons text-lg mr-1">edit</span>編輯
                         </button>
-                        <button onclick="deleteRecord('${r.id}')" class="text-red-500 text-sm font-bold flex items-center px-3 py-1 bg-red-50 rounded-full">
-                            <span class="material-icons text-sm mr-1">delete</span>刪除
+                        <button onclick="deleteRecord('${r.id}')" class="text-red-500 text-base font-bold flex items-center px-4 py-2 bg-red-50 rounded-full hover:bg-red-100">
+                            <span class="material-icons text-lg mr-1">delete</span>刪除
                         </button>
                     </div>
                 `;
@@ -358,7 +386,7 @@
             document.getElementById('edit-record-items').value = record.items;
             document.getElementById('edit-record-amount').value = record.amount;
             document.getElementById('edit-record-note').value = record.note;
-            selectedEditRecordPhotos = []; // 清空新照片暫存
+            selectedEditRecordPhotos = []; 
             document.getElementById('edit-record-photo-preview').innerHTML = '';
             document.getElementById('record-modal').classList.remove('hidden');
         }
@@ -391,26 +419,20 @@
                 alert("修改成功");
                 closeModal('record-modal');
                 fetchRecords(currentCustomer.id);
-            } else {
-                alert("修改失敗");
-            }
+            } else { alert("修改失敗"); }
         }
 
         function handleEditRecordPhotoSelect(input) {
-            const files = input.files;
-            if (!files.length) return;
+            const files = input.files; if (!files.length) return;
             Array.from(files).forEach(file => {
                 const reader = new FileReader();
-                reader.onload = e => resizeImage(e.target.result, 1024, res => { 
-                    selectedEditRecordPhotos.push(res); 
-                    renderPhotoList('edit-record-photo-preview', selectedEditRecordPhotos); 
-                });
+                reader.onload = e => resizeImage(e.target.result, 1024, res => { selectedEditRecordPhotos.push(res); renderPhotoList('edit-record-photo-preview', selectedEditRecordPhotos); });
                 reader.readAsDataURL(file);
             });
             input.value = '';
         }
 
-        // --- 通用功能 ---
+        // --- 通用 ---
         async function saveRecord() {
             if (!currentCustomer) return;
             const items = document.getElementById('record-items').value;
@@ -454,8 +476,7 @@
         }
 
         function resizeImage(base64, maxWidth, callback) {
-            const img = new Image();
-            img.src = base64;
+            const img = new Image(); img.src = base64;
             img.onload = () => {
                 const canvas = document.createElement('canvas');
                 let width = img.width; let height = img.height;
@@ -468,8 +489,7 @@
         }
 
         function handleRecordPhotoSelect(input) {
-            const files = input.files;
-            if (!files.length) return;
+            const files = input.files; if (!files.length) return;
             Array.from(files).forEach(file => {
                 const reader = new FileReader();
                 reader.onload = e => resizeImage(e.target.result, 1024, res => { selectedRecordPhotos.push(res); renderRecordPhotoPreview(); });
@@ -483,8 +503,7 @@
         }
         
         function handleCustPhotoSelect(input) {
-            const files = input.files;
-            if (!files.length) return;
+            const files = input.files; if (!files.length) return;
             Array.from(files).forEach(file => {
                 const reader = new FileReader();
                 reader.onload = e => resizeImage(e.target.result, 1024, res => { selectedCustPhotos.push(res); renderPhotoList('cust-photo-preview', selectedCustPhotos); });
@@ -496,7 +515,7 @@
         function renderPhotoList(divId, photoArray) {
             const div = document.getElementById(divId);
             div.innerHTML = photoArray.map((src, idx) => `
-                <div class="relative flex-shrink-0"><img src="${src}" class="photo-thumb"><button onclick="removePhoto('${divId}', ${idx})" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center">×</button></div>
+                <div class="relative flex-shrink-0"><img src="${src}" class="photo-thumb"><button onclick="removePhoto('${divId}', ${idx})" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg shadow-md border-2 border-white">×</button></div>
             `).join('');
         }
 
