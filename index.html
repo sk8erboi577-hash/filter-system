@@ -338,46 +338,47 @@
             renderRecordPhotoPreview();
         }
 
-        async function fetchRecords(custId) {
-            const listDiv = document.getElementById('record-list');
-            listDiv.innerHTML = '<div class="text-center py-6 text-lg text-gray-500">讀取中...</div>';
-            const records = await apiCall('getRecords', { customerId: custId }, 'GET');
-            listDiv.innerHTML = '';
+     async function fetchRecords(custId) {
+    const listDiv = document.getElementById('record-list');
+    listDiv.innerHTML = '<div class="text-center py-6 text-lg text-gray-500">讀取中...</div>';
+    const records = await apiCall('getRecords', { customerId: custId }, 'GET');
+    listDiv.innerHTML = '';
 
-            if (!records || records.length === 0) {
-                listDiv.innerHTML = '<div class="text-center py-10 text-gray-400 text-lg">尚無保養紀錄</div>'; return;
-            }
+    if (!records || records.length === 0) {
+        listDiv.innerHTML = '<div class="text-center py-10 text-gray-400 text-lg">尚無保養紀錄</div>'; return;
+    }
 
-            records.forEach(r => {
-                const photos = r.photos ? JSON.parse(r.photos) : [];
-                const rData = JSON.stringify(r).replace(/"/g, '&quot;'); // Escape for HTML
-                
-                const div = document.createElement('div');
-                div.className = 'card border-l-[8px] border-blue-500 pl-6 shadow-md';
-                div.innerHTML = `
-                    <div class="flex justify-between items-start mb-3">
-                        <div class="font-bold text-2xl text-gray-800">${r.date.split('T')[0]}</div>
-                        <div class="flex items-center gap-2">
-                            ${r.amount ? `<div class="text-green-600 font-bold font-mono text-2xl bg-green-50 px-3 py-1 rounded-lg">NT$${r.amount}</div>` : ''}
-                        </div>
-                    </div>
-                    // ✨ 修改後：字體跟標題一樣大 (text-3xl)，並且是黑色的
-<div class="bg-gray-50 p-4 rounded-xl font-bold text-gray-900 mb-3 text-3xl leading-relaxed border border-gray-100">${r.items}</div>
-${r.note ? `<div class="text-2xl text-gray-800 mb-3 px-1 font-bold"><span class="text-gray-500">備註:</span> ${r.note}</div>` : ''}
-                    ${photos.length > 0 ? `<div class="photo-grid mb-3">${photos.map(url => `<img src="${url}" class="photo-thumb cursor-pointer border-2 border-white shadow-sm" onclick="window.open('${url}')">`).join('')}</div>` : ''}
-                    
-                    <div class="flex justify-end gap-3 mt-4 pt-3 border-t border-gray-100">
-                        <button onclick="openEditRecordModal('${rData}')" class="text-blue-600 text-base font-bold flex items-center px-4 py-2 bg-blue-50 rounded-full hover:bg-blue-100">
-                            <span class="material-icons text-lg mr-1">edit</span>編輯
-                        </button>
-                        <button onclick="deleteRecord('${r.id}')" class="text-red-500 text-base font-bold flex items-center px-4 py-2 bg-red-50 rounded-full hover:bg-red-100">
-                            <span class="material-icons text-lg mr-1">delete</span>刪除
-                        </button>
-                    </div>
-                `;
-                listDiv.appendChild(div);
-            });
-        }
+    records.forEach(r => {
+        const photos = r.photos ? JSON.parse(r.photos) : [];
+        const rData = JSON.stringify(r).replace(/"/g, '&quot;'); 
+        
+        const div = document.createElement('div');
+        div.className = 'card border-l-[8px] border-blue-500 pl-6 shadow-md';
+        div.innerHTML = `
+            <div class="flex justify-between items-start mb-3">
+                <div class="font-bold text-2xl text-gray-800">${r.date.split('T')[0]}</div>
+                <div class="flex items-center gap-2">
+                    ${r.amount ? `<div class="text-green-600 font-bold font-mono text-2xl bg-green-50 px-3 py-1 rounded-lg">NT$${r.amount}</div>` : ''}
+                </div>
+            </div>
+            
+            <div class="bg-gray-50 p-4 rounded-xl font-bold text-gray-900 mb-3 text-3xl leading-relaxed border border-gray-100">${r.items}</div>
+            ${r.note ? `<div class="text-2xl text-gray-800 mb-3 px-1 font-bold"><span class="text-gray-500 text-xl font-normal mr-2">備註:</span>${r.note}</div>` : ''}
+            
+            ${photos.length > 0 ? `<div class="photo-grid mb-3">${photos.map(url => `<img src="${url}" class="photo-thumb cursor-pointer border-2 border-white shadow-sm" onclick="window.open('${url}')">`).join('')}</div>` : ''}
+            
+            <div class="flex justify-end gap-3 mt-4 pt-3 border-t border-gray-100">
+                <button onclick="openEditRecordModal('${rData}')" class="text-blue-600 text-lg font-bold flex items-center px-4 py-2 bg-blue-50 rounded-full hover:bg-blue-100">
+                    <span class="material-icons text-xl mr-1">edit</span>編輯
+                </button>
+                <button onclick="deleteRecord('${r.id}')" class="text-red-500 text-lg font-bold flex items-center px-4 py-2 bg-red-50 rounded-full hover:bg-red-100">
+                    <span class="material-icons text-xl mr-1">delete</span>刪除
+                </button>
+            </div>
+        `;
+        listDiv.appendChild(div);
+    });
+}
 
         // --- 編輯紀錄功能 ---
         function openEditRecordModal(recordStr) {
@@ -610,4 +611,5 @@ ${r.note ? `<div class="text-2xl text-gray-800 mb-3 px-1 font-bold"><span class=
     </script>
 </body>
 </html>
+
 
