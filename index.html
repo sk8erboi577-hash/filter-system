@@ -13,7 +13,7 @@
     <style>
         body { background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; padding-bottom: 100px; }
         .card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
-        .btn-primary { background: linear-gradient(to right, #2563eb, #3b82f6); color: white; padding: 12px; border-radius: 12px; font-weight: 600; width: 100%; display: block; box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2); }
+        .btn-primary { background: linear-gradient(to right, #2563eb, #3b82f6); color: white; padding: 14px; border-radius: 14px; font-weight: 600; font-size: 1.1rem; width: 100%; display: block; box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2); }
         .btn-primary:active { transform: scale(0.98); }
         
         .fab { position: fixed; bottom: 30px; right: 30px; width: 64px; height: 64px; background: linear-gradient(135deg, #2563eb, #1d4ed8); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 15px 25px -5px rgba(37, 99, 235, 0.4); z-index: 50; cursor: pointer; transition: all 0.2s ease; }
@@ -22,21 +22,31 @@
 
         .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); display: flex; align-items: center; justify-content: center; z-index: 999; flex-direction: column; backdrop-filter: blur(2px); }
         .hidden { display: none !important; }
-        input, textarea, select { width: 100%; padding: 14px; border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 12px; font-size: 16px; background-color: #f8fafc; }
-        input:focus { border-color: #3b82f6; outline: none; background-color: white; }
         
-        /* 照片滑動容器 */
+        /* ✨ 調整輸入框樣式：加高、加大字體 */
+        input, textarea, select { 
+            width: 100%; 
+            padding: 16px; /* 加高 */
+            border: 1px solid #e2e8f0; 
+            border-radius: 14px; 
+            margin-bottom: 12px; 
+            font-size: 18px; /* 加大字體 */
+            background-color: #f8fafc; 
+        }
+        input:focus, textarea:focus { border-color: #3b82f6; outline: none; background-color: white; }
+        label { font-size: 1rem; font-weight: 600; color: #475569; margin-bottom: 6px; display: block; padding-left: 4px; }
+
         .photo-scroll-container { display: flex; gap: 12px; overflow-x: auto; padding: 4px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
-        .photo-scroll-container::-webkit-scrollbar { display: none; } /* 隱藏捲軸 */
+        .photo-scroll-container::-webkit-scrollbar { display: none; }
         .photo-card-lg { width: 160px; height: 160px; flex-shrink: 0; border-radius: 16px; object-fit: cover; border: 2px solid white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); cursor: pointer; }
         
         .photo-grid { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; }
         .photo-thumb { width: 90px; height: 90px; object-fit: cover; border-radius: 12px; flex-shrink: 0; border: 1px solid #ddd; }
 
-        .detail-label { font-size: 0.85rem; color: #64748b; font-weight: 600; margin-bottom: 2px; display: block; }
-        .detail-value { font-size: 1.1rem; color: #1e293b; line-height: 1.5; font-weight: 500; }
+        .detail-label { font-size: 0.9rem; color: #64748b; font-weight: 600; margin-bottom: 2px; display: block; }
+        .detail-value { font-size: 1.15rem; color: #1e293b; line-height: 1.5; font-weight: 500; }
         .detail-row { display: flex; align-items: flex-start; margin-bottom: 16px; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px; }
-        .detail-icon { color: #94a3b8; margin-right: 12px; margin-top: 2px; }
+        .detail-icon { color: #94a3b8; margin-right: 12px; margin-top: 4px; font-size: 24px; }
     </style>
 </head>
 <body>
@@ -65,8 +75,7 @@
         </div>
         
         <div class="p-4 max-w-2xl mx-auto">
-            <div id="customer-photos-container" class="photo-scroll-container mb-6">
-                </div>
+            <div id="customer-photos-container" class="photo-scroll-container mb-6"></div>
 
             <div class="card relative overflow-hidden">
                 <h2 id="detail-name" class="text-3xl font-bold text-gray-900 mb-1 text-center"></h2>
@@ -77,26 +86,11 @@
                 </div>
                 
                 <div class="bg-gray-50 rounded-xl p-5 space-y-4">
-                    <div class="detail-row">
-                        <span class="material-icons detail-icon">event_available</span>
-                        <div><span class="detail-label">安裝日期</span><span id="detail-install-date" class="detail-value text-blue-800"></span></div>
-                    </div>
-                    <div class="detail-row">
-                        <span class="material-icons detail-icon">home</span>
-                        <div><span class="detail-label">安裝地址</span><span id="detail-address" class="detail-value"></span></div>
-                    </div>
-                    <div class="detail-row">
-                         <span class="material-icons detail-icon">settings</span>
-                         <div class="flex-1"><span class="detail-label">機器型號</span><span id="detail-machine" class="detail-value"></span></div>
-                    </div>
-                    <div class="detail-row">
-                        <span class="material-icons detail-icon">filter_alt</span>
-                        <div class="flex-1"><span class="detail-label">濾芯規格</span><span id="detail-filter" class="detail-value"></span></div>
-                     </div>
-                    <div id="note-container" class="detail-row hidden">
-                        <span class="material-icons detail-icon text-orange-400">sticky_note_2</span>
-                        <div><span class="detail-label text-orange-600">備註事項</span><span id="detail-note" class="detail-value text-orange-800"></span></div>
-                    </div>
+                    <div class="detail-row"><span class="material-icons detail-icon">event_available</span><div><span class="detail-label">安裝日期</span><span id="detail-install-date" class="detail-value text-blue-800"></span></div></div>
+                    <div class="detail-row"><span class="material-icons detail-icon">home</span><div><span class="detail-label">安裝地址</span><span id="detail-address" class="detail-value"></span></div></div>
+                    <div class="detail-row"><span class="material-icons detail-icon">settings</span><div class="flex-1"><span class="detail-label">機器型號</span><span id="detail-machine" class="detail-value"></span></div></div>
+                    <div class="detail-row"><span class="material-icons detail-icon">filter_alt</span><div class="flex-1"><span class="detail-label">濾芯規格</span><span id="detail-filter" class="detail-value"></span></div></div>
+                    <div id="note-container" class="detail-row hidden"><span class="material-icons detail-icon text-orange-400">sticky_note_2</span><div><span class="detail-label text-orange-600">備註事項</span><span id="detail-note" class="detail-value text-orange-800"></span></div></div>
                 </div>
             </div>
 
@@ -105,22 +99,23 @@
                     <span class="material-icons-outlined mr-2">post_add</span>新增保養紀錄
                 </h3>
                 <div class="grid grid-cols-2 gap-3">
-                    <input type="date" id="record-date" class="col-span-2">
-                    <input type="text" id="record-items" placeholder="更換項目 (如: PP, 活性碳)" class="col-span-2 font-bold">
+                    <div class="col-span-2"><label>日期</label><input type="date" id="record-date"></div>
+                    <div class="col-span-2"><label>項目</label><input type="text" id="record-items" placeholder="更換項目 (如: PP, 活性碳)"></div>
                     <div class="relative col-span-2">
-                         <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-500 font-bold">NT$</span>
-                        <input type="number" id="record-amount" placeholder="金額" inputmode="numeric" class="pl-14 text-lg font-mono font-bold text-green-600">
+                         <label>金額</label>
+                         <span class="absolute top-[45px] left-4 text-gray-500 font-bold z-10">NT$</span>
+                        <input type="number" id="record-amount" placeholder="0" inputmode="numeric" class="pl-14 text-green-600 font-bold">
                     </div>
-                    <textarea id="record-note" placeholder="備註 (選填)" rows="2" class="col-span-2 mb-0"></textarea>
+                    <div class="col-span-2"><label>備註</label><textarea id="record-note" placeholder="備註 (選填)" rows="2"></textarea></div>
                 </div>
                 
-                <div class="flex items-center justify-between mt-4 mb-4 p-3 bg-white rounded-xl border border-gray-100">
-                    <label class="flex items-center gap-2 text-blue-600 font-bold cursor-pointer">
+                <div class="flex items-center justify-between mt-2 mb-4 p-3 bg-white rounded-xl border border-gray-100">
+                    <label class="flex items-center gap-2 text-blue-600 font-bold cursor-pointer text-lg">
                         <span class="material-icons text-3xl">add_a_photo</span>
                         <span>現場拍照</span>
                         <input type="file" id="record-photo-input" accept="image/*" multiple class="hidden" onchange="handleRecordPhotoSelect(this)">
                     </label>
-                    <span id="record-photo-count" class="text-sm text-gray-400 bg-gray-100 px-3 py-1 rounded-full">0 張</span>
+                    <span id="record-photo-count" class="text-gray-400 bg-gray-100 px-3 py-1 rounded-full">0 張</span>
                 </div>
                 <div id="new-record-photos" class="photo-grid mb-4"></div>
                 <button onclick="saveRecord()" class="btn-primary text-lg py-3 shadow-lg">確認儲存紀錄</button>
@@ -135,36 +130,52 @@
         <div class="bg-white rounded-t-3xl sm:rounded-2xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto animate-slide-up">
             <h2 id="modal-title" class="text-2xl font-bold mb-6 text-center text-gray-800">新增客戶</h2>
             <input type="hidden" id="cust-id">
-            
-            <div class="space-y-4">
-                <div><label class="text-sm font-bold text-gray-600 pl-1 block">客戶姓名 <span class="text-red-500">*</span></label><input type="text" id="cust-name" class="mb-0"></div>
-                <div><label class="text-sm font-bold text-gray-600 pl-1 block">電話號碼 <span class="text-red-500">*</span></label><input type="tel" id="cust-phone" inputmode="tel" class="mb-0 font-mono text-lg"></div>
-                
-                <div><label class="text-sm font-bold text-gray-600 pl-1 block">安裝日期</label><input type="date" id="cust-install-date" class="mb-0"></div>
-
-                <div><label class="text-sm font-bold text-gray-600 pl-1 block">安裝地址</label><textarea id="cust-address" rows="2" class="mb-0"></textarea></div>
-                
-                 <div class="grid grid-cols-2 gap-4">
-                    <div><label class="text-sm font-bold text-gray-600 pl-1 block">機器型號</label><input type="text" id="cust-machine" class="mb-0"></div>
-                    <div><label class="text-sm font-bold text-gray-600 pl-1 block">濾芯規格</label><input type="text" id="cust-filter" class="mb-0"></div>
-                </div>
-
-                <div><label class="text-sm font-bold text-gray-600 pl-1 block">備註事項</label><textarea id="cust-note" rows="2" class="mb-0 bg-orange-50"></textarea></div>
-
+            <div class="space-y-2">
+                <div><label>客戶姓名 <span class="text-red-500">*</span></label><input type="text" id="cust-name"></div>
+                <div><label>電話號碼 <span class="text-red-500">*</span></label><input type="tel" id="cust-phone" inputmode="tel"></div>
+                <div><label>安裝日期</label><input type="date" id="cust-install-date"></div>
+                <div><label>安裝地址</label><textarea id="cust-address" rows="2"></textarea></div>
+                <div><label>機器型號</label><input type="text" id="cust-machine"></div>
+                <div><label>濾芯規格</label><input type="text" id="cust-filter"></div>
+                <div><label>備註事項</label><textarea id="cust-note" rows="2"></textarea></div>
                 <div class="bg-gray-50 p-4 rounded-xl border border-dashed border-gray-300">
-                    <label class="text-sm font-bold text-blue-600 mb-2 block flex items-center cursor-pointer">
-                        <span class="material-icons mr-1">add_photo_alternate</span> 選擇機器照片 (可多選)
+                    <label class="text-blue-600 font-bold block flex items-center cursor-pointer mb-2">
+                        <span class="material-icons mr-2">add_photo_alternate</span> 選擇機器照片 (可多選)
                         <input type="file" id="cust-photo-input" accept="image/*" multiple class="hidden" onchange="handleCustPhotoSelect(this)">
                     </label>
-                    <div id="cust-photo-preview" class="photo-grid mt-2"></div>
+                    <div id="cust-photo-preview" class="photo-grid"></div>
                 </div>
             </div>
-            
             <div class="flex gap-3 mt-8">
-                <button onclick="closeModal()" class="flex-1 bg-gray-100 text-gray-600 font-bold py-3 rounded-xl">取消</button>
+                <button onclick="closeModal('customer-modal')" class="flex-1 bg-gray-100 text-gray-600 font-bold py-3 rounded-xl">取消</button>
                 <button onclick="saveCustomer()" class="flex-1 bg-blue-600 text-white font-bold py-3 rounded-xl shadow-md">確認儲存</button>
             </div>
             <button id="btn-delete-customer" onclick="deleteCustomer()" class="w-full mt-4 text-red-500 text-sm font-bold py-2 hidden">刪除此客戶</button>
+        </div>
+    </div>
+
+    <div id="record-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-end sm:items-center justify-center transition-opacity">
+        <div class="bg-white rounded-t-3xl sm:rounded-2xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto animate-slide-up">
+            <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">修改紀錄</h2>
+            <input type="hidden" id="edit-record-id">
+            <div class="space-y-2">
+                <div><label>日期</label><input type="date" id="edit-record-date"></div>
+                <div><label>項目</label><input type="text" id="edit-record-items"></div>
+                <div><label>金額</label><input type="number" id="edit-record-amount" inputmode="numeric"></div>
+                <div><label>備註</label><textarea id="edit-record-note" rows="2"></textarea></div>
+                
+                <div class="bg-gray-50 p-4 rounded-xl border border-dashed border-gray-300 mt-4">
+                    <label class="text-blue-600 font-bold block flex items-center cursor-pointer mb-2">
+                        <span class="material-icons mr-2">add_a_photo</span> 加傳照片 (原有照片會保留)
+                        <input type="file" id="edit-record-photo-input" accept="image/*" multiple class="hidden" onchange="handleEditRecordPhotoSelect(this)">
+                    </label>
+                    <div id="edit-record-photo-preview" class="photo-grid"></div>
+                </div>
+            </div>
+            <div class="flex gap-3 mt-8">
+                <button onclick="closeModal('record-modal')" class="flex-1 bg-gray-100 text-gray-600 font-bold py-3 rounded-xl">取消</button>
+                <button onclick="saveEditedRecord()" class="flex-1 bg-blue-600 text-white font-bold py-3 rounded-xl shadow-md">儲存修改</button>
+            </div>
         </div>
     </div>
 
@@ -176,13 +187,14 @@
     </div>
 
     <script>
-        // ⚠️⚠️⚠️ 記得把下面這行換成你自己的 Apps Script 網址 ⚠️⚠️⚠️
+        // ⚠️⚠️⚠️ 記得換成你的 Apps Script 網址 ⚠️⚠️⚠️
         const API_URL = "https://script.google.com/macros/s/AKfycby0TrkaHnLe0UaZIGQ7DFKnq_1q_QbHWJsjxQ4YCstZ5i_U_OszwLnENXxUlSq_k_NT/exec"; 
 
         let customers = [];
         let currentCustomer = null;
         let selectedRecordPhotos = [];
         let selectedCustPhotos = [];
+        let selectedEditRecordPhotos = [];
 
         window.onload = () => {
             fetchCustomers();
@@ -193,38 +205,24 @@
             showLoading(true);
             try {
                 if (payload.phone) payload.phone = String(payload.phone);
-                const options = method === 'GET' 
-                    ? {} 
-                    : { method: 'POST', body: JSON.stringify({ action, ...payload }) };
-                
                 const url = method === 'GET' 
                     ? `${API_URL}?${new URLSearchParams({ action, ...payload })}` 
                     : API_URL;
-
+                const options = method === 'GET' ? {} : { method: 'POST', body: JSON.stringify({ action, ...payload }) };
                 const res = await fetch(url, options);
                 return await res.json();
-            } catch (e) {
-                alert("連線錯誤: " + e.message);
-            } finally {
-                showLoading(false);
-            }
+            } catch (e) { alert("連線錯誤: " + e.message); } finally { showLoading(false); }
         }
 
         async function fetchCustomers() {
             const data = await apiCall('getCustomers', {}, 'GET');
-            if (Array.isArray(data)) {
-                customers = data;
-                renderList(customers);
-            }
+            if (Array.isArray(data)) { customers = data; renderList(customers); }
         }
 
         function renderList(list) {
             const container = document.getElementById('customer-list');
             container.innerHTML = '';
-            if (list.length === 0) {
-                container.innerHTML = '<div class="text-center text-gray-400 mt-20">沒有資料</div>';
-                return;
-            }
+            if (list.length === 0) { container.innerHTML = '<div class="text-center text-gray-400 mt-20">沒有資料</div>'; return; }
             list.forEach(c => {
                 const div = document.createElement('div');
                 div.className = 'card flex justify-between items-center cursor-pointer hover:bg-gray-50';
@@ -237,8 +235,7 @@
                             <div class="text-blue-600 font-mono font-bold">${c.phone}</div>
                         </div>
                     </div>
-                    <span class="material-icons text-gray-300">chevron_right</span>
-                `;
+                    <span class="material-icons text-gray-300">chevron_right</span>`;
                 container.appendChild(div);
             });
         }
@@ -248,7 +245,6 @@
             renderList(customers.filter(c => c.name.toLowerCase().includes(term) || String(c.phone).includes(term) || (c.note && c.note.toLowerCase().includes(term))));
         });
 
-        // --- 詳情頁 ---
         async function openDetail(customer) {
             currentCustomer = customer;
             document.getElementById('page-list').classList.add('hidden');
@@ -260,10 +256,9 @@
             document.getElementById('detail-phone').innerText = customer.phone;
             document.getElementById('detail-phone-link').href = `tel:${customer.phone}`;
             
-            // 處理安裝日期
             const dateEl = document.getElementById('detail-install-date');
             if (customer.installDate) {
-                dateEl.innerText = customer.installDate.split('T')[0]; // 只取日期部分
+                dateEl.innerText = customer.installDate.split('T')[0];
                 dateEl.classList.remove('italic', 'text-gray-400');
             } else {
                 dateEl.innerText = '未記錄日期';
@@ -278,35 +273,24 @@
             if (customer.note) {
                 document.getElementById('detail-note').innerText = customer.note;
                 noteContainer.classList.remove('hidden');
-            } else {
-                noteContainer.classList.add('hidden');
-            }
+            } else { noteContainer.classList.add('hidden'); }
             
-            // 處理照片牆 (支援多張)
             const photoContainer = document.getElementById('customer-photos-container');
             photoContainer.innerHTML = '';
-            
             let photos = [];
-            if (customer.photos && Array.isArray(customer.photos)) {
-                photos = customer.photos; // 新版多張
-            } else if (customer.photos && typeof customer.photos === 'string' && customer.photos.startsWith('[')) {
-                 try { photos = JSON.parse(customer.photos); } catch(e) { photos = [customer.photos]; }
-            } else if (customer.photos) {
-                photos = [customer.photos]; // 舊版單張
-            }
+            if (customer.photos && Array.isArray(customer.photos)) photos = customer.photos;
+            else if (customer.photos && customer.photos.startsWith('[')) try { photos = JSON.parse(customer.photos); } catch(e) { photos = [customer.photos]; }
+            else if (customer.photos) photos = [customer.photos];
 
             if (photos.length > 0) {
                 photos.forEach(url => {
                     const img = document.createElement('img');
-                    img.src = url;
-                    img.className = 'photo-card-lg';
+                    img.src = url; img.className = 'photo-card-lg';
                     img.onclick = () => window.open(url, '_blank');
                     photoContainer.appendChild(img);
                 });
                 photoContainer.classList.remove('hidden');
-            } else {
-                photoContainer.innerHTML = '<div class="w-full text-center py-4 bg-gray-100 rounded-xl text-gray-400">尚未上傳機器照片</div>';
-            }
+            } else { photoContainer.innerHTML = '<div class="w-full text-center py-4 bg-gray-100 rounded-xl text-gray-400">尚未上傳機器照片</div>'; }
 
             await fetchRecords(customer.id);
         }
@@ -325,7 +309,6 @@
             renderRecordPhotoPreview();
         }
 
-        // --- 紀錄功能 ---
         async function fetchRecords(custId) {
             const listDiv = document.getElementById('record-list');
             listDiv.innerHTML = '<div class="text-center py-4">讀取中...</div>';
@@ -333,28 +316,101 @@
             listDiv.innerHTML = '';
 
             if (!records || records.length === 0) {
-                listDiv.innerHTML = '<div class="text-center py-8 text-gray-400">尚無保養紀錄</div>';
-                return;
+                listDiv.innerHTML = '<div class="text-center py-8 text-gray-400">尚無保養紀錄</div>'; return;
             }
 
             records.forEach(r => {
                 const photos = r.photos ? JSON.parse(r.photos) : [];
+                // 把紀錄資料存到 div 的 data 屬性，方便編輯時讀取
+                const rData = JSON.stringify(r).replace(/"/g, '&quot;');
+                
                 const div = document.createElement('div');
                 div.className = 'card border-l-[6px] border-blue-500 pl-5';
                 div.innerHTML = `
                     <div class="flex justify-between items-start mb-2">
                         <div class="font-bold text-xl text-gray-800">${r.date.split('T')[0]}</div>
-                        ${r.amount ? `<div class="text-green-600 font-bold font-mono text-xl bg-green-50 px-2 rounded">NT$${r.amount}</div>` : ''}
+                        <div class="flex items-center gap-2">
+                            ${r.amount ? `<div class="text-green-600 font-bold font-mono text-xl bg-green-50 px-2 rounded">NT$${r.amount}</div>` : ''}
+                        </div>
                     </div>
-                    <div class="bg-gray-50 p-3 rounded-lg font-bold text-gray-800 mb-2">${r.items}</div>
+                    <div class="bg-gray-50 p-3 rounded-lg font-bold text-gray-800 mb-2 text-lg">${r.items}</div>
                     ${r.note ? `<div class="text-sm text-gray-600 mb-2">備註: ${r.note}</div>` : ''}
                     ${photos.length > 0 ? `<div class="photo-grid">${photos.map(url => `<img src="${url}" class="photo-thumb cursor-pointer" onclick="window.open('${url}')">`).join('')}</div>` : ''}
-                    <div class="text-right mt-2"><button onclick="deleteRecord('${r.id}')" class="text-red-400 text-sm">刪除</button></div>
+                    
+                    <div class="flex justify-end gap-3 mt-3 pt-3 border-t border-gray-100">
+                        <button onclick="openEditRecordModal('${rData}')" class="text-blue-500 text-sm font-bold flex items-center px-3 py-1 bg-blue-50 rounded-full">
+                            <span class="material-icons text-sm mr-1">edit</span>編輯
+                        </button>
+                        <button onclick="deleteRecord('${r.id}')" class="text-red-500 text-sm font-bold flex items-center px-3 py-1 bg-red-50 rounded-full">
+                            <span class="material-icons text-sm mr-1">delete</span>刪除
+                        </button>
+                    </div>
                 `;
                 listDiv.appendChild(div);
             });
         }
 
+        // --- 編輯紀錄功能 ---
+        function openEditRecordModal(recordStr) {
+            const record = JSON.parse(recordStr);
+            document.getElementById('edit-record-id').value = record.id;
+            document.getElementById('edit-record-date').value = record.date.split('T')[0];
+            document.getElementById('edit-record-items').value = record.items;
+            document.getElementById('edit-record-amount').value = record.amount;
+            document.getElementById('edit-record-note').value = record.note;
+            selectedEditRecordPhotos = []; // 清空新照片暫存
+            document.getElementById('edit-record-photo-preview').innerHTML = '';
+            document.getElementById('record-modal').classList.remove('hidden');
+        }
+
+        async function saveEditedRecord() {
+            const id = document.getElementById('edit-record-id').value;
+            const items = document.getElementById('edit-record-items').value;
+            if (!items) return alert("請輸入項目");
+
+            let photoUrls = [];
+            if (selectedEditRecordPhotos.length > 0) {
+                showLoading(true);
+                for (let base64 of selectedEditRecordPhotos) {
+                    const res = await apiCall('uploadImage', { base64: base64, type: 'image/jpeg' });
+                    if (res.status === 'success') photoUrls.push(res.url);
+                }
+            }
+
+            const payload = {
+                id: id,
+                date: document.getElementById('edit-record-date').value,
+                items: items,
+                amount: document.getElementById('edit-record-amount').value,
+                note: document.getElementById('edit-record-note').value,
+                photos: photoUrls 
+            };
+
+            const res = await apiCall('updateRecord', payload);
+            if (res.status === 'success') {
+                alert("修改成功");
+                closeModal('record-modal');
+                fetchRecords(currentCustomer.id);
+            } else {
+                alert("修改失敗");
+            }
+        }
+
+        function handleEditRecordPhotoSelect(input) {
+            const files = input.files;
+            if (!files.length) return;
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = e => resizeImage(e.target.result, 1024, res => { 
+                    selectedEditRecordPhotos.push(res); 
+                    renderPhotoList('edit-record-photo-preview', selectedEditRecordPhotos); 
+                });
+                reader.readAsDataURL(file);
+            });
+            input.value = '';
+        }
+
+        // --- 通用功能 ---
         async function saveRecord() {
             if (!currentCustomer) return;
             const items = document.getElementById('record-items').value;
@@ -380,16 +436,14 @@
 
             const res = await apiCall('addRecord', payload);
             if (res.status === 'success') {
-                alert("新增成功！");
+                alert("新增成功");
                 document.getElementById('record-items').value = '';
                 document.getElementById('record-amount').value = '';
                 document.getElementById('record-note').value = '';
                 selectedRecordPhotos = [];
                 renderRecordPhotoPreview();
                 fetchRecords(currentCustomer.id);
-            } else {
-                alert("新增失敗");
-            }
+            } else { alert("失敗"); }
         }
 
         async function deleteRecord(id) {
@@ -399,14 +453,12 @@
             }
         }
 
-        // --- 照片處理 (通用) ---
         function resizeImage(base64, maxWidth, callback) {
             const img = new Image();
             img.src = base64;
             img.onload = () => {
                 const canvas = document.createElement('canvas');
-                let width = img.width;
-                let height = img.height;
+                let width = img.width; let height = img.height;
                 if (width > maxWidth) { height *= maxWidth / width; width = maxWidth; }
                 canvas.width = width; canvas.height = height;
                 const ctx = canvas.getContext('2d');
@@ -415,7 +467,6 @@
             };
         }
 
-        // 紀錄照片
         function handleRecordPhotoSelect(input) {
             const files = input.files;
             if (!files.length) return;
@@ -427,32 +478,34 @@
             input.value = '';
         }
         function renderRecordPhotoPreview() {
-            const div = document.getElementById('new-record-photos');
+            renderPhotoList('new-record-photos', selectedRecordPhotos);
             document.getElementById('record-photo-count').innerText = selectedRecordPhotos.length + ' 張';
-            div.innerHTML = selectedRecordPhotos.map((src, idx) => `
-                <div class="relative flex-shrink-0"><img src="${src}" class="photo-thumb"><button onclick="selectedRecordPhotos.splice(${idx},1);renderRecordPhotoPreview()" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center">×</button></div>
-            `).join('');
         }
-
-        // 客戶照片
+        
         function handleCustPhotoSelect(input) {
             const files = input.files;
             if (!files.length) return;
             Array.from(files).forEach(file => {
                 const reader = new FileReader();
-                reader.onload = e => resizeImage(e.target.result, 1024, res => { selectedCustPhotos.push(res); renderCustPhotoPreview(); });
+                reader.onload = e => resizeImage(e.target.result, 1024, res => { selectedCustPhotos.push(res); renderPhotoList('cust-photo-preview', selectedCustPhotos); });
                 reader.readAsDataURL(file);
             });
             input.value = '';
         }
-        function renderCustPhotoPreview() {
-            const div = document.getElementById('cust-photo-preview');
-            div.innerHTML = selectedCustPhotos.map((src, idx) => `
-                <div class="relative flex-shrink-0"><img src="${src}" class="photo-thumb"><button onclick="selectedCustPhotos.splice(${idx},1);renderCustPhotoPreview()" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center">×</button></div>
+
+        function renderPhotoList(divId, photoArray) {
+            const div = document.getElementById(divId);
+            div.innerHTML = photoArray.map((src, idx) => `
+                <div class="relative flex-shrink-0"><img src="${src}" class="photo-thumb"><button onclick="removePhoto('${divId}', ${idx})" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center">×</button></div>
             `).join('');
         }
 
-        // --- 客戶 Modal ---
+        function removePhoto(divId, idx) {
+            if (divId === 'new-record-photos') { selectedRecordPhotos.splice(idx, 1); renderRecordPhotoPreview(); }
+            else if (divId === 'cust-photo-preview') { selectedCustPhotos.splice(idx, 1); renderPhotoList('cust-photo-preview', selectedCustPhotos); }
+            else if (divId === 'edit-record-photo-preview') { selectedEditRecordPhotos.splice(idx, 1); renderPhotoList('edit-record-photo-preview', selectedEditRecordPhotos); }
+        }
+
         function showAddCustomerModal() {
             document.getElementById('modal-title').innerText = '新增客戶';
             document.getElementById('cust-id').value = '';
@@ -462,9 +515,8 @@
             document.getElementById('cust-note').value = '';
             document.getElementById('cust-machine').value = '';
             document.getElementById('cust-filter').value = '';
-            document.getElementById('cust-install-date').value = new Date().toISOString().split('T')[0]; // 預設今天
-            selectedCustPhotos = [];
-            renderCustPhotoPreview();
+            document.getElementById('cust-install-date').value = new Date().toISOString().split('T')[0];
+            selectedCustPhotos = []; renderPhotoList('cust-photo-preview', []);
             document.getElementById('btn-delete-customer').classList.add('hidden');
             document.getElementById('customer-modal').classList.remove('hidden');
         }
@@ -480,30 +532,24 @@
             document.getElementById('cust-machine').value = currentCustomer.machine;
             document.getElementById('cust-filter').value = currentCustomer.filter;
             document.getElementById('cust-install-date').value = currentCustomer.installDate ? currentCustomer.installDate.split('T')[0] : '';
-            selectedCustPhotos = []; // 編輯時不載入舊圖到預覽區，因為預覽區是放「新上傳」的
-            renderCustPhotoPreview();
+            selectedCustPhotos = []; renderPhotoList('cust-photo-preview', []);
             document.getElementById('btn-delete-customer').classList.remove('hidden');
             document.getElementById('customer-modal').classList.remove('hidden');
         }
 
-        function closeModal() { document.getElementById('customer-modal').classList.add('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
         async function saveCustomer() {
             const id = document.getElementById('cust-id').value;
             const name = document.getElementById('cust-name').value;
             const phone = document.getElementById('cust-phone').value;
-            if (!name || !phone) return alert("姓名和電話必填");
+            if (!name || !phone) return alert("姓名電話必填");
 
             let photoUrls = [];
-            // 如果是編輯模式，先保留舊照片 (需要解析 currentCustomer.photos)
             if (id && currentCustomer && currentCustomer.photos) {
                  if (Array.isArray(currentCustomer.photos)) photoUrls = [...currentCustomer.photos];
-                 else {
-                     try { photoUrls = JSON.parse(currentCustomer.photos); } catch(e) { photoUrls = [currentCustomer.photos]; }
-                 }
+                 else try { photoUrls = JSON.parse(currentCustomer.photos); } catch(e) { photoUrls = [currentCustomer.photos]; }
             }
-
-            // 上傳新照片
             if (selectedCustPhotos.length > 0) {
                 showLoading(true);
                 for (let base64 of selectedCustPhotos) {
@@ -513,9 +559,7 @@
             }
 
             const payload = {
-                id: id,
-                name: name,
-                phone: phone,
+                id: id, name: name, phone: phone,
                 address: document.getElementById('cust-address').value,
                 note: document.getElementById('cust-note').value,
                 machine: document.getElementById('cust-machine').value,
@@ -528,33 +572,21 @@
             const res = await apiCall(action, payload);
             
             if (res.status === 'success') {
-                alert("儲存成功");
-                closeModal();
-                fetchCustomers();
-                if (id && currentCustomer) {
-                    openDetail({ ...currentCustomer, ...payload, photos: photoUrls });
-                }
-            } else {
-                alert("儲存失敗");
-            }
+                alert("儲存成功"); closeModal('customer-modal'); fetchCustomers();
+                if (id && currentCustomer) openDetail({ ...currentCustomer, ...payload, photos: photoUrls });
+            } else { alert("失敗"); }
         }
 
         async function deleteCustomer() {
-            if (!confirm("確定刪除此客戶？")) return;
-            const id = document.getElementById('cust-id').value;
-            await apiCall('deleteCustomer', { id });
-            alert("已刪除");
-            closeModal();
-            goBack();
-            fetchCustomers();
+            if (confirm("確定刪除此客戶？")) {
+                await apiCall('deleteCustomer', { id: document.getElementById('cust-id').value });
+                alert("已刪除"); closeModal('customer-modal'); goBack(); fetchCustomers();
+            }
         }
 
-        function showLoading(show) {
-            document.getElementById('loading').classList.toggle('hidden', !show);
-        }
-        document.getElementById('customer-modal').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('customer-modal')) closeModal();
-        });
+        function showLoading(show) { document.getElementById('loading').classList.toggle('hidden', !show); }
+        document.getElementById('customer-modal').addEventListener('click', e => { if (e.target.id === 'customer-modal') closeModal('customer-modal'); });
+        document.getElementById('record-modal').addEventListener('click', e => { if (e.target.id === 'record-modal') closeModal('record-modal'); });
     </script>
 </body>
 </html>
