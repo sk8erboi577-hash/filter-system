@@ -361,8 +361,9 @@
                             ${r.amount ? `<div class="text-green-600 font-bold font-mono text-2xl bg-green-50 px-3 py-1 rounded-lg">NT$${r.amount}</div>` : ''}
                         </div>
                     </div>
-                    <div class="bg-gray-50 p-4 rounded-xl font-bold text-gray-800 mb-3 text-xl leading-relaxed border border-gray-100">${r.items}</div>
-                    ${r.note ? `<div class="text-base text-gray-600 mb-3 px-1"><span class="font-bold">備註:</span> ${r.note}</div>` : ''}
+                    // ✨ 修改後：字體跟標題一樣大 (text-3xl)，並且是黑色的
+<div class="bg-gray-50 p-4 rounded-xl font-bold text-gray-900 mb-3 text-3xl leading-relaxed border border-gray-100">${r.items}</div>
+${r.note ? `<div class="text-2xl text-gray-800 mb-3 px-1 font-bold"><span class="text-gray-500">備註:</span> ${r.note}</div>` : ''}
                     ${photos.length > 0 ? `<div class="photo-grid mb-3">${photos.map(url => `<img src="${url}" class="photo-thumb cursor-pointer border-2 border-white shadow-sm" onclick="window.open('${url}')">`).join('')}</div>` : ''}
                     
                     <div class="flex justify-end gap-3 mt-4 pt-3 border-t border-gray-100">
@@ -609,3 +610,4 @@
     </script>
 </body>
 </html>
+
