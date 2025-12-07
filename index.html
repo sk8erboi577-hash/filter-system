@@ -29,58 +29,63 @@
     }
   </script>
   <style>
+    /* 整體放大約 1.2 倍 */
+    html{
+      font-size:18px; /* 16 -> 18，大約 1.125~1.2 倍 */
+    }
+
     body{
       background:#F2F2F7;
       font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang TC","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
       -webkit-tap-highlight-color:transparent;
-      padding-bottom:96px;
+      padding-bottom:110px;
       color:#1C1C1E;
     }
     #page-list,#page-detail{min-height:100vh;}
 
     /* 頂部列 */
     .app-header{
-      backdrop-filter:blur(16px);
-      background:rgba(249,250,251,0.9);
+      backdrop-filter:blur(18px);
+      background:rgba(249,250,251,0.94);
       border-bottom:1px solid rgba(229,231,235,0.9);
     }
     .app-header h1{letter-spacing:0.02em;}
 
-    /* 搜尋列：白底 + 淺灰邊 */
+    /* 搜尋列 */
     .search-bar{
       background:#FFF;
-      border-radius:12px;
-      padding:8px 10px;
+      border-radius:14px;
+      padding:9px 12px;
       display:flex;
       align-items:center;
       gap:8px;
       border:1px solid #E5E7EB;
-      box-shadow:0 1px 2px rgba(15,23,42,0.03);
+      box-shadow:0 1px 3px rgba(15,23,42,0.05);
     }
     .search-bar input{
       background:transparent;
       border:none;
       padding:0;
-      height:32px;
-      font-size:14px;
+      height:34px;
+      font-size:15px;
       color:#111827;
       width:100%;
     }
     .search-bar input::placeholder{color:#9CA3AF;}
     .search-bar input:focus{outline:none;box-shadow:none;}
 
-    /* Dashboard 卡片（Layout C） */
+    /* Dashboard 卡片 */
     .dashboard-card{
       background:#FFF;
-      border-radius:16px;
-      padding:14px 16px;
-      box-shadow:0 6px 12px rgba(15,23,42,0.06);
+      border-radius:18px;
+      padding:16px 16px 14px;
+      box-shadow:0 7px 14px rgba(15,23,42,0.08);
       border:1px solid #E5E7EB;
       color:#111827;
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:10px;
+      gap:12px;
       position:relative;
       overflow:hidden;
       transition:transform .12s;
@@ -88,7 +93,7 @@
     .dashboard-card:active{transform:scale(.98);}
     .dashboard-main{flex:1;min-width:0;}
     .dashboard-name{
-      font-size:18px;
+      font-size:19px;
       font-weight:700;
       letter-spacing:.01em;
       margin-bottom:4px;
@@ -97,12 +102,12 @@
     .dashboard-tag{
       display:inline-flex;
       align-items:center;
-      height:22px;
-      padding:0 8px;
+      height:24px;
+      padding:0 10px;
       border-radius:999px;
       border:1px solid #E5E7EB;
       background:#F3F4F6;
-      font-size:11px;
+      font-size:12px;
       font-weight:500;
       color:#4B5563;
       margin-bottom:6px;
@@ -118,7 +123,7 @@
       display:flex;
       align-items:center;
       gap:10px;
-      font-size:12px;
+      font-size:13px;
       color:#6B7280;
       flex-wrap:wrap;
     }
@@ -128,14 +133,14 @@
       gap:4px;
       white-space:nowrap;
     }
-    .dashboard-meta .material-icons{font-size:14px;}
+    .dashboard-meta .material-icons{font-size:16px;}
     .dashboard-chevron{
       display:flex;
       align-items:center;
       justify-content:center;
       border-radius:999px;
-      width:28px;
-      height:28px;
+      width:32px;
+      height:32px;
       background:#F3F4F6;
       border:1px solid #E5E7EB;
       flex-shrink:0;
@@ -146,11 +151,11 @@
     /* 輸入框 */
     input,textarea,select{
       width:100%;
-      padding:11px 12px;
+      padding:13px 13px;
       border:1px solid #D1D5DB;
-      border-radius:10px;
+      border-radius:12px;
       margin-bottom:12px;
-      font-size:15px;
+      font-size:16px;
       background:#F9FAFB;
       color:#111827;
       appearance:none;
@@ -159,11 +164,11 @@
     input:focus,textarea:focus,select:focus{
       border-color:#007AFF;
       outline:none;
-      box-shadow:0 0 0 3px rgba(0,122,255,.2);
+      box-shadow:0 0 0 3px rgba(0,122,255,.25);
       background:#FFF;
     }
     label{
-      font-size:12px;
+      font-size:13px;
       color:#6B7280;
       margin-bottom:4px;
       display:block;
@@ -171,53 +176,54 @@
       letter-spacing:.02em;
     }
 
-    /* 主按鈕：藍色實心 */
+    /* 主按鈕 */
     .btn-primary{
       background:linear-gradient(135deg,#0A84FF,#007AFF);
       color:#FFF;
-      padding:13px;
-      border-radius:14px;
+      padding:14px;
+      border-radius:16px;
       font-weight:600;
-      font-size:16px;
+      font-size:17px;
       width:100%;
       text-align:center;
       border:none;
-      box-shadow:0 10px 20px rgba(37,99,235,.35);
+      box-shadow:0 12px 24px rgba(37,99,235,.35);
       transition:transform .12s,box-shadow .12s,opacity .12s;
     }
     .btn-primary:active{
       transform:scale(.97) translateY(1px);
       opacity:.9;
-      box-shadow:0 6px 12px rgba(37,99,235,.4);
+      box-shadow:0 8px 16px rgba(37,99,235,.45);
     }
 
     /* FAB */
     .fab{
       position:fixed;
-      right:20px;
-      bottom:26px;
-      width:54px;
-      height:54px;
+      right:22px;
+      bottom:30px;
+      width:66px;
+      height:66px;
       border-radius:999px;
       background:linear-gradient(135deg,#0A84FF,#4F46E5);
       display:flex;
       align-items:center;
       justify-content:center;
       color:#FFF;
-      box-shadow:0 16px 26px rgba(37,99,235,.5);
+      box-shadow:0 20px 30px rgba(37,99,235,.55);
       z-index:50;
       transition:transform .1s,box-shadow .1s;
     }
+    .fab span.material-icons{font-size:30px;}
     .fab:active{
       transform:scale(.95) translateY(1px);
-      box-shadow:0 10px 18px rgba(37,99,235,.6);
+      box-shadow:0 12px 22px rgba(37,99,235,.65);
     }
 
     /* Loading */
     .loading-overlay{
       position:fixed;
       inset:0;
-      background:rgba(249,250,251,.8);
+      background:rgba(249,250,251,.86);
       backdrop-filter:blur(6px);
       display:flex;
       align-items:center;
@@ -236,13 +242,13 @@
     /* 照片卡片 */
     .machine-photo-card{
       background:#FFF;
-      margin-top:-32px;
+      margin-top:-36px;
       margin-inline:auto;
-      border-radius:20px;
-      padding:10px;
-      box-shadow:0 12px 25px rgba(15,23,42,.16);
+      border-radius:22px;
+      padding:12px;
+      box-shadow:0 14px 28px rgba(15,23,42,.2);
       border:1px solid #E5E7EB;
-      max-width:480px;
+      max-width:500px;
       position:relative;
       z-index:10;
     }
@@ -256,8 +262,8 @@
     #customer-photos-container::-webkit-scrollbar{display:none;}
     .machine-photo-slide{
       flex:0 0 100%;
-      height:190px;
-      border-radius:16px;
+      height:210px;
+      border-radius:18px;
       overflow:hidden;
       background:#E5E7EB;
       scroll-snap-align:center;
@@ -270,98 +276,98 @@
     }
     .machine-photo-empty{
       width:100%;
-      height:190px;
-      border-radius:16px;
+      height:210px;
+      border-radius:18px;
       border:1px dashed #D1D5DB;
       display:flex;
       align-items:center;
       justify-content:center;
       color:#9CA3AF;
-      font-size:13px;
+      font-size:14px;
       background:#F9FAFB;
     }
 
-    .detail-section{max-width:520px;margin-inline:auto;margin-top:18px;}
+    .detail-section{max-width:540px;margin-inline:auto;margin-top:20px;}
     .detail-card{
       background:#FFF;
-      border-radius:16px;
-      padding:14px 14px 12px;
-      margin-bottom:12px;
+      border-radius:18px;
+      padding:16px 16px 14px;
+      margin-bottom:14px;
       border:1px solid #E5E7EB;
-      box-shadow:0 4px 10px rgba(15,23,42,.04);
+      box-shadow:0 5px 12px rgba(15,23,42,.06);
       color:#111827;
     }
     .detail-card h3{
       font-size:13px;
-      font-weight:600;
+      font-weight:700;
       letter-spacing:.16em;
       text-transform:uppercase;
       color:#9CA3AF;
-      margin-bottom:8px;
+      margin-bottom:10px;
     }
     .detail-row{
       display:flex;
       gap:10px;
-      font-size:14px;
-      padding:4px 0;
+      font-size:15px;
+      padding:5px 0;
       color:#111827;
     }
     .detail-row label{
       font-size:13px;
       color:#6B7280;
       margin-bottom:0;
-      width:68px;
+      width:72px;
       flex-shrink:0;
     }
     .detail-note{color:#D97706;}
 
     /* Timeline */
-    .timeline-wrapper{position:relative;padding-left:16px;}
+    .timeline-wrapper{position:relative;padding-left:18px;}
     .timeline-wrapper::before{
       content:"";
       position:absolute;
-      left:6px;
-      top:6px;
-      bottom:6px;
+      left:7px;
+      top:8px;
+      bottom:8px;
       width:2px;
       background:#E5E7EB;
     }
-    .timeline-item{position:relative;margin-bottom:12px;}
+    .timeline-item{position:relative;margin-bottom:13px;}
     .timeline-dot{
       position:absolute;
       left:2px;
-      top:10px;
-      width:9px;
-      height:9px;
+      top:12px;
+      width:10px;
+      height:10px;
       border-radius:999px;
       border:2px solid #0EA5E9;
       background:#FFF;
-      box-shadow:0 0 0 3px rgba(59,130,246,.15);
+      box-shadow:0 0 0 3px rgba(59,130,246,.18);
     }
     .record-card{
       background:#FFF;
-      border-radius:14px;
-      padding:10px 10px 8px;
+      border-radius:16px;
+      padding:11px 11px 9px;
       border:1px solid #E5E7EB;
-      box-shadow:0 3px 8px rgba(15,23,42,.05);
+      box-shadow:0 3px 8px rgba(15,23,42,.06);
       color:#111827;
-      margin-left:14px;
+      margin-left:16px;
     }
     .record-card-header{
       display:flex;
       justify-content:space-between;
       align-items:baseline;
-      margin-bottom:4px;
+      margin-bottom:5px;
     }
-    .record-date{font-size:13px;font-weight:600;color:#374151;}
-    .record-amount{font-size:13px;font-weight:600;color:#16A34A;}
-    .record-items{font-size:14px;font-weight:500;margin-bottom:4px;}
+    .record-date{font-size:14px;font-weight:600;color:#374151;}
+    .record-amount{font-size:14px;font-weight:600;color:#16A34A;}
+    .record-items{font-size:15px;font-weight:500;margin-bottom:4px;}
     .record-note{
-      font-size:12px;
+      font-size:13px;
       color:#6B7280;
       background:#F9FAFB;
-      border-radius:8px;
-      padding:6px 8px;
+      border-radius:9px;
+      padding:6px 9px;
       margin-bottom:6px;
     }
     .record-actions{
@@ -371,84 +377,84 @@
       padding-top:6px;
       border-top:1px solid #E5E7EB;
       margin-top:4px;
-      font-size:12px;
+      font-size:13px;
     }
-    .record-actions button{padding:3px 8px;border-radius:999px;}
+    .record-actions button{padding:4px 10px;border-radius:999px;}
 
     /* 照片縮圖 */
     .photo-grid{
       display:flex;
-      gap:8px;
+      gap:9px;
       overflow-x:auto;
       padding:4px 0;
     }
     .photo-thumb{
-      width:80px;
-      height:80px;
+      width:88px;
+      height:88px;
       object-fit:cover;
-      border-radius:10px;
+      border-radius:11px;
       background:#F3F4F6;
       border:1px solid #E5E7EB;
     }
 
     /* Bottom sheet */
     .sheet-backdrop{
-      background:rgba(17,24,39,.25);
+      background:rgba(17,24,39,.28);
       backdrop-filter:blur(10px);
     }
     .sheet{
       background:#FFF;
-      border-radius:18px 18px 0 0;
+      border-radius:20px 20px 0 0;
       border-top:1px solid #E5E7EB;
-      box-shadow:0 -12px 30px rgba(15,23,42,.35);
+      box-shadow:0 -14px 32px rgba(15,23,42,.4);
     }
     @media (min-width:640px){
-      .sheet{border-radius:18px;max-width:420px;}
+      .sheet{border-radius:20px;max-width:440px;}
       #customer-modal,#record-modal{align-items:center;}
     }
     .sheet-header{
       display:flex;
       justify-content:space-between;
       align-items:center;
-      padding:10px 14px 8px;
+      padding:10px 16px 9px;
       border-bottom:1px solid #E5E7EB;
       background:#F9FAFB;
     }
     .sheet-grabber{
-      width:36px;
+      width:42px;
       height:4px;
       border-radius:999px;
       background:#D1D5DB;
-      margin:4px auto 8px;
+      margin:5px auto 8px;
     }
-    .sheet-title{font-size:16px;font-weight:600;color:#111827;}
-    .sheet-btn-text{font-size:15px;font-weight:500;color:#007AFF;}
+    .sheet-title{font-size:17px;font-weight:600;color:#111827;}
+    .sheet-btn-text{font-size:16px;font-weight:500;color:#007AFF;}
     .sheet-body{
-      padding:12px 16px 18px;
+      padding:12px 18px 20px;
       overflow-y:auto;
       background:#F3F4F6;
     }
     .danger-btn{
       width:100%;
-      padding:11px 0;
-      border-radius:12px;
+      padding:12px 0;
+      border-radius:14px;
       background:#FEF2F2;
       color:#DC2626;
       border:1px solid #FECACA;
-      font-size:14px;
+      font-size:15px;
       margin-top:4px;
     }
   </style>
 </head>
 <body>
 
-  <!-- 首頁：客戶列表 -->
+  <!-- 首頁 -->
   <div id="page-list">
     <div class="app-header sticky top-0 z-10">
       <div class="pt-10 pb-4 px-4 max-w-md mx-auto">
         <h1 class="text-2xl font-bold text-gray-900 mb-3">濾芯保養系統</h1>
         <div class="search-bar">
-          <span class="material-icons text-gray-400" style="font-size:20px;">search</span>
+          <span class="material-icons text-gray-400" style="font-size:21px;">search</span>
           <input id="search-input" type="text" placeholder="搜尋客戶名稱、電話或備註...">
         </div>
       </div>
@@ -531,8 +537,8 @@
             <div>
               <label>金額</label>
               <div class="relative">
-                <span class="absolute left-3 top-2 text-gray-400 text-sm">NT$</span>
-                <input type="number" id="record-amount" class="pl-10 mb-0 h-10 text-green-600 font-bold" placeholder="0">
+                <span class="absolute left-3 top-3 text-gray-400 text-sm">NT$</span>
+                <input type="number" id="record-amount" class="pl-11 mb-0 h-10 text-green-600 font-bold" placeholder="0">
               </div>
             </div>
           </div>
@@ -667,7 +673,7 @@
 
   <!-- Loading -->
   <div id="loading" class="loading-overlay hidden">
-    <div class="animate-spin rounded-full h-8 w-8 border-4 border-gray-200 border-t-primary mb-3"></div>
+    <div class="animate-spin rounded-full h-9 w-9 border-4 border-gray-200 border-t-primary mb-3"></div>
     <p class="text-gray-600 font-medium text-sm">處理中...</p>
   </div>
 
@@ -680,7 +686,25 @@
     let selectedRecordPhotos = [];
     let selectedCustPhotos = [];
     let selectedEditRecordPhotos = [];
-    window.currentRecords = []; // 額外存歷史紀錄，方便編輯使用
+    window.currentRecords = [];
+
+    // 統一處理日期字串：支援 "2025-02-01", "2025-01-31T16:00:00.000Z", "Sat Feb 01 2025 ..."
+    function normalizeDateStr(value){
+      if (!value) return '';
+      const str = String(value);
+      // 若有 T 或 GMT，先用 Date 解析成「當地時間」，再組 yyyy-mm-dd
+      if (str.includes('T') || str.includes('GMT')) {
+        const d = new Date(str);
+        if (!isNaN(d.getTime())) {
+          const y = d.getFullYear();
+          const m = String(d.getMonth() + 1).padStart(2,'0');
+          const day = String(d.getDate()).padStart(2,'0');
+          return `${y}-${m}-${day}`; // 固定為 2025-02-01
+        }
+      }
+      // 其他情況：只取第一段（避免後面有時間）
+      return str.split(/[ T]/)[0];
+    }
 
     window.onload = () => {
       fetchCustomers();
@@ -740,7 +764,7 @@
           : 'dashboard-tag dashboard-tag-empty';
 
         const lastText = c.lastRecordDate
-          ? c.lastRecordDate
+          ? normalizeDateStr(c.lastRecordDate)
           : '尚無保養紀錄';
 
         card.innerHTML = `
@@ -786,11 +810,11 @@
 
       const dateEl = document.getElementById('detail-install-date');
       if (customer.installDate) {
-        dateEl.textContent = String(customer.installDate).split('T')[0];
-        dateEl.classList.remove('text-gray-400', 'italic');
+        dateEl.textContent = normalizeDateStr(customer.installDate);
+        dateEl.classList.remove('text-gray-400','italic');
       } else {
         dateEl.textContent = '無紀錄';
-        dateEl.classList.add('text-gray-400', 'italic');
+        dateEl.classList.add('text-gray-400','italic');
       }
 
       setText('detail-address', customer.address);
@@ -834,17 +858,17 @@
       }
 
       await fetchRecords(customer.id);
-      renderList(customers); // 讓首頁同步顯示最新「最近保養」
+      renderList(customers);
     }
 
     function setText(id, value) {
       const el = document.getElementById(id);
       if (!value) {
         el.innerText = '未填寫';
-        el.classList.add('text-gray-400', 'italic');
+        el.classList.add('text-gray-400','italic');
       } else {
         el.innerText = value;
-        el.classList.remove('text-gray-400', 'italic');
+        el.classList.remove('text-gray-400','italic');
       }
     }
 
@@ -870,16 +894,17 @@
         return;
       }
 
-      // 從新到舊
-      records.sort((a, b) => new Date(b.date) - new Date(a.date));
+      records.sort((a, b) => new Date(a.date) - new Date(b.date)); // 先從舊到新
       window.currentRecords = records;
 
-      // 更新 currentCustomer 的 lastRecordDate
-      if (currentCustomer && records[0] && records[0].date) {
-        currentCustomer.lastRecordDate = String(records[0].date).split('T')[0];
+      // 更新 currentCustomer 的 lastRecordDate（取最後一筆）
+      const last = records[records.length - 1];
+      if (currentCustomer && last && last.date) {
+        currentCustomer.lastRecordDate = normalizeDateStr(last.date);
       }
 
-      records.forEach(r => {
+      // 再由新到舊畫 timeline，比較順眼
+      records.slice().reverse().forEach(r => {
         let photos = [];
         if (r.photos) {
           if (Array.isArray(r.photos)) photos = r.photos;
@@ -897,9 +922,11 @@
         const card = document.createElement('div');
         card.className = 'record-card';
 
+        const dateStr = r.date ? normalizeDateStr(r.date) : '';
+
         card.innerHTML = `
           <div class="record-card-header">
-            <div class="record-date">${r.date ? String(r.date).split('T')[0] : ''}</div>
+            <div class="record-date">${dateStr}</div>
             ${r.amount ? `<div class="record-amount">NT$${r.amount}</div>` : ''}
           </div>
           <div class="record-items">${r.items || ''}</div>
@@ -923,7 +950,6 @@
       });
     }
 
-    // 只傳 id 進來，避免 onclick JSON 出錯
     function openEditRecordModal(recordId) {
       const record = window.currentRecords.find(r => String(r.id) === String(recordId));
       if (!record) {
@@ -933,7 +959,7 @@
 
       document.getElementById('edit-record-id').value = record.id || '';
       document.getElementById('edit-record-date').value =
-        record.date ? String(record.date).split('T')[0] : '';
+        record.date ? normalizeDateStr(record.date) : '';
       document.getElementById('edit-record-items').value = record.items || '';
       document.getElementById('edit-record-amount').value = record.amount || '';
       document.getElementById('edit-record-note').value = record.note || '';
@@ -1148,7 +1174,7 @@
       document.getElementById('cust-machine').value = currentCustomer.machine || '';
       document.getElementById('cust-filter').value = currentCustomer.filter || '';
       document.getElementById('cust-install-date').value =
-        currentCustomer.installDate ? String(currentCustomer.installDate).split('T')[0] : '';
+        currentCustomer.installDate ? normalizeDateStr(currentCustomer.installDate) : '';
       selectedCustPhotos = [];
       renderPhotoList('cust-photo-preview', []);
       document.getElementById('btn-delete-customer').classList.remove('hidden');
@@ -1201,7 +1227,6 @@
         closeModal('customer-modal');
         await fetchCustomers();
         if (id && currentCustomer) {
-          // 更新目前詳細頁資料
           currentCustomer = { ...currentCustomer, ...payload };
           openDetail(currentCustomer);
         }
