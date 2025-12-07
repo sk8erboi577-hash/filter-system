@@ -766,16 +766,30 @@ if (str.includes('T') || str.includes('GMT')) {
       }
     }
 
-    async function fetchCustomers() {
-      const data = await apiCall('getCustomers', {}, 'GET');
-      if (Array.isArray(data)) {
-        customers = data;
-        renderList(customers);
-      } else {
-        document.getElementById('customer-list').innerHTML =
-          '<div class="text-center text-gray-400 mt-20 text-sm">讀取失敗</div>';
-      }
+  async function fetchCustomers() {
+  const data = await apiCall('getCustomers', {}, 'GET');
+  if (!Array.isArray(data)) {
+    document.getElementById('customer-list').innerHTML =
+      '<div class="text-center text-gray-400 mt-20 text-sm">讀取失敗</div>';
+    return;
+  }
+
+  customers = data;
+
+  // 🔥 自動抓每位客戶的最後保養日期
+  for (let cust of customers) {
+    const records = await apiCall('getRecords', { customerId: cust.id }, 'GET');
+    if (records && records.length > 0) {
+      const lastRecord = records[records.length - 1];
+      cust.lastRecordDate = lastRecord.date ? normalizeDateStr(lastRecord.date) : '';
+    } else {
+      cust.lastRecordDate = '';
     }
+  }
+
+  renderList(customers);
+}
+
 
     function renderList(list) {
       const container = document.getElementById('customer-list');
@@ -1294,5 +1308,6 @@ document.getElementById('cust-install-date').value = `${y}-${m}-${day}`;
   </script>
 </body>
 </html>
+
 
 
