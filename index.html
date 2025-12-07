@@ -28,10 +28,10 @@
       }
     }
   </script>
-  <style>
+    <style>
     /* 整體放大約 1.2 倍 */
     html{
-      font-size:22px; /* 16 -> 18，大約 1.125~1.2 倍 */
+      font-size:20px; /* 原本 18，整體再放大一點 */
     }
 
     body{
@@ -49,7 +49,10 @@
       background:rgba(249,250,251,0.94);
       border-bottom:1px solid rgba(229,231,235,0.9);
     }
-    .app-header h1{letter-spacing:0.02em;}
+    .app-header h1{
+      letter-spacing:0.02em;
+      font-size:1.9rem; /* 顯示標題再放大一點，蓋掉 text-2xl */
+    }
 
     /* 搜尋列 */
     .search-bar{
@@ -66,8 +69,8 @@
       background:transparent;
       border:none;
       padding:0;
-      height:34px;
-      font-size:15px;
+      height:36px;
+      font-size:17px;  /* 原 15 */
       color:#111827;
       width:100%;
     }
@@ -78,14 +81,14 @@
     .dashboard-card{
       background:#FFF;
       border-radius:18px;
-      padding:16px 16px 14px;
+      padding:18px 18px 16px; /* 微放大 padding */
       box-shadow:0 7px 14px rgba(15,23,42,0.08);
       border:1px solid #E5E7EB;
       color:#111827;
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:12px;
+      gap:14px;
       position:relative;
       overflow:hidden;
       transition:transform .12s;
@@ -93,24 +96,24 @@
     .dashboard-card:active{transform:scale(.98);}
     .dashboard-main{flex:1;min-width:0;}
     .dashboard-name{
-      font-size:24px;
+      font-size:22px;  /* 原 19 */
       font-weight:700;
       letter-spacing:.01em;
-      margin-bottom:4px;
+      margin-bottom:6px;
       color:#111827;
     }
     .dashboard-tag{
       display:inline-flex;
       align-items:center;
-      height:24px;
-      padding:0 10px;
+      height:26px;
+      padding:0 12px;
       border-radius:999px;
       border:1px solid #E5E7EB;
       background:#F3F4F6;
-      font-size:16px;
+      font-size:14px;   /* 原 12 */
       font-weight:500;
       color:#4B5563;
-      margin-bottom:6px;
+      margin-bottom:8px;
       max-width:100%;
       white-space:nowrap;
     }
@@ -122,8 +125,8 @@
     .dashboard-meta{
       display:flex;
       align-items:center;
-      gap:10px;
-      font-size:16px;
+      gap:12px;
+      font-size:15px;   /* 原 13 */
       color:#6B7280;
       flex-wrap:wrap;
     }
@@ -133,29 +136,29 @@
       gap:4px;
       white-space:nowrap;
     }
-    .dashboard-meta .material-icons{font-size:16px;}
+    .dashboard-meta .material-icons{font-size:18px;} /* 原 16 */
     .dashboard-chevron{
       display:flex;
       align-items:center;
       justify-content:center;
       border-radius:999px;
-      width:32px;
-      height:32px;
+      width:34px;
+      height:34px;
       background:#F3F4F6;
       border:1px solid #E5E7EB;
       flex-shrink:0;
     }
-    .dashboard-chevron .material-icons{font-size:18px;color:#9CA3AF;}
-    .subtle-text{font-size:12px;color:#9CA3AF;}
+    .dashboard-chevron .material-icons{font-size:19px;color:#9CA3AF;}
+    .subtle-text{font-size:14px;color:#9CA3AF;}  /* 原 12 */
 
     /* 輸入框 */
     input,textarea,select{
       width:100%;
-      padding:13px 13px;
+      padding:14px 14px;
       border:1px solid #D1D5DB;
       border-radius:12px;
       margin-bottom:12px;
-      font-size:20px;
+      font-size:18px;   /* 原 16 */
       background:#F9FAFB;
       color:#111827;
       appearance:none;
@@ -168,7 +171,7 @@
       background:#FFF;
     }
     label{
-      font-size:17px;
+      font-size:16px;   /* 原 13 */
       color:#6B7280;
       margin-bottom:4px;
       display:block;
@@ -180,10 +183,10 @@
     .btn-primary{
       background:linear-gradient(135deg,#0A84FF,#007AFF);
       color:#FFF;
-      padding:14px;
+      padding:15px;
       border-radius:16px;
       font-weight:600;
-      font-size:17px;
+      font-size:19px;  /* 原 17 */
       width:100%;
       text-align:center;
       border:none;
@@ -201,8 +204,8 @@
       position:fixed;
       right:22px;
       bottom:30px;
-      width:66px;
-      height:66px;
+      width:70px;
+      height:70px;
       border-radius:999px;
       background:linear-gradient(135deg,#0A84FF,#4F46E5);
       display:flex;
@@ -213,7 +216,7 @@
       z-index:50;
       transition:transform .1s,box-shadow .1s;
     }
-    .fab span.material-icons{font-size:30px;}
+    .fab span.material-icons{font-size:34px;} /* 原 30 */
     .fab:active{
       transform:scale(.95) translateY(1px);
       box-shadow:0 12px 22px rgba(37,99,235,.65);
@@ -237,6 +240,9 @@
     .detail-header{
       background:rgba(249,250,251,.96);
       box-shadow:0 1px 0 rgba(229,231,235,.9);
+    }
+    .detail-header h2{
+      font-size:1.35rem; /* 比 text-lg 再大一點 */
     }
 
     /* 照片卡片 */
@@ -262,7 +268,7 @@
     #customer-photos-container::-webkit-scrollbar{display:none;}
     .machine-photo-slide{
       flex:0 0 100%;
-      height:210px;
+      height:220px;
       border-radius:18px;
       overflow:hidden;
       background:#E5E7EB;
@@ -276,14 +282,14 @@
     }
     .machine-photo-empty{
       width:100%;
-      height:210px;
+      height:220px;
       border-radius:18px;
       border:1px dashed #D1D5DB;
       display:flex;
       align-items:center;
       justify-content:center;
       color:#9CA3AF;
-      font-size:14px;
+      font-size:16px; /* 原 14 */
       background:#F9FAFB;
     }
 
@@ -291,14 +297,14 @@
     .detail-card{
       background:#FFF;
       border-radius:18px;
-      padding:16px 16px 14px;
-      margin-bottom:14px;
+      padding:18px 18px 16px;
+      margin-bottom:16px;
       border:1px solid #E5E7EB;
       box-shadow:0 5px 12px rgba(15,23,42,.06);
       color:#111827;
     }
     .detail-card h3{
-      font-size:13px;
+      font-size:15px;  /* 原 13 */
       font-weight:700;
       letter-spacing:.16em;
       text-transform:uppercase;
@@ -308,15 +314,15 @@
     .detail-row{
       display:flex;
       gap:10px;
-      font-size:15px;
-      padding:5px 0;
+      font-size:17px;  /* 原 15 */
+      padding:6px 0;
       color:#111827;
     }
     .detail-row label{
-      font-size:13px;
+      font-size:15px;  /* 原 13 */
       color:#6B7280;
       margin-bottom:0;
-      width:72px;
+      width:80px;
       flex-shrink:0;
     }
     .detail-note{color:#D97706;}
@@ -332,7 +338,7 @@
       width:2px;
       background:#E5E7EB;
     }
-    .timeline-item{position:relative;margin-bottom:13px;}
+    .timeline-item{position:relative;margin-bottom:14px;}
     .timeline-dot{
       position:absolute;
       left:2px;
@@ -347,7 +353,7 @@
     .record-card{
       background:#FFF;
       border-radius:16px;
-      padding:11px 11px 9px;
+      padding:12px 12px 10px;
       border:1px solid #E5E7EB;
       box-shadow:0 3px 8px rgba(15,23,42,.06);
       color:#111827;
@@ -357,13 +363,25 @@
       display:flex;
       justify-content:space-between;
       align-items:baseline;
-      margin-bottom:5px;
+      margin-bottom:6px;
     }
-    .record-date{font-size:14px;font-weight:600;color:#374151;}
-    .record-amount{font-size:14px;font-weight:600;color:#16A34A;}
-    .record-items{font-size:15px;font-weight:500;margin-bottom:4px;}
+    .record-date{
+      font-size:16px;  /* 原 14 */
+      font-weight:600;
+      color:#374151;
+    }
+    .record-amount{
+      font-size:16px;  /* 原 14 */
+      font-weight:600;
+      color:#16A34A;
+    }
+    .record-items{
+      font-size:17px;  /* 原 15 */
+      font-weight:500;
+      margin-bottom:4px;
+    }
     .record-note{
-      font-size:18px;
+      font-size:16px;  /* 原 13 */
       color:#6B7280;
       background:#F9FAFB;
       border-radius:9px;
@@ -377,7 +395,7 @@
       padding-top:6px;
       border-top:1px solid #E5E7EB;
       margin-top:4px;
-      font-size:13px;
+      font-size:15px;  /* 原 13 */
     }
     .record-actions button{padding:4px 10px;border-radius:999px;}
 
@@ -389,8 +407,8 @@
       padding:4px 0;
     }
     .photo-thumb{
-      width:88px;
-      height:88px;
+      width:90px;
+      height:90px;
       object-fit:cover;
       border-radius:11px;
       background:#F3F4F6;
@@ -427,8 +445,16 @@
       background:#D1D5DB;
       margin:5px auto 8px;
     }
-    .sheet-title{font-size:17px;font-weight:600;color:#111827;}
-    .sheet-btn-text{font-size:16px;font-weight:500;color:#007AFF;}
+    .sheet-title{
+      font-size:19px;  /* 原 17 */
+      font-weight:600;
+      color:#111827;
+    }
+    .sheet-btn-text{
+      font-size:18px;  /* 原 16 */
+      font-weight:500;
+      color:#007AFF;
+    }
     .sheet-body{
       padding:12px 18px 20px;
       overflow-y:auto;
@@ -441,10 +467,11 @@
       background:#FEF2F2;
       color:#DC2626;
       border:1px solid #FECACA;
-      font-size:15px;
+      font-size:17px; /* 原 15 */
       margin-top:4px;
     }
   </style>
+
 </head>
 <body>
 
@@ -1267,5 +1294,6 @@ document.getElementById('cust-install-date').value = `${y}-${m}-${day}`;
   </script>
 </body>
 </html>
+
 
 
