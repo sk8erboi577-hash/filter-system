@@ -774,23 +774,12 @@ async function fetchCustomers() {
     return;
   }
 
+  // 後端現在已經直接給 lastRecordDate
   customers = data;
-
-  // 🔥 一進入系統就抓出所有客戶的最新保養紀錄（你要的功能）
-  for (let cust of customers) {
-    const records = await apiCall('getRecords', { customerId: cust.id }, 'GET');
-
-    if (Array.isArray(records) && records.length > 0) {
-      // 取最後一筆紀錄（最新）
-      const last = records[records.length - 1];
-      cust.lastRecordDate = last.date ? normalizeDateStr(last.date) : '';
-    } else {
-      cust.lastRecordDate = ''; // 沒紀錄
-    }
-  }
 
   renderList(customers);
 }
+
 
 
 
@@ -1315,6 +1304,7 @@ document.getElementById('cust-install-date').value = `${y}-${m}-${day}`;
   </script>
 </body>
 </html>
+
 
 
 
