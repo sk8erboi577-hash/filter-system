@@ -498,7 +498,7 @@
 
   <!-- 詳細頁 -->
   <div id="page-detail" class="hidden min-h-screen">
-    <div class="detail-header pt-9 pb-3 px-2 flex items-center sticky top-0 z-20">
+ <div class="detail-header pt-4 pb-3 px-2 flex items-center sticky top-[env(safe-area-inset-top)] z-20">
       <button onclick="goBack()" class="p-2 flex items-center text-primary">
         <span class="material-icons">arrow_back_ios</span>
         <span class="text-lg ml-1">返回</span>
@@ -1304,6 +1304,7 @@ document.getElementById('cust-install-date').value = `${y}-${m}-${day}`;
   </script>
 </body>
 </html>
+
 
 
 
