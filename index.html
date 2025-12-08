@@ -18,12 +18,10 @@
     :root {
       --primary: #007AFF;
       --primary-light: #64A8FF;
-
       --milk-bg: #F5EFE7;
       --milk-card: #FFFFFF;
       --milk-border: #E6E2DA;
       --milk-input: #F9F7F2;
-
       --text-main: #3A342E;
       --text-secondary: #6E655C;
     }
@@ -84,7 +82,7 @@
     }
     .search-bar input:focus { outline:none; }
 
-    /* ✨ 篩選器樣式 (新增) */
+    /* ✨ 篩選器樣式 */
     .filter-scroll {
       display: flex;
       gap: 8px;
@@ -168,7 +166,6 @@
       border:3px solid var(--primary);
       border-radius:50%;
     }
-
     .record-card {
       background:var(--milk-card);
       border:1px solid var(--milk-border);
@@ -176,7 +173,6 @@
       border-radius:16px;
       box-shadow:0 4px 12px rgba(0,0,0,0.05);
     }
-
     .record-date { font-weight:600; }
     .record-amount { color:#008A32; font-weight:700; }
 
@@ -229,276 +225,208 @@
     input, textarea, select { -webkit-appearance: none; appearance: none; }
     .hidden { display: none !important; }
     .danger-btn { width: 100%; color: #ff3b30; background: #fff0f0; padding: 12px; border-radius: 12px; font-weight: 600; margin-top: 10px; }
+
+    /* Toast 通知樣式 */
+    .toast {
+      visibility: hidden;
+      min-width: 250px;
+      margin-left: -125px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 50px;
+      padding: 16px;
+      position: fixed;
+      z-index: 1000;
+      left: 50%;
+      bottom: 30px;
+      font-size: 17px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      opacity: 0;
+      transition: opacity 0.3s, bottom 0.3s;
+    }
+    .toast.show {
+      visibility: visible;
+      opacity: 1;
+      bottom: 50px;
+    }
   </style>
 </head>
 
 <body>
 
 <div id="page-list" class="min-h-screen">
-
   <div class="pt-10 pb-4 px-4 max-w-md mx-auto">
     <div class="text-3xl font-semibold mb-3">濾芯保養系統</div>
-
     <div class="search-bar">
       <span class="material-icons text-gray-400">search</span>
       <input id="search-input" type="text" placeholder="搜尋客戶名稱、電話或備註…">
     </div>
-
-    <div id="filter-container" class="filter-scroll">
-      </div>
+    <div id="filter-container" class="filter-scroll"></div>
   </div>
 
   <div id="customer-list" class="max-w-md mx-auto px-4 pt-2 pb-20">
     <div class="text-center text-gray-400 mt-20">載入中…</div>
   </div>
 
-  <div class="fixed right-6 bottom-8 bg-blue-600 text-white w-16 h-16 rounded-full
-              flex items-center justify-center shadow-xl text-3xl cursor-pointer"
-       onclick="showAddCustomerModal()">
+  <div class="fixed right-6 bottom-8 bg-blue-600 text-white w-16 h-16 rounded-full flex items-center justify-center shadow-xl text-3xl cursor-pointer z-40" onclick="showAddCustomerModal()">
     <span class="material-icons">add</span>
   </div>
 </div>
 
 <div id="page-detail" class="hidden min-h-screen">
-
   <div class="ios-nav-bar">
     <div class="ios-nav-left" onclick="goBack()">
-      <span class="material-icons">arrow_back_ios</span>
-      返回
+      <span class="material-icons">arrow_back_ios</span> 返回
     </div>
     <div class="ios-nav-title">客戶資料</div>
     <div class="ios-nav-right" onclick="showEditCustomerModal()">編輯</div>
   </div>
 
   <div class="pb-4 px-4 max-w-md mx-auto">
-
     <div class="mt-4 mb-4">
       <div id="customer-photos-container" class="flex gap-3 overflow-x-auto"></div>
     </div>
 
     <div class="record-card mb-4">
       <div class="font-bold mb-2 text-gray-500 text-xs tracking-widest">基本資料</div>
-
-      <div class="flex py-1"><span class="w-20 text-secondary">姓名</span>
-        <span id="detail-name"></span>
-      </div>
-
-      <div class="flex py-1"><span class="w-20 text-secondary">電話</span>
-        <span>
-          <a id="detail-phone-link" class="text-blue-600 font-medium flex items-center">
-            <span class="material-icons mr-1">phone</span>
-            <span id="detail-phone"></span>
-          </a>
-        </span>
-      </div>
-
-      <div class="flex py-1"><span class="w-20 text-secondary">安裝日期</span>
-        <span id="detail-install-date" class="text-gray-400 italic">無紀錄</span>
-      </div>
-
-      <div class="flex py-1"><span class="w-20 text-secondary">標籤</span>
-        <div id="detail-tags" class="flex flex-wrap gap-2"></div>
-      </div>
+      <div class="flex py-1"><span class="w-20 text-secondary">姓名</span><span id="detail-name"></span></div>
+      <div class="flex py-1"><span class="w-20 text-secondary">電話</span><span><a id="detail-phone-link" class="text-blue-600 font-medium flex items-center"><span class="material-icons mr-1 text-base">phone</span><span id="detail-phone"></span></a></span></div>
+      <div class="flex py-1"><span class="w-20 text-secondary">安裝日期</span><span id="detail-install-date" class="text-gray-400 italic">無紀錄</span></div>
+      <div class="flex py-1 items-start"><span class="w-20 text-secondary pt-1">標籤</span><div id="detail-tags" class="flex flex-wrap gap-2 flex-1"></div></div>
     </div>
 
     <div class="record-card mb-4">
       <div class="font-bold mb-2 text-gray-500 text-xs tracking-widest">設備資訊</div>
+      
+      <div class="flex py-1 items-center">
+        <span class="w-20 text-secondary flex-shrink-0">地址</span>
+        <div class="flex-1 flex items-center justify-between">
+           <span id="detail-address"></span>
+           <a id="detail-map-link" target="_blank" class="bg-blue-100 text-blue-600 px-3 py-1 rounded-lg text-sm font-bold flex items-center ml-2 hidden no-underline">
+              <span class="material-icons text-base mr-1">near_me</span>導航
+           </a>
+        </div>
+      </div>
 
-      <div class="flex py-1"><span class="w-20 text-secondary">地址</span>
-        <span id="detail-address"></span>
-      </div>
-      <div class="flex py-1"><span class="w-20 text-secondary">機器</span>
-        <span id="detail-machine"></span>
-      </div>
-      <div class="flex py-1"><span class="w-20 text-secondary">濾芯</span>
-        <span id="detail-filter"></span>
-      </div>
-
-      <div id="note-container" class="flex py-1 hidden">
-        <span class="w-20 text-secondary">備註</span>
-        <span id="detail-note"></span>
-      </div>
+      <div class="flex py-1"><span class="w-20 text-secondary">機器</span><span id="detail-machine"></span></div>
+      <div class="flex py-1"><span class="w-20 text-secondary">濾芯</span><span id="detail-filter"></span></div>
+      <div id="note-container" class="flex py-1 hidden"><span class="w-20 text-secondary">備註</span><span id="detail-note"></span></div>
     </div>
 
     <div class="record-card mb-4">
       <div class="font-bold mb-3 text-gray-500 text-xs tracking-widest">新增保養紀錄</div>
-
       <div class="grid grid-cols-2 gap-3 mb-3">
-        <div>
-          <div class="text-secondary text-sm mb-1">日期</div>
-          <input type="date" id="record-date" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2">
-        </div>
-        <div>
-          <div class="text-secondary text-sm mb-1">金額</div>
-          <input type="number" id="record-amount" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2" placeholder="0">
-        </div>
+        <div><div class="text-secondary text-sm mb-1">日期</div><input type="date" id="record-date" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2"></div>
+        <div><div class="text-secondary text-sm mb-1">金額</div><input type="number" id="record-amount" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2" placeholder="0"></div>
       </div>
-
-      <div class="mb-3">
-        <div class="text-secondary text-sm mb-1">更換項目</div>
-        <input id="record-items" type="text" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2" placeholder="例如：PP、活性碳">
-      </div>
-
-      <div class="mb-3">
-        <div class="text-secondary text-sm mb-1">備註</div>
-        <input id="record-note" type="text" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2">
-      </div>
-
+      <div class="mb-3"><div class="text-secondary text-sm mb-1">更換項目</div><input id="record-items" type="text" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2" placeholder="例如：PP、活性碳"></div>
+      <div class="mb-3"><div class="text-secondary text-sm mb-1">備註</div><input id="record-note" type="text" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2"></div>
+      
       <div class="flex gap-3 mb-3 items-center">
-        <label class="bg-gray-200 text-blue-600 px-3 py-1 rounded cursor-pointer flex items-center">
+        <label class="bg-gray-100 text-blue-600 px-3 py-2 rounded-lg cursor-pointer flex items-center font-medium">
           <span class="material-icons mr-1">camera_alt</span>拍照
           <input id="record-photo-input" type="file" accept="image/*" multiple class="hidden" onchange="handleRecordPhotoSelect(this)">
         </label>
         <span id="record-photo-count" class="text-sm text-secondary">0 張</span>
       </div>
-
       <div id="new-record-photos" class="flex gap-2 overflow-x-auto mb-3"></div>
-
-      <button class="w-full bg-blue-600 text-white rounded-xl py-3 text-lg font-semibold shadow"
-              onclick="saveRecord()">儲存紀錄</button>
+      <button class="w-full bg-blue-600 text-white rounded-xl py-3 text-lg font-semibold shadow active:scale-95 transition-transform" onclick="saveRecord()">儲存紀錄</button>
     </div>
 
     <div>
       <div class="font-bold text-gray-500 text-xs tracking-widest mb-2">歷史紀錄</div>
       <div id="record-list" class="mt-3"></div>
     </div>
-
   </div>
 </div>
 
-<div id="customer-modal"
-     class="fixed inset-0 sheet-backdrop hidden z-50 flex items-center justify-center">
-
-  <div class="sheet w-full max-w-md max-h-[90vh] overflow-hidden flex flex-col rounded-2xl">
+<div id="customer-modal" class="fixed inset-0 sheet-backdrop hidden z-50 flex items-end sm:items-center justify-center">
+  <div class="sheet w-full max-w-md max-h-[90vh] overflow-hidden flex flex-col rounded-t-2xl sm:rounded-2xl">
     <div class="sheet-grabber"></div>
-
     <div class="sheet-header">
       <button onclick="closeModal('customer-modal')" class="sheet-btn-text">取消</button>
       <h2 id="modal-title" class="sheet-title">新增客戶</h2>
       <button onclick="saveCustomer()" class="sheet-btn-text font-semibold">儲存</button>
     </div>
-
-    <div class="sheet-body space-y-4">
+    <div class="sheet-body space-y-4 bg-gray-50">
       <input type="hidden" id="cust-id">
-
-      <div class="space-y-3 bg-white rounded-xl p-3 shadow-sm">
-        <div>
-          <label>姓名 <span class="text-red-500">*</span></label>
-          <input id="cust-name" type="text" class="w-full p-2 border rounded">
-        </div>
-        <div>
-          <label>電話 <span class="text-red-500">*</span></label>
-          <input id="cust-phone" type="tel" class="w-full p-2 border rounded">
-        </div>
-        <div>
-          <label>安裝日期</label>
-          <input id="cust-install-date" type="date" class="w-full p-2 border rounded">
-        </div>
+      
+      <div class="space-y-3 bg-white rounded-xl p-4 shadow-sm">
+        <div><label>姓名 <span class="text-red-500">*</span></label><input id="cust-name" type="text" class="w-full p-2 border rounded"></div>
+        <div><label>電話 <span class="text-red-500">*</span></label><input id="cust-phone" type="tel" class="w-full p-2 border rounded"></div>
+        <div><label>安裝日期</label><input id="cust-install-date" type="date" class="w-full p-2 border rounded"></div>
       </div>
 
-      <div class="space-y-3 bg-white rounded-xl p-3 shadow-sm">
-        <div>
-          <label>地址</label>
-          <input id="cust-address" type="text" class="w-full p-2 border rounded">
-        </div>
-        <div>
-          <label>機器型號</label>
-          <input id="cust-machine" type="text" class="w-full p-2 border rounded">
-        </div>
-        <div>
-          <label>濾芯規格</label>
-          <input id="cust-filter" type="text" class="w-full p-2 border rounded">
-        </div>
+      <div class="space-y-3 bg-white rounded-xl p-4 shadow-sm">
+        <div><label>地址</label><input id="cust-address" type="text" class="w-full p-2 border rounded"></div>
+        <div><label>機器型號</label><input id="cust-machine" type="text" class="w-full p-2 border rounded"></div>
+        <div><label>濾芯規格</label><input id="cust-filter" type="text" class="w-full p-2 border rounded"></div>
       </div>
 
-      <div class="space-y-2 bg-white rounded-xl p-3 shadow-sm">
+      <div class="space-y-2 bg-white rounded-xl p-4 shadow-sm">
         <label>標籤（可多選）</label>
         <div id="cust-tag-selector" class="tag-selector"></div>
       </div>
 
-      <div class="bg-white rounded-xl p-3 shadow-sm">
+      <div class="bg-white rounded-xl p-4 shadow-sm">
         <label>備註</label>
         <textarea id="cust-note" rows="2" class="w-full p-2 border rounded"></textarea>
       </div>
 
       <div class="bg-white rounded-xl p-4 shadow-sm text-center">
-        <label class="text-blue-600 font-medium flex items-center justify-center cursor-pointer">
+        <label class="text-blue-600 font-medium flex items-center justify-center cursor-pointer p-2 border-2 border-dashed border-blue-200 rounded-lg">
           <span class="material-icons mr-2">add_photo_alternate</span> 選擇機器照片
-          <input id="cust-photo-input" type="file" accept="image/*" multiple class="hidden"
-                 onchange="handleCustPhotoSelect(this)">
+          <input id="cust-photo-input" type="file" accept="image/*" multiple class="hidden" onchange="handleCustPhotoSelect(this)">
         </label>
-        <div id="cust-photo-preview" class="flex gap-2 overflow-x-auto mt-2 justify-center"></div>
+        <div id="cust-photo-preview" class="photo-grid mt-2 justify-center flex gap-2 overflow-x-auto"></div>
       </div>
 
-      <button id="btn-delete-customer" onclick="deleteCustomer()" class="danger-btn hidden">
-        刪除此客戶
-      </button>
+      <button id="btn-delete-customer" onclick="deleteCustomer()" class="danger-btn hidden">刪除此客戶</button>
+      <div class="h-10"></div>
     </div>
   </div>
 </div>
 
-<div id="record-modal"
-     class="fixed inset-0 sheet-backdrop hidden z-50 flex items-center justify-center">
-
-  <div class="sheet w-full max-w-md max-h-[90vh] overflow-hidden flex flex-col rounded-2xl">
+<div id="record-modal" class="fixed inset-0 sheet-backdrop hidden z-50 flex items-end sm:items-center justify-center">
+  <div class="sheet w-full max-w-md max-h-[90vh] overflow-hidden flex flex-col rounded-t-2xl sm:rounded-2xl">
     <div class="sheet-grabber"></div>
-
     <div class="sheet-header">
       <button onclick="closeModal('record-modal')" class="sheet-btn-text">取消</button>
       <h2 class="sheet-title">修改紀錄</h2>
       <button onclick="saveEditedRecord()" class="sheet-btn-text font-semibold">完成</button>
     </div>
-
-    <div class="sheet-body space-y-4">
+    <div class="sheet-body space-y-4 bg-gray-50">
       <input type="hidden" id="edit-record-id">
-
-      <div class="space-y-3 bg-white rounded-xl p-3 shadow-sm">
-        <div>
-          <label>日期</label>
-          <input id="edit-record-date" type="date" class="w-full p-2 border rounded">
-        </div>
-        <div>
-          <label>項目</label>
-          <input id="edit-record-items" type="text" class="w-full p-2 border rounded font-medium">
-        </div>
-        <div>
-          <label>金額</label>
-          <input id="edit-record-amount" type="number" class="w-full p-2 border rounded text-green-600 font-bold">
-        </div>
-        <div>
-          <label>備註</label>
-          <textarea id="edit-record-note" rows="2" class="w-full p-2 border rounded"></textarea>
-        </div>
+      <div class="space-y-3 bg-white rounded-xl p-4 shadow-sm">
+        <div><label>日期</label><input id="edit-record-date" type="date" class="w-full p-2 border rounded"></div>
+        <div><label>項目</label><input id="edit-record-items" type="text" class="w-full p-2 border rounded font-medium"></div>
+        <div><label>金額</label><input id="edit-record-amount" type="number" class="w-full p-2 border rounded text-green-600 font-bold"></div>
+        <div><label>備註</label><textarea id="edit-record-note" rows="2" class="w-full p-2 border rounded"></textarea></div>
       </div>
-
-      <div class="bg-white rounded-xl p-3 shadow-sm">
-        <label class="text-blue-600 font-medium flex items-center justify-center cursor-pointer">
+      <div class="bg-white rounded-xl p-4 shadow-sm">
+        <label class="text-blue-600 font-medium flex items-center justify-center cursor-pointer p-2 border-2 border-dashed border-blue-200 rounded-lg">
           <span class="material-icons mr-2">add_a_photo</span> 加傳照片
-          <input id="edit-record-photo-input" type="file" accept="image/*" multiple class="hidden"
-                 onchange="handleEditRecordPhotoSelect(this)">
+          <input id="edit-record-photo-input" type="file" accept="image/*" multiple class="hidden" onchange="handleEditRecordPhotoSelect(this)">
         </label>
-
-        <div id="edit-record-photo-preview" class="flex gap-2 overflow-x-auto mt-2 justify-center"></div>
+        <div id="edit-record-photo-preview" class="photo-grid mt-2 justify-center flex gap-2 overflow-x-auto"></div>
       </div>
+      <div class="h-10"></div>
     </div>
   </div>
 </div>
-
 
 <div id="loading" class="loading-overlay hidden">
   <div class="animate-spin rounded-full h-10 w-10 border-4 border-gray-300 border-t-blue-600"></div>
   <p class="mt-3 text-secondary">處理中…</p>
 </div>
+<div id="toast">儲存成功</div>
 
 <script>
-/* ==========
-   這裡開始是完整 JavaScript（含標籤系統、日期修正、列表更新、修正 iOS bug）
-   ========== */
-
 // ⚠️⚠️⚠️ 請務必確認這裡是你最新的 Google Apps Script 網址 (以 /exec 結尾) ⚠️⚠️⚠️
 const API_URL = "https://script.google.com/macros/s/AKfycbxq7lgAM355tr63kVCx8IeuZOxCxijQcVFL7K0EhMDcJjER6szHY6P6RfQR5IaJQF7u/exec";
 
-// 標籤選項（你日後只要改這裡）
+// 標籤選項
 const TAG_OPTIONS = ["全部", "廚下型", "飲水機", "全戶式", "工業商業", "售服", "其他"];
 let currentFilter = "全部";
 
@@ -511,8 +439,6 @@ let selectedEditRecordPhotos = [];
 
 window.currentRecords = [];
 
-
-/* -------------------------- 日期固定：不扣一天 -------------------------- */
 function normalizeDateStr(v){
   if (!v) return "";
   if (/^\d{4}-\d{2}-\d{2}$/.test(v)) return v;
@@ -526,20 +452,14 @@ function normalizeDateStr(v){
   return v.split(" ")[0];
 }
 
-
-/* ---------------------------- API ---------------------------- */
 async function apiCall(action, payload={}, method="POST"){
   showLoading(true);
   try {
-    const url = method==="GET"
-      ? `${API_URL}?${new URLSearchParams({action, ...payload})}`
-      : API_URL;
-
+    const url = method==="GET" ? `${API_URL}?${new URLSearchParams({action, ...payload})}` : API_URL;
     const res = await fetch(url, {
       method,
       body: method==="POST" ? JSON.stringify({action, ...payload}) : null
     });
-
     return await res.json();
   } catch(e){
     alert("連線錯誤");
@@ -549,8 +469,6 @@ async function apiCall(action, payload={}, method="POST"){
   }
 }
 
-
-/* -------------------------- 讀取客戶 -------------------------- */
 async function fetchCustomers(){
   const data = await apiCall("getCustomers", {}, "GET");
   if (!Array.isArray(data)){
@@ -563,7 +481,6 @@ async function fetchCustomers(){
   renderList(customers);
 }
 
-/* -------------------------- 篩選器 UI -------------------------- */
 function renderFilterBar() {
     const container = document.getElementById("filter-container");
     container.innerHTML = TAG_OPTIONS.map(tag => 
@@ -577,7 +494,6 @@ function filterByTag(tag) {
     renderList(customers); // 重新渲染列表
 }
 
-/* ------------------------ 列表渲染 (含篩選、機型、上次保養日) ------------------------ */
 function renderList(list){
   const container = document.getElementById("customer-list");
   container.innerHTML = "";
@@ -607,18 +523,14 @@ function renderList(list){
   wrap.className = "space-y-3";
 
   filtered.forEach(c=>{
-    // 後端如果還沒算 lastRecordDate，這裡就預防一下
     const last = c.lastRecordDate ? normalizeDateStr(c.lastRecordDate) : "尚無保養紀錄";
-    // 如果有保養紀錄顯示綠色，沒有顯示灰色
     const dateClass = c.lastRecordDate ? "text-green-600 font-bold" : "text-gray-400";
-    // 取得機型
     const machine = c.machine || "未填寫機型";
 
     const card = document.createElement("div");
     card.className = "dashboard-card";
     card.onclick = ()=> openDetail(c);
 
-    // ✨✨✨ 這是你指定的版面：有機型、有上次保養日 ✨✨✨
     card.innerHTML = `
       <div class="grow">
         <div class="dashboard-name truncate">${c.name}</div>
@@ -651,14 +563,10 @@ function renderList(list){
   container.appendChild(wrap);
 }
 
-
-/* ------------------------- 搜尋 ------------------------- */
 document.getElementById("search-input").addEventListener("input", e=>{
-  renderList(customers); // 只要輸入就重新過濾
+  renderList(customers);
 });
 
-
-/* ------------------------- 詳細頁 ------------------------- */
 async function openDetail(c){
   currentCustomer = c;
 
@@ -673,17 +581,25 @@ async function openDetail(c){
   document.getElementById("detail-install-date").innerText =
     c.installDate ? normalizeDateStr(c.installDate) : "無紀錄";
 
-  document.getElementById("detail-address").innerText = c.address || "未填寫";
+  // ✨✨✨ 修改：設定地址並顯示導航按鈕 ✨✨✨
+  const addr = c.address || "";
+  document.getElementById("detail-address").innerText = addr || "未填寫";
+  const mapLink = document.getElementById("detail-map-link");
+  if (addr) {
+      mapLink.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr)}`;
+      mapLink.classList.remove("hidden");
+  } else {
+      mapLink.classList.add("hidden");
+  }
+
   document.getElementById("detail-machine").innerText = c.machine || "未填寫";
   document.getElementById("detail-filter").innerText = c.filter || "未填寫";
 
-  // 標籤
   const tagBox = document.getElementById("detail-tags");
   tagBox.innerHTML = c.tags
     ? c.tags.split(",").map(t=>`<div class="dashboard-tag">${t}</div>`).join("")
     : `<span class="text-secondary">未設定</span>`;
 
-  // 註記
   if (c.note){
     document.getElementById("detail-note").innerText = c.note;
     document.getElementById("note-container").classList.remove("hidden");
@@ -691,7 +607,6 @@ async function openDetail(c){
     document.getElementById("note-container").classList.add("hidden");
   }
 
-  // 照片
   const photoDiv = document.getElementById("customer-photos-container");
   photoDiv.innerHTML = "";
   let photos = [];
@@ -714,19 +629,14 @@ async function openDetail(c){
     photoDiv.innerHTML = `<div class="text-secondary text-sm">無照片</div>`;
   }
 
-  // 載入歷史紀錄
   await fetchRecords(c.id);
 }
 
-
-/* ------------------------- 返回 ------------------------- */
 function goBack(){
   document.getElementById("page-detail").classList.add("hidden");
   document.getElementById("page-list").classList.remove("hidden");
 }
 
-
-/* ------------------------- 讀取紀錄 ------------------------- */
 async function fetchRecords(id){
   const box = document.getElementById("record-list");
   box.innerHTML = `<div class="text-center text-secondary py-4">讀取中…</div>`;
@@ -782,8 +692,6 @@ async function fetchRecords(id){
   });
 }
 
-
-/* ------------------------- 開啟編輯紀錄 ------------------------- */
 function openEditRecordModal(id){
   const r = window.currentRecords.find(x=>x.id==id);
   if (!r){ alert("找不到紀錄"); return; }
@@ -800,8 +708,6 @@ function openEditRecordModal(id){
   document.getElementById("record-modal").classList.remove("hidden");
 }
 
-
-/* ------------------------- 儲存編輯後的紀錄 ------------------------- */
 async function saveEditedRecord(){
   const id = document.getElementById("edit-record-id").value;
   const items = document.getElementById("edit-record-items").value.trim();
@@ -834,8 +740,6 @@ async function saveEditedRecord(){
   }
 }
 
-
-/* ------------------------- 新增保養紀錄 ------------------------- */
 async function saveRecord(){
   if (!currentCustomer) return;
 
@@ -861,22 +765,20 @@ async function saveRecord(){
   const res = await apiCall("addRecord", payload);
 
   if (res?.status==="success"){
+    showToast("儲存成功"); // 使用 Toast
     selectedRecordPhotos = [];
     document.getElementById("new-record-photos").innerHTML = "";
+    document.getElementById("record-items").value=""; document.getElementById("record-amount").value=""; document.getElementById("record-note").value="";
     await fetchRecords(currentCustomer.id);
   }
 }
 
-
-/* ------------------------- 刪除紀錄 ------------------------- */
 async function deleteRecord(id){
   if (!confirm("確定刪除？")) return;
   await apiCall("deleteRecord", {id});
   await fetchRecords(currentCustomer.id);
 }
 
-
-/* ------------------------- 開啟新增客戶 ------------------------- */
 function showAddCustomerModal(){
   document.getElementById("modal-title").innerText = "新增客戶";
 
@@ -888,7 +790,6 @@ function showAddCustomerModal(){
   document.getElementById("cust-machine").value = "";
   document.getElementById("cust-filter").value = "";
 
-  // today
   const d = new Date();
   document.getElementById("cust-install-date").value =
     `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
@@ -902,8 +803,6 @@ function showAddCustomerModal(){
   document.getElementById("customer-modal").classList.remove("hidden");
 }
 
-
-/* ------------------------- 開啟編輯客戶 ------------------------- */
 function showEditCustomerModal(){
   const c = currentCustomer;
   document.getElementById("modal-title").innerText = "編輯資料";
@@ -927,8 +826,6 @@ function showEditCustomerModal(){
   document.getElementById("customer-modal").classList.remove("hidden");
 }
 
-
-/* ------------------------- 儲存客戶 ------------------------- */
 async function saveCustomer(){
   const id = document.getElementById("cust-id").value;
   const name = document.getElementById("cust-name").value.trim();
@@ -938,7 +835,6 @@ async function saveCustomer(){
 
   let photoUrls = [];
 
-  // 原照片
   if (id && currentCustomer?.photos){
     if (Array.isArray(currentCustomer.photos))
       photoUrls = [...currentCustomer.photos];
@@ -948,7 +844,6 @@ async function saveCustomer(){
     }
   }
 
-  // 新照片
   for (let base64 of selectedCustPhotos){
     const res = await apiCall("uploadImage", {base64, type:"image/jpeg"});
     if (res?.status==="success") photoUrls.push(res.url);
@@ -973,13 +868,12 @@ async function saveCustomer(){
   const res = await apiCall(act, payload);
 
   if (res?.status==="success"){
+    showToast("儲存成功"); // 使用 Toast
     closeModal("customer-modal");
     await fetchCustomers();
   }
 }
 
-
-/* ------------------------- 刪除客戶 ------------------------- */
 async function deleteCustomer(){
   if (!confirm("確定刪除此客戶？")) return;
   const id = document.getElementById("cust-id").value;
@@ -988,8 +882,6 @@ async function deleteCustomer(){
   fetchCustomers();
 }
 
-
-/* ------------------------- 標籤系統 UI ------------------------- */
 function renderTagSelector(containerId, selected=[]){
   const box = document.getElementById(containerId);
   box.innerHTML = "";
@@ -1010,8 +902,6 @@ function getSelectedTags(containerId){
     .join(",");
 }
 
-
-/* ------------------------- 照片處理 ------------------------- */
 function handleCustPhotoSelect(input){
   [...input.files].forEach(file=>{
     const reader = new FileReader();
@@ -1064,8 +954,6 @@ function resizeImage(base64, maxW, cb){
   };
 }
 
-
-/* ------------------------- Modal 控制 ------------------------- */
 function closeModal(id){
   document.getElementById(id).classList.add("hidden");
 }
@@ -1077,14 +965,17 @@ document.getElementById("record-modal").addEventListener("click", e=>{
   if (e.target.id==="record-modal") closeModal("record-modal");
 });
 
-
-/* ------------------------- Loading ------------------------- */
 function showLoading(show){
   document.getElementById("loading").classList.toggle("hidden", !show);
 }
 
+function showToast(message) {
+    const x = document.getElementById("toast");
+    x.innerText = message;
+    x.className = "toast show";
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+}
 
-/* ------------------------- 初始化 ------------------------- */
 window.onload = () => {
   fetchCustomers();
 
