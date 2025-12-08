@@ -1,824 +1,770 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>濾芯保養系統</title>
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="apple-touch-icon" href="https://img.icons8.com/color/180/water-filter.png">
+
+  <!-- iOS PWA -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="apple-touch-icon" href="https://img.icons8.com/color/180/water-filter.png" />
+
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">
+
+  <!-- Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet" />
+
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            primary: '#007AFF',
-            secondary: '#5856D6',
-            success: '#34C759',
-            danger: '#FF3B30',
-            background: '#F2F2F7',
-            card: '#FFFFFF',
-            text: '#1C1C1E',
-            subtext: '#8E8E93',
-            border: '#D1D1D6'
+            /* 奶茶色主題 + iOS Blue*/
+            primary: "#007AFF",
+            secondary: "#5856D6",
+            beige: "#F5EFE7",
+            milk: "#F0E7D8",
+            latte: "#E8DCC5",
+            textDark: "#3A3A3A",
+            textGray: "#6F6F6F",
+            borderLight: "#DDD9D2",
+            card: "#FFFFFF",
           }
         }
       }
     }
   </script>
-    <style>
-    /* 整體放大約 1.2 倍 */
-    html{
-      font-size:20px; /* 原本 18，整體再放大一點 */
+
+  <style>
+    /* =============== 全域風格 =============== */
+    html {
+      font-size: 18px; /* 整體放大 1.2x */
     }
 
-    body{
-      background:#F2F2F7;
-      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang TC","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-      -webkit-tap-highlight-color:transparent;
-      padding-bottom:110px;
-      color:#1C1C1E;
-    }
-    #page-list,#page-detail{min-height:100vh;}
-
-    /* 頂部列 */
-    .app-header{
-      backdrop-filter:blur(18px);
-      background:rgba(249,250,251,0.94);
-      border-bottom:1px solid rgba(229,231,235,0.9);
-    }
-    .app-header h1{
-      letter-spacing:0.02em;
-      font-size:1.9rem; /* 顯示標題再放大一點，蓋掉 text-2xl */
+    body {
+      background: #F5EFE7; /* 奶茶底色 */
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang TC", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #3A3A3A;
+      -webkit-tap-highlight-color: transparent;
+      padding-bottom: 110px;
     }
 
-    /* 搜尋列 */
-    .search-bar{
-      background:#FFF;
-      border-radius:14px;
-      padding:9px 12px;
-      display:flex;
-      align-items:center;
-      gap:8px;
-      border:1px solid #E5E7EB;
-      box-shadow:0 1px 3px rgba(15,23,42,0.05);
-    }
-    .search-bar input{
-      background:transparent;
-      border:none;
-      padding:0;
-      height:36px;
-      font-size:17px;  /* 原 15 */
-      color:#111827;
-      width:100%;
-    }
-    .search-bar input::placeholder{color:#9CA3AF;}
-    .search-bar input:focus{outline:none;box-shadow:none;}
-
-    /* Dashboard 卡片 */
-    .dashboard-card{
-      background:#FFF;
-      border-radius:18px;
-      padding:18px 18px 16px; /* 微放大 padding */
-      box-shadow:0 7px 14px rgba(15,23,42,0.08);
-      border:1px solid #E5E7EB;
-      color:#111827;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:14px;
-      position:relative;
-      overflow:hidden;
-      transition:transform .12s;
-    }
-    .dashboard-card:active{transform:scale(.98);}
-    .dashboard-main{flex:1;min-width:0;}
-    .dashboard-name{
-      font-size:22px;  /* 原 19 */
-      font-weight:700;
-      letter-spacing:.01em;
-      margin-bottom:6px;
-      color:#111827;
-    }
-    .dashboard-tag{
-      display:inline-flex;
-      align-items:center;
-      height:26px;
-      padding:0 12px;
-      border-radius:999px;
-      border:1px solid #E5E7EB;
-      background:#F3F4F6;
-      font-size:14px;   /* 原 12 */
-      font-weight:500;
-      color:#4B5563;
-      margin-bottom:8px;
-      max-width:100%;
-      white-space:nowrap;
-    }
-    .dashboard-tag-empty{
-      border-color:transparent;
-      background:transparent;
-      color:transparent;
-    }
-    .dashboard-meta{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      font-size:15px;   /* 原 13 */
-      color:#6B7280;
-      flex-wrap:wrap;
-    }
-    .dashboard-meta span{
-      display:inline-flex;
-      align-items:center;
-      gap:4px;
-      white-space:nowrap;
-    }
-    .dashboard-meta .material-icons{font-size:18px;} /* 原 16 */
-    .dashboard-chevron{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      border-radius:999px;
-      width:34px;
-      height:34px;
-      background:#F3F4F6;
-      border:1px solid #E5E7EB;
-      flex-shrink:0;
-    }
-    .dashboard-chevron .material-icons{font-size:19px;color:#9CA3AF;}
-    .subtle-text{font-size:14px;color:#9CA3AF;}  /* 原 12 */
-
-    /* 輸入框 */
-    input,textarea,select{
-      width:100%;
-      padding:14px 14px;
-      border:1px solid #D1D5DB;
-      border-radius:12px;
-      margin-bottom:12px;
-      font-size:18px;   /* 原 16 */
-      background:#F9FAFB;
-      color:#111827;
-      appearance:none;
-      transition:border .2s,box-shadow .2s,background .2s;
-    }
-    input:focus,textarea:focus,select:focus{
-      border-color:#007AFF;
-      outline:none;
-      box-shadow:0 0 0 3px rgba(0,122,255,.25);
-      background:#FFF;
-    }
-    label{
-      font-size:16px;   /* 原 13 */
-      color:#6B7280;
-      margin-bottom:4px;
-      display:block;
-      font-weight:500;
-      letter-spacing:.02em;
+    /* =============== iOS Navigation Bar =============== */
+    .ios-nav-bar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding-top: env(safe-area-inset-top);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid #E5E5E5;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-inline: 12px;
     }
 
-    /* 主按鈕 */
-    .btn-primary{
-      background:linear-gradient(135deg,#0A84FF,#007AFF);
-      color:#FFF;
-      padding:15px;
-      border-radius:16px;
-      font-weight:600;
-      font-size:19px;  /* 原 17 */
-      width:100%;
-      text-align:center;
-      border:none;
-      box-shadow:0 12px 24px rgba(37,99,235,.35);
-      transition:transform .12s,box-shadow .12s,opacity .12s;
-    }
-    .btn-primary:active{
-      transform:scale(.97) translateY(1px);
-      opacity:.9;
-      box-shadow:0 8px 16px rgba(37,99,235,.45);
+    .ios-nav-title {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: #3A3A3A;
+      text-align: center;
+      flex: 1;
     }
 
-    /* FAB */
-    .fab{
-      position:fixed;
-      right:22px;
-      bottom:30px;
-      width:70px;
-      height:70px;
-      border-radius:999px;
-      background:linear-gradient(135deg,#0A84FF,#4F46E5);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      color:#FFF;
-      box-shadow:0 20px 30px rgba(37,99,235,.55);
-      z-index:50;
-      transition:transform .1s,box-shadow .1s;
-    }
-    .fab span.material-icons{font-size:34px;} /* 原 30 */
-    .fab:active{
-      transform:scale(.95) translateY(1px);
-      box-shadow:0 12px 22px rgba(37,99,235,.65);
+    .ios-nav-left,
+    .ios-nav-right {
+      width: 80px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
     }
 
-    /* Loading */
-    .loading-overlay{
-      position:fixed;
-      inset:0;
-      background:rgba(249,250,251,.86);
-      backdrop-filter:blur(6px);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      z-index:999;
-      flex-direction:column;
-      color:#4B5563;
+    .ios-nav-left span,
+    .ios-nav-right span {
+      color: #007AFF;
+      font-size: 17px;
     }
 
-    /* Detail header */
-    .detail-header{
-      background:rgba(249,250,251,.96);
-      box-shadow:0 1px 0 rgba(229,231,235,.9);
-    }
-    .detail-header h2{
-      font-size:1.20rem; /* 比 text-lg 再大一點 */
+    .ios-nav-left .material-icons {
+      font-size: 20px;
+      margin-right: 3px;
     }
 
-    /* 照片卡片 */
-    .machine-photo-card{
-      background:#FFF;
-      margin-top:-36px;
-      margin-inline:auto;
-      border-radius:22px;
-      padding:12px;
-      box-shadow:0 14px 28px rgba(15,23,42,.2);
-      border:1px solid #E5E7EB;
-      max-width:500px;
-      position:relative;
-      z-index:10;
-    }
-    #customer-photos-container{
-      display:flex;
-      gap:10px;
-      overflow-x:auto;
-      scroll-snap-type:x mandatory;
-      scrollbar-width:none;
-    }
-    #customer-photos-container::-webkit-scrollbar{display:none;}
-    .machine-photo-slide{
-      flex:0 0 100%;
-      height:220px;
-      border-radius:18px;
-      overflow:hidden;
-      background:#E5E7EB;
-      scroll-snap-align:center;
-      border:1px solid #E5E7EB;
-    }
-    .machine-photo-slide img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-    }
-    .machine-photo-empty{
-      width:100%;
-      height:220px;
-      border-radius:18px;
-      border:1px dashed #D1D5DB;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      color:#9CA3AF;
-      font-size:16px; /* 原 14 */
-      background:#F9FAFB;
+    /* =============== 搜尋列 =============== */
+    .search-bar {
+      background: white;
+      border-radius: 14px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      border: 1px solid #E6E2DA;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
 
-    .detail-section{max-width:540px;margin-inline:auto;margin-top:20px;}
-    .detail-card{
-      background:#FFF;
-      border-radius:18px;
-      padding:18px 18px 16px;
-      margin-bottom:16px;
-      border:1px solid #E5E7EB;
-      box-shadow:0 5px 12px rgba(15,23,42,.06);
-      color:#111827;
+    .search-bar input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 16px;
+      padding-left: 8px;
+      color: #3A3A3A;
     }
-    .detail-card h3{
-      font-size:15px;  /* 原 13 */
-      font-weight:700;
-      letter-spacing:.16em;
-      text-transform:uppercase;
-      color:#9CA3AF;
-      margin-bottom:10px;
-    }
-    .detail-row{
-      display:flex;
-      gap:10px;
-      font-size:17px;  /* 原 15 */
-      padding:6px 0;
-      color:#111827;
-    }
-    .detail-row label{
-      font-size:15px;  /* 原 13 */
-      color:#6B7280;
-      margin-bottom:0;
-      width:80px;
-      flex-shrink:0;
-    }
-    .detail-note{color:#D97706;}
-
-    /* Timeline */
-    .timeline-wrapper{position:relative;padding-left:18px;}
-    .timeline-wrapper::before{
-      content:"";
-      position:absolute;
-      left:7px;
-      top:8px;
-      bottom:8px;
-      width:2px;
-      background:#E5E7EB;
-    }
-    .timeline-item{position:relative;margin-bottom:14px;}
-    .timeline-dot{
-      position:absolute;
-      left:2px;
-      top:12px;
-      width:10px;
-      height:10px;
-      border-radius:999px;
-      border:2px solid #0EA5E9;
-      background:#FFF;
-      box-shadow:0 0 0 3px rgba(59,130,246,.18);
-    }
-    .record-card{
-      background:#FFF;
-      border-radius:16px;
-      padding:12px 12px 10px;
-      border:1px solid #E5E7EB;
-      box-shadow:0 3px 8px rgba(15,23,42,.06);
-      color:#111827;
-      margin-left:16px;
-    }
-    .record-card-header{
-      display:flex;
-      justify-content:space-between;
-      align-items:baseline;
-      margin-bottom:6px;
-    }
-    .record-date{
-      font-size:16px;  /* 原 14 */
-      font-weight:600;
-      color:#374151;
-    }
-    .record-amount{
-      font-size:16px;  /* 原 14 */
-      font-weight:600;
-      color:#16A34A;
-    }
-    .record-items{
-      font-size:17px;  /* 原 15 */
-      font-weight:500;
-      margin-bottom:4px;
-    }
-    .record-note{
-      font-size:16px;  /* 原 13 */
-      color:#6B7280;
-      background:#F9FAFB;
-      border-radius:9px;
-      padding:6px 9px;
-      margin-bottom:6px;
-    }
-    .record-actions{
-      display:flex;
-      justify-content:flex-end;
-      gap:8px;
-      padding-top:6px;
-      border-top:1px solid #E5E7EB;
-      margin-top:4px;
-      font-size:15px;  /* 原 13 */
-    }
-    .record-actions button{padding:4px 10px;border-radius:999px;}
-
-    /* 照片縮圖 */
-    .photo-grid{
-      display:flex;
-      gap:9px;
-      overflow-x:auto;
-      padding:4px 0;
-    }
-    .photo-thumb{
-      width:90px;
-      height:90px;
-      object-fit:cover;
-      border-radius:11px;
-      background:#F3F4F6;
-      border:1px solid #E5E7EB;
+    .search-bar input:focus {
+      outline: none;
     }
 
-    /* Bottom sheet */
-    .sheet-backdrop{
-      background:rgba(17,24,39,.28);
-      backdrop-filter:blur(10px);
+    /* =============== 客戶卡片（Dashboard 卡片） =============== */
+    .dashboard-card {
+      background: white;
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid #E6E2DA;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+      transition: 0.15s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    .sheet{
-      background:#FFF;
-      border-radius:20px 20px 0 0;
-      border-top:1px solid #E5E7EB;
-      box-shadow:0 -14px 32px rgba(15,23,42,.4);
+
+    .dashboard-card:active {
+      transform: scale(.98);
     }
-    @media (min-width:640px){
-      .sheet{border-radius:20px;max-width:440px;}
-      #customer-modal,#record-modal{align-items:center;}
+
+    .dashboard-name {
+      font-size: 19px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #3A3A3A;
     }
-    .sheet-header{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      padding:10px 16px 9px;
-      border-bottom:1px solid #E5E7EB;
-      background:#F9FAFB;
+
+    .dashboard-meta {
+      display: flex;
+      gap: 12px;
+      font-size: 14px;
+      color: #6F6F6F;
+      align-items: center;
+      flex-wrap: wrap;
     }
-    .sheet-grabber{
-      width:42px;
-      height:4px;
-      border-radius:999px;
-      background:#D1D5DB;
-      margin:5px auto 8px;
+
+    .dashboard-chevron .material-icons {
+      color: #C1C1C1;
     }
-    .sheet-title{
-      font-size:19px;  /* 原 17 */
-      font-weight:600;
-      color:#111827;
+
+    /* =============== 標籤顯示（於客戶卡片） =============== */
+    .customer-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
     }
-    .sheet-btn-text{
-      font-size:18px;  /* 原 16 */
-      font-weight:500;
-      color:#007AFF;
+
+    .tag-pill {
+      background: #E8DCC5;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: #5A4636;
+      border: 1px solid #D9CBB6;
     }
-    .sheet-body{
-      padding:12px 18px 20px;
-      overflow-y:auto;
-      background:#F3F4F6;
+
+    /* =============== Floating Add Button =============== */
+    .fab {
+      position: fixed;
+      bottom: 26px;
+      right: 26px;
+      width: 64px;
+      height: 64px;
+      border-radius: 999px;
+      background: #007AFF;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 12px 20px rgba(0,122,255,0.4);
+      font-size: 32px;
+      z-index: 50;
     }
-    .danger-btn{
-      width:100%;
-      padding:12px 0;
-      border-radius:14px;
-      background:#FEF2F2;
-      color:#DC2626;
-      border:1px solid #FECACA;
-      font-size:17px; /* 原 15 */
-      margin-top:4px;
-    }
-      /* iOS Navigation Bar */
+  </style>
+</head>
+
+<body>
+
+<!-- ====================== 首頁（客戶列表） ====================== -->
+<div id="page-list">
+
+  <!-- 搜尋區 -->
+  <div class="p-4 pt-8 max-w-md mx-auto">
+    <h1 class="text-2xl font-bold mb-3 text-[color:#3A3A3A]">濾芯保養系統</h1>
+
+    <div class="search-bar">
+      <span class="material-icons text-gray-400">search</span>
+      <input id="search-input" type="text" placeholder="搜尋客戶名稱、電話、標籤..." />
+    </div>
+  </div>
+
+  <!-- 客戶列表 -->
+  <div id="customer-list" class="max-w-md mx-auto px-4 pb-24">
+    <div class="text-center text-gray-400 mt-10">載入中...</div>
+  </div>
+
+  <!-- 新增按鈕 -->
+  <div class="fab" onclick="showAddCustomerModal()">
+    <span class="material-icons">add</span>
+  </div>
+</div>
+
+  <!-- ====================== 客戶詳細頁 ====================== -->
+<div id="page-detail" class="hidden">
+
+  <!-- iOS Navigation Bar -->
+  <div class="ios-nav-bar">
+    <div class="ios-nav-left" onclick="goBack()">
+      <span class="material-icons">arrow_back_ios</span>
+      <span>返回</span>
+    </div>
+
+    <div class="ios-nav-title">客戶資料</div>
+
+    <div class="ios-nav-right" onclick="showEditCustomerModal()">
+      <span>編輯</span>
+    </div>
+  </div>
+
+  <!-- 詳細內容 -->
+  <div class="px-4 pb-10 max-w-md mx-auto">
+
+    <!-- 照片卡片 -->
+    <div class="mt-4 rounded-2xl bg-white p-4 shadow border border-[#E6E2DA]">
+      <div id="customer-photos-container" style="display:flex; gap:10px; overflow-x:auto;"></div>
+    </div>
+
+    <!-- 基本資料 -->
+    <div class="mt-5 bg-white rounded-2xl p-4 shadow border border-[#E6E2DA]">
+      <h3 class="text-sm text-gray-500 tracking-widest font-bold mb-2">基本資料</h3>
+
+      <div class="flex py-1"><span class="w-20 text-gray-500">姓名</span><span id="detail-name"></span></div>
+      <div class="flex py-1">
+        <span class="w-20 text-gray-500">電話</span>
+        <a id="detail-phone-link" class="text-primary flex items-center">
+          <span class="material-icons mr-1">phone</span>
+          <span id="detail-phone"></span>
+        </a>
+      </div>
+      <div class="flex py-1"><span class="w-20 text-gray-500">安裝日期</span><span id="detail-install-date"></span></div>
+      <div class="flex py-1"><span class="w-20 text-gray-500">地址</span><span id="detail-address"></span></div>
+      <div class="flex py-1"><span class="w-20 text-gray-500">機器</span><span id="detail-machine"></span></div>
+      <div class="flex py-1"><span class="w-20 text-gray-500">濾芯</span><span id="detail-filter"></span></div>
+
+      <div id="note-container" class="flex py-1 hidden">
+        <span class="w-20 text-[#D97706]">備註</span>
+        <span id="detail-note" class="text-[#D97706]"></span>
+      </div>
+    </div>
+
+    <!-- 新增保養紀錄 -->
+    <div class="mt-5 bg-white rounded-2xl p-4 shadow border border-[#E6E2DA]">
+      <h3 class="text-sm text-gray-500 tracking-widest font-bold mb-3">新增保養紀錄</h3>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="text-sm text-gray-600">日期</label>
+          <input id="record-date" type="date" class="w-full bg-[#F9F7F2] border border-[#E6E2DA] rounded-lg p-2" />
+        </div>
+        <div>
+          <label class="text-sm text-gray-600">金額</label>
+          <input id="record-amount" type="number" class="w-full bg-[#F9F7F2] border border-[#E6E2DA] rounded-lg p-2" placeholder="0" />
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <label class="text-sm text-gray-600">更換項目</label>
+        <input id="record-items" type="text" class="w-full bg-[#F9F7F2] border border-[#E6E2DA] rounded-lg p-2" placeholder="例如：PP、活性碳" />
+      </div>
+
+      <div class="mt-3">
+        <label class="text-sm text-gray-600">備註（選填）</label>
+        <input id="record-note" type="text" class="w-full bg-[#F9F7F2] border border-[#E6E2DA] rounded-lg p-2" />
+      </div>
+
+      <div class="mt-3 flex items-center gap-3">
+        <label class="bg-[#F0E7D8] text-primary px-4 py-2 rounded-lg text-sm font-medium flex items-center cursor-pointer">
+          <span class="material-icons mr-1">camera_alt</span> 拍照
+          <input id="record-photo-input" type="file" accept="image/*" multiple class="hidden" onchange="handleRecordPhotoSelect(this)" />
+        </label>
+        <span id="record-photo-count" class="text-xs text-gray-400">0 張</span>
+      </div>
+
+      <div id="new-record-photos" class="flex gap-3 mt-3 overflow-x-auto"></div>
+
+      <button onclick="saveRecord()" class="mt-4 w-full py-3 bg-primary text-white rounded-xl shadow text-lg font-semibold">
+        儲存紀錄
+      </button>
+    </div>
+
+    <!-- 歷史紀錄 -->
+    <div class="mt-6">
+      <h3 class="text-sm text-gray-500 tracking-widest font-bold mb-2">歷史紀錄</h3>
+
+      <div id="record-list" class="relative pl-5">
+        <!-- 這裡由 JS 建立 -->
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ====================== 新增／編輯 客戶 Modal ====================== -->
+<div id="customer-modal" class="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm hidden z-50 flex items-end sm:items-center justify-center">
+  <div class="bg-white rounded-2xl w-full max-w-md h-[90vh] overflow-hidden shadow-xl flex flex-col">
+
+    <!-- Modal Header -->
+    <div class="px-4 py-3 border-b border-[#E6E2DA] bg-[#F9F7F2]">
+      <div class="flex justify-between items-center">
+        <button onclick="closeModal('customer-modal')" class="text-primary text-lg">取消</button>
+        <h2 id="modal-title" class="text-lg font-semibold">新增客戶</h2>
+        <button onclick="saveCustomer()" class="text-primary font-semibold text-lg">儲存</button>
+      </div>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="p-4 space-y-4 overflow-y-auto">
+
+      <input type="hidden" id="cust-id" />
+
+      <div class="bg-white p-4 rounded-xl border border-[#E6E2DA] space-y-3">
+        <div>
+          <label>姓名 <span class="text-red-500">*</span></label>
+          <input id="cust-name" type="text" class="w-full p-2 bg-[#F9F7F2] border border-[#E6E2DA] rounded-lg" />
+        </div>
+
+        <div>
+          <label>電話 <span class="text-red-500">*</span></label>
+          <input id="cust-phone" type="tel" class="w-full p-2 bg-[#F9F7F2] border border-[#E6E2DA] rounded-lg" />
+        </div>
+
+        <div>
+          <label>安裝日期</label>
+          <input id="cust-install-date" type="date" class="w-full p-2 bg-[#F9F7F2] border border-[#E6E2DA] rounded-lg" />
+        </div>
+      </div>
+
+      <div class="bg-white p-4 rounded-xl border border-[#E6E2DA] space-y-3">
+        <div>
+          <label>地址</label>
+          <input id="cust-address" type="text" class="w-full p-2 bg-[#F9F7F2] border border-[#E6E2DA] rounded-lg" />
+        </div>
+
+        <div>
+          <label>機器型號</label>
+          <input id="cust-machine" type="text" class="w-full p-2 bg-[#F9F7F2] border border-[#E6E2DA] rounded-lg" />
+        </div>
+
+        <div>
+          <label>濾芯規格</label>
+          <input id="cust-filter" type="text" class="w-full p-2 bg-[#F9F7F2] border border-[#E6E2DA] rounded-lg" />
+        </div>
+      </div>
+
+      <!-- 標籤系統 -->
+      <div class="bg-white p-4 rounded-xl border border-[#E6E2DA]">
+        <label class="block mb-2">標籤（可多選）</label>
+        <div id="cust-tag-selector" class="tag-selector"></div>
+      </div>
+
+      <!-- 備註 -->
+      <div class="bg-white p-4 rounded-xl border border-[#E6E2DA]">
+        <label>備註</label>
+        <textarea id="cust-note" rows="3" class="w-full p-2 bg-[#F9F7F2] border border-[#E6E2DA] rounded-lg"></textarea>
+      </div>
+
+      <!-- 照片 -->
+      <div class="bg-white p-4 rounded-xl border border-[#E6E2DA] text-center">
+        <label class="text-primary font-medium cursor-pointer flex items-center justify-center">
+          <span class="material-icons mr-2">add_photo_alternate</span>
+          選擇機器照片
+          <input id="cust-photo-input" type="file" accept="image/*" multiple class="hidden" onchange="handleCustPhotoSelect(this)" />
+        </label>
+
+        <div id="cust-photo-preview" class="flex gap-3 overflow-x-auto mt-3"></div>
+      </div>
+
+      <!-- 刪除按鈕 -->
+      <button id="btn-delete-customer" onclick="deleteCustomer()" class="w-full py-3 bg-red-50 text-red-500 rounded-xl border border-red-200 text-lg hidden">
+        刪除此客戶
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ====================== 編輯保養紀錄 Modal ====================== -->
+<div id="record-modal" class="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm hidden z-50 flex items-end sm:items-center justify-center">
+  <div class="bg-white rounded-2xl w-full max-w-md h-auto max-h-[90vh] overflow-hidden shadow-xl flex flex-col">
+
+    <div class="px-4 py-3 border-b border-[#E6E2DA] bg-[#F9F7F2]">
+      <div class="flex justify-between items-center">
+        <button onclick="closeModal('record-modal')" class="text-primary text-lg">取消</button>
+        <h2 class="text-lg font-semibold">修改紀錄</h2>
+        <button onclick="saveEditedRecord()" class="text-primary font-semibold text-lg">完成</button>
+      </div>
+    </div>
+
+    <div class="p-4 space-y-4 overflow-y-auto">
+
+      <input type="hidden" id="edit-record-id" />
+
+      <div class="bg-white p-4 rounded-xl border border-[#E6E2DA] space-y-3">
+        <div>
+          <label>日期</label>
+          <input id="edit-record-date" type="date" class="w-full p-2 bg-[#F9F7F2] border border-[#E6E2DA] rounded-lg" />
+        </div>
+
+        <div>
+          <label>項目</label>
+          <input id="edit-record-items" type="text" class="w-full p-2 bg-[#F9F7F2] border border-[#E6E2DA] rounded-lg" />
+        </div>
+
+        <div>
+          <label>金額</label>
+          <input id="edit-record-amount" type="number" class="w-full p-2 bg-[#F9F7F2] border border-[#E6E2DA] rounded-lg text-green-700 font-bold" />
+        </div>
+
+        <div>
+          <label>備註</label>
+          <textarea id="edit-record-note" rows="3" class="w-full p-2 bg-[#F9F7F2] border border-[#E6E2DA] rounded-lg"></textarea>
+        </div>
+      </div>
+
+      <div class="bg-white p-4 rounded-xl border border-[#E6E2DA]">
+        <label class="text-primary font-medium cursor-pointer flex items-center justify-center">
+          <span class="material-icons mr-2">add_a_photo</span> 加傳照片
+          <input id="edit-record-photo-input" type="file" accept="image/*" multiple class="hidden" onchange="handleEditRecordPhotoSelect(this)" />
+        </label>
+
+        <div id="edit-record-photo-preview" class="flex gap-3 overflow-x-auto mt-3"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+  <style>
+
+/* =========================================================
+   全域樣式（奶茶色主題）
+   ========================================================= */
+
+:root {
+  --primary: #007AFF;
+  --primary-light: #64A8FF;
+
+  --milk-bg: #F5EFE7;   /* 奶灰背景 */
+  --milk-card: #FFFFFF; /* 白卡片 */
+  --milk-border: #E6E2DA; /* 奶茶邊框 */
+  --milk-input: #F9F7F2; /* 奶茶底輸入框 */
+
+  --text-main: #3A342E; 
+  --text-secondary: #6E655C;
+}
+
+html {
+  font-size: 18px;  /* 1.2x 放大 */
+}
+
+body {
+  background: var(--milk-bg);
+  color: var(--text-main);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang TC", Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  padding-bottom: 100px;
+}
+
+/* =========================================================
+   iOS Navigation Bar（避免擋住照片）
+   ========================================================= */
+
 .ios-nav-bar {
   position: sticky;
   top: 0;
-  z-index: 50;
-  height: calc(44px + env(safe-area-inset-top));
-  padding-top: env(safe-area-inset-top);
+  z-index: 30;
+  padding: 12px 16px;
+  padding-top: env(safe-area-inset-top, 16px);
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--milk-border);
+
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding-left: 12px;
-  padding-right: 12px;
-
-  /* 毛玻璃效果 */
-  backdrop-filter: blur(20px);
-  background: rgba(255, 255, 255, 0.85);
-  border-bottom: 1px solid rgba(0,0,0,0.08);
-}
-
-/* 左側返回 */
-.ios-nav-left {
-  display: flex;
   align-items: center;
-  gap: 2px;
-  cursor: pointer;
 }
 
-/* 中間標題置中，不受左右按鈕影響 */
-.ios-nav-title {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 18px;
-  font-weight: 700;
-  color: #111;
-}
-
-/* 右側按鈕 */
+.ios-nav-left,
 .ios-nav-right {
-  cursor: pointer;
   display: flex;
   align-items: center;
-}
-.tag {
-  padding: 7px 14px;
-  background: #f2f2f2;
-  border-radius: 16px;
-  display: inline-block;
-  margin: 4px;
-  border: 1px solid #ddd;
+  gap: 4px;
+  color: var(--primary);
+  font-size: 16px;
   cursor: pointer;
-  font-size: 15px;
-  color: #555;
-  transition: 0.2s;
 }
 
-.tag.active {
-  background: #007AFF;
-  border-color: #007AFF;
-  color: white;
+.ios-nav-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-main);
 }
+
+/* =========================================================
+   搜尋列
+   ========================================================= */
+
+.search-bar {
+  background: #FFF;
+  border-radius: 14px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--milk-border);
+}
+
+.search-bar input {
+  border: none;
+  background: transparent;
+  width: 100%;
+  font-size: 16px;
+}
+.search-bar input:focus {
+  outline: none;
+}
+
+/* =========================================================
+   客戶列表卡片
+   ========================================================= */
+
+.dashboard-card {
+  background: var(--milk-card);
+  border-radius: 18px;
+  border: 1px solid var(--milk-border);
+  padding: 16px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+  cursor: pointer;
+  transition: 0.1s;
+}
+
+.dashboard-card:active {
+  transform: scale(0.98);
+}
+
+.dashboard-name {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.dashboard-tag {
+  display: inline-flex;
+  align-items: center;
+  background: #EFEDE7;
+  border: 1px solid var(--milk-border);
+  color: var(--text-secondary);
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.dashboard-chevron {
+  width: 32px;
+  height: 32px;
+  background: #F2F0EB;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dashboard-chevron span {
+  color: #9CA3AF;
+  font-size: 18px;
+}
+
+/* =========================================================
+   機器照片輪播
+   ========================================================= */
+
+.machine-photo-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 16px;
+}
+
+/* =========================================================
+   timeline（歷史保養紀錄）
+   ========================================================= */
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 18px;
+  padding-left: 20px;
+}
+
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  left: 9px;
+  top: 0;
+  bottom: -8px;
+  width: 2px;
+  background: var(--milk-border);
+}
+
+.timeline-dot {
+  position: absolute;
+  left: 4px;
+  top: 8px;
+  width: 12px;
+  height: 12px;
+  background: white;
+  border: 3px solid var(--primary);
+  border-radius: 50%;
+}
+
+.record-card {
+  background: var(--milk-card);
+  border: 1px solid var(--milk-border);
+  padding: 14px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.record-date {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.record-amount {
+  color: #008A32;
+  font-weight: 700;
+}
+
+/* =========================================================
+   Modal（底部彈跳面板）
+   ========================================================= */
+
+#customer-modal,
+#record-modal {
+  backdrop-filter: blur(8px);
+}
+
+.sheet-body input,
+.sheet-body textarea {
+  background: var(--milk-input);
+  border: 1px solid var(--milk-border);
+  border-radius: 12px;
+  padding: 10px;
+  width: 100%;
+  font-size: 16px;
+}
+
+/* =========================================================
+   主按鈕
+   ========================================================= */
+
+button.btn-primary,
+button.save-btn {
+  background: var(--primary);
+  border: none;
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  font-size: 18px;
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 8px 20px rgba(0,122,255,0.3);
+}
+
+/* =========================================================
+   標籤系統（TAG）
+   ========================================================= */
+
 .tag-selector {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 6px;
 }
 
-.tag-option {
-  padding: 6px 14px;
-  border-radius: 20px;
-  background: #f1f3f5;
-  color: #555;
-  font-size: 15px;
-  border: 1px solid #ddd;
-  transition: 0.2s;
+.tag {
+  padding: 6px 12px;
+  background: #EFEDE7;
+  color: #5F564D;
+  border: 1px solid var(--milk-border);
+  border-radius: 999px;
+  cursor: pointer;
+  user-select: none;
+  transition: 0.15s;
+  font-size: 14px;
 }
 
-.tag-option.selected {
-  background: #4A90E2;
-  color: white;
-  border-color: #4A90E2;
+.tag.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #FFF;
 }
 
-  </style>
+/* =========================================================
+   照片縮圖
+   ========================================================= */
 
-</head>
-<body>
+.photo-thumb {
+  width: 90px;
+  height: 90px;
+  border-radius: 12px;
+  object-fit: cover;
+  background: #E5E2DC;
+  border: 1px solid var(--milk-border);
+}
 
-  <!-- 首頁 -->
-  <div id="page-list">
-    <div class="app-header sticky top-0 z-10">
-      <div class="pt-10 pb-4 px-4 max-w-md mx-auto">
-        <h1 class="text-2xl font-bold text-gray-900 mb-3">濾芯保養系統</h1>
-        <div class="search-bar">
-          <span class="material-icons text-gray-400" style="font-size:21px;">search</span>
-          <input id="search-input" type="text" placeholder="搜尋客戶名稱、電話或備註...">
-        </div>
-      </div>
-    </div>
+/* =========================================================
+   Loading 遮罩
+   ========================================================= */
 
-    <div id="customer-list" class="max-w-md mx-auto px-4 pt-4 pb-10">
-      <div class="text-center text-gray-400 mt-20 text-sm">載入中...</div>
-    </div>
-
-    <div class="fab" onclick="showAddCustomerModal()">
-      <span class="material-icons">add</span>
-    </div>
-  </div>
-
-  <!-- 詳細頁 -->
-  <div id="page-detail" class="hidden min-h-screen">
- <!-- iOS Navigation Bar -->
-<div class="ios-nav-bar">
-  <div class="ios-nav-left" onclick="goBack()">
-    <span class="material-icons text-primary">arrow_back_ios</span>
-    <span class="text-primary text-lg font-medium">返回</span>
-  </div>
-
-  <div class="ios-nav-title">客戶資料</div>
-
-  <div class="ios-nav-right" onclick="showEditCustomerModal()">
-    <span class="text-primary text-lg font-semibold">編輯</span>
-  </div>
-</div>
-
-
-    <div class="pb-4 px-4 max-w-md mx-auto">
-      <div class="machine-photo-card">
-        <div id="customer-photos-container"></div>
-      </div>
-
-      <div class="detail-section">
-        <div class="detail-card">
-          <h3>基本資料</h3>
-          <div class="detail-row">
-            <label>姓名</label>
-            <span id="detail-name"></span>
-          </div>
-          <div class="detail-row">
-            <label>電話</label>
-            <span>
-              <a id="detail-phone-link" class="inline-flex items-center text-primary text-base font-medium">
-                <span class="material-icons mr-1 text-base">phone</span>
-                <span id="detail-phone"></span>
-              </a>
-            </span>
-          </div>
-          <div class="detail-row">
-            <label>安裝日期</label>
-            <span id="detail-install-date" class="text-gray-400 italic">無紀錄</span>
-          </div>
-        </div>
-
-        <div class="detail-card">
-          <h3>設備資訊</h3>
-          <div class="detail-row">
-            <label>地址</label>
-            <span id="detail-address"></span>
-          </div>
-          <div class="detail-row">
-            <label>機器</label>
-            <span id="detail-machine"></span>
-          </div>
-          <div class="detail-row">
-            <label>濾芯</label>
-            <span id="detail-filter"></span>
-          </div>
-          <div id="note-container" class="detail-row hidden">
-            <label class="detail-note">備註</label>
-            <span id="detail-note" class="detail-note"></span>
-          </div>
-        </div>
-
-        <div class="detail-card">
-          <h3>新增保養紀錄</h3>
-          <div class="grid grid-cols-2 gap-3 mb-3">
-            <div>
-              <label>日期</label>
-              <input type="date" id="record-date" class="mb-0 h-10">
-            </div>
-            <div>
-              <label>金額</label>
-              <div class="relative">
-                <span class="absolute left-3 top-3 text-gray-400 text-sm">NT$</span>
-                <input type="number" id="record-amount" class="pl-11 mb-0 h-10 text-green-600 font-bold" placeholder="0">
-              </div>
-            </div>
-          </div>
-          <div class="mb-3">
-            <label>更換項目</label>
-            <input id="record-items" type="text" placeholder="例如: PP, 活性碳" class="mb-0 h-10 font-medium">
-          </div>
-          <div class="mb-3">
-            <label>備註 (選填)</label>
-            <input id="record-note" type="text" class="mb-0 h-10">
-          </div>
-          <div class="flex items-center gap-3 mb-3">
-            <label class="bg-gray-100 text-primary px-4 py-2 rounded-lg text-sm font-medium flex items-center cursor-pointer active:bg-gray-200">
-              <span class="material-icons mr-1 text-lg">camera_alt</span> 拍照
-              <input id="record-photo-input" type="file" accept="image/*" multiple class="hidden" onchange="handleRecordPhotoSelect(this)">
-            </label>
-            <span id="record-photo-count" class="text-xs text-gray-400">0 張</span>
-          </div>
-          <div id="new-record-photos" class="photo-grid mb-3"></div>
-          <button class="btn-primary" onclick="saveRecord()">儲存紀錄</button>
-        </div>
-
-        <div class="mt-4">
-          <div class="flex items-center justify-between mb-2">
-            <h3 class="text-xs font-bold text-gray-500 tracking-[0.18em] uppercase">歷史紀錄</h3>
-          </div>
-          <div id="record-list" class="timeline-wrapper"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 客戶 modal -->
-  <div id="customer-modal" class="fixed inset-0 sheet-backdrop hidden z-50 flex items-end sm:items-center justify-center">
-    <div class="sheet w-full max-w-md h-[90vh] overflow-hidden flex flex-col">
-      <div class="sheet-grabber"></div>
-      <div class="sheet-header">
-        <button onclick="closeModal('customer-modal')" class="sheet-btn-text">取消</button>
-        <h2 id="modal-title" class="sheet-title">新增客戶</h2>
-        <button onclick="saveCustomer()" class="sheet-btn-text font-semibold">儲存</button>
-      </div>
-      <div class="sheet-body space-y-4">
-        <input type="hidden" id="cust-id">
-        <div class="space-y-3 bg-white rounded-xl p-3 shadow-sm">
-          <div>
-            <label>姓名 <span class="text-red-500">*</span></label>
-            <input id="cust-name" type="text" class="mb-0">
-          </div>
-          <div>
-            <label>電話 <span class="text-red-500">*</span></label>
-            <input id="cust-phone" type="tel" class="mb-0">
-          </div>
-          <div>
-            <label>安裝日期</label>
-            <input id="cust-install-date" type="date" class="mb-0">
-          </div>
-        </div>
-
-        <div class="space-y-3 bg-white rounded-xl p-3 shadow-sm">
-          <div>
-            <label>地址</label>
-            <input id="cust-address" type="text" class="mb-0">
-          </div>
-          <div>
-            <label>機器型號</label>
-            <input id="cust-machine" type="text" class="mb-0">
-          </div>
-          <div>
-            <label>濾芯規格</label>
-            <input id="cust-filter" type="text" class="mb-0">
-          </div>
-        </div>
-<div class="form-section">
-  <label class="form-label">標籤（可多選）</label>
-
-  <div id="tagSelector" class="tag-selector">
-    <div class="tag-option" data-value="廚下型">廚下型</div>
-    <div class="tag-option" data-value="飲水機">飲水機</div>
-    <div class="tag-option" data-value="全戶式">全戶式</div>
-    <div class="tag-option" data-value="工業商業">工業商業</div>
-    <div class="tag-option" data-value="售服">售服</div>
-    <div class="tag-option" data-value="其他">其他</div>
-  </div>
-</div>
-
-
-        <div class="bg-white rounded-xl p-3 shadow-sm">
-          <label>備註</label>
-          <textarea id="cust-note" rows="2" class="mb-0"></textarea>
-        </div>
-
-        <div class="bg-white rounded-xl p-4 shadow-sm text-center">
-          <label class="text-primary font-medium flex items-center justify-center cursor-pointer">
-            <span class="material-icons mr-2">add_photo_alternate</span> 選擇機器照片
-            <input id="cust-photo-input" type="file" accept="image/*" multiple class="hidden" onchange="handleCustPhotoSelect(this)">
-          </label>
-          <div id="cust-photo-preview" class="photo-grid mt-2 justify-center"></div>
-        </div>
-
-        <button id="btn-delete-customer" onclick="deleteCustomer()" class="danger-btn hidden">刪除此客戶</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 紀錄 modal -->
-  <div id="record-modal" class="fixed inset-0 sheet-backdrop hidden z-50 flex items-end sm:items-center justify-center">
-    <div class="sheet w-full max-w-md h-auto max-h-[90vh] overflow-hidden flex flex-col">
-      <div class="sheet-grabber"></div>
-      <div class="sheet-header">
-        <button onclick="closeModal('record-modal')" class="sheet-btn-text">取消</button>
-        <h2 class="sheet-title">修改紀錄</h2>
-        <button onclick="saveEditedRecord()" class="sheet-btn-text font-semibold">完成</button>
-      </div>
-      <div class="sheet-body space-y-4">
-        <input type="hidden" id="edit-record-id">
-        <div class="space-y-3 bg-white rounded-xl p-3 shadow-sm">
-          <div>
-            <label>日期</label>
-            <input id="edit-record-date" type="date" class="mb-0">
-          </div>
-          <div>
-            <label>項目</label>
-            <input id="edit-record-items" type="text" class="mb-0 font-medium">
-          </div>
-          <div>
-            <label>金額</label>
-            <input id="edit-record-amount" type="number" class="mb-0 text-green-600 font-bold">
-          </div>
-          <div>
-            <label>備註</label>
-            <textarea id="edit-record-note" rows="2" class="mb-0"></textarea>
-          </div>
-        </div>
-
-        <div class="bg-white rounded-xl p-3 shadow-sm">
-          <label class="text-primary font-medium flex items-center justify-center cursor-pointer">
-            <span class="material-icons mr-2">add_a_photo</span> 加傳照片
-            <input id="edit-record-photo-input" type="file" accept="image/*" multiple class="hidden" onchange="handleEditRecordPhotoSelect(this)">
-          </label>
-          <div id="edit-record-photo-preview" class="photo-grid mt-2 justify-center"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Loading -->
-  <div id="loading" class="loading-overlay hidden">
-    <div class="animate-spin rounded-full h-9 w-9 border-4 border-gray-200 border-t-primary mb-3"></div>
-    <p class="text-gray-600 font-medium text-sm">處理中...</p>
-  </div>
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  flex-direction: column;
+}
+</style>
 
   <script>
-    // ⚠️ 記得換成你的 API URL
-    const API_URL = "https://script.google.com/macros/s/AKfycbyIOBdYEHKOOS4TbG0abfyQWSOoll-RlkZvd08fU8_9VSMNQYgRSNmgeyg1IGUpquE/exec";
+/* =========================================================
+   全域變數
+   ========================================================= */
+const API_URL = "https://script.google.com/macros/s/AKfycbyIOBdYEHKOOS4TbG0abfyQWSOoll-RlkZvd08fU8_9VSMNQYgRSNmgeyg1IGUpquE/exec";
 
-    let customers = [];
-    let currentCustomer = null;
-    let selectedRecordPhotos = [];
-    let selectedCustPhotos = [];
-    let selectedEditRecordPhotos = [];
-    window.currentRecords = [];
+let customers = [];
+let currentCustomer = null;
+let selectedCustPhotos = [];
+let selectedRecordPhotos = [];
+let selectedEditRecordPhotos = [];
+window.currentRecords = [];
 
-    // 🔧 所有標籤都在這裡改，你要新增、刪除、改名，全改這裡即可
+/* =========================================================
+   標籤選項（你可自由修改）
+   ========================================================= */
 const TAG_OPTIONS = [
   "廚下型",
   "飲水機",
@@ -828,652 +774,660 @@ const TAG_OPTIONS = [
   "其他"
 ];
 
-    // 統一處理日期字串：支援 "2025-02-01", "2025-01-31T16:00:00.000Z", "Sat Feb 01 2025 ..."
-    function normalizeDateStr(value){
-      if (!value) return '';
-      const str = String(value);
-      // 若有 T 或 GMT，先用 Date 解析成「當地時間」，再組 yyyy-mm-dd
-    // 若已是 yyyy-mm-dd，不再解析（避免扣一天）
-if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
-  return str;
+/* =========================================================
+   日期處理：完全避免扣一天問題
+   ========================================================= */
+function normalizeDateStr(value) {
+  if (!value) return "";
+
+  const str = String(value);
+
+  // 已經是 yyyy-mm-dd → 直接回傳
+  if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return str;
+
+  // ISO 格式（含 T）→ 以本地時間轉換
+  if (str.includes("T")) {
+    const d = new Date(str);
+    if (!isNaN(d)) {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+  }
+
+  // 其他格式 → 只取日期部分
+  return str.split(/[ T]/)[0];
 }
 
-// 若格式含時間但可解析 → 用本地時間格式化
-if (str.includes('T') || str.includes('GMT')) {
-  const d = new Date(str);
-  if (!isNaN(d.getTime())) {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
+/* =========================================================
+   API 呼叫
+   ========================================================= */
+async function apiCall(action, payload = {}, method = "POST") {
+  try {
+    showLoading(true);
+
+    const url =
+      method === "GET"
+        ? `${API_URL}?${new URLSearchParams({ action, ...payload })}`
+        : API_URL;
+
+    const options =
+      method === "GET"
+        ? {}
+        : { method: "POST", body: JSON.stringify({ action, ...payload }) };
+
+    const res = await fetch(url, options);
+    return await res.json();
+  } catch (e) {
+    console.log(e);
+    alert("發生錯誤，請稍後重試");
+    return null;
+  } finally {
+    showLoading(false);
   }
 }
 
-      // 其他情況：只取第一段（避免後面有時間）
-      return str.split(/[ T]/)[0];
-    }
+/* =========================================================
+   初始載入
+   ========================================================= */
+window.onload = () => {
+  fetchCustomers();
+  if (document.getElementById("record-date")) {
+    document.getElementById("record-date").valueAsDate = new Date();
+  }
+};
 
-    window.onload = () => {
-      fetchCustomers();
-      const rd = document.getElementById('record-date');
-      if (rd) rd.valueAsDate = new Date();
-    };
-
-    async function apiCall(action, payload = {}, method = 'POST') {
-      showLoading(true);
-      try {
-        if (payload.phone) payload.phone = String(payload.phone);
-        const url = method === 'GET'
-          ? `${API_URL}?${new URLSearchParams({ action, ...payload })}`
-          : API_URL;
-        const options = method === 'GET'
-          ? {}
-          : { method: 'POST', body: JSON.stringify({ action, ...payload }) };
-        const res = await fetch(url, options);
-        return await res.json();
-      } catch (e) {
-        alert("連線錯誤");
-        return null;
-      } finally {
-        showLoading(false);
-      }
-    }
-
+/* =========================================================
+   取得客戶列表
+   ========================================================= */
 async function fetchCustomers() {
-  const data = await apiCall('getCustomers', {}, 'GET');
+  const data = await apiCall("getCustomers", {}, "GET");
+
   if (!Array.isArray(data)) {
-    document.getElementById('customer-list').innerHTML =
-      '<div class="text-center text-gray-400 mt-20 text-sm">讀取失敗</div>';
+    document.getElementById("customer-list").innerHTML =
+      `<div class="text-center text-gray-400 mt-20 text-sm">讀取失敗</div>`;
     return;
   }
 
-  // 後端現在已經直接給 lastRecordDate
   customers = data;
-
   renderList(customers);
 }
 
+/* =========================================================
+   渲染客戶列表
+   ========================================================= */
+function renderList(list) {
+  const container = document.getElementById("customer-list");
+  container.innerHTML = "";
 
-
-
-    function renderList(list) {
-      const container = document.getElementById('customer-list');
-      container.innerHTML = '';
-      if (!list || list.length === 0) {
-        container.innerHTML = '<div class="text-center text-gray-400 mt-20 text-sm">暫無資料</div>';
-        return;
-      }
-
-      const wrapper = document.createElement('div');
-      wrapper.className = 'max-w-md mx-auto px-1 pt-2 space-y-3 pb-6';
-
-      list.forEach(c => {
-        const card = document.createElement('div');
-        card.className = 'dashboard-card cursor-pointer';
-        card.onclick = () => openDetail(c);
-
-        const tagClass = (c.machine && String(c.machine).trim())
-          ? 'dashboard-tag'
-          : 'dashboard-tag dashboard-tag-empty';
-
-        const lastText = c.lastRecordDate
-          ? normalizeDateStr(c.lastRecordDate)
-          : '尚無保養紀錄';
-
-        card.innerHTML = `
-          <div class="dashboard-main">
-            <div class="dashboard-name truncate">${c.name || '未命名客戶'}</div>
-            <div class="${tagClass}">
-              ${c.machine ? c.machine : '　'}
-            </div>
-            <div class="dashboard-meta">
-              <span><span class="material-icons">phone_iphone</span>${c.phone || '無電話'}</span>
-              <span><span class="material-icons">history</span>${lastText}</span>
-            </div>
-            ${c.note ? `<div class="subtle-text mt-1 line-clamp-1">備註：${c.note}</div>` : ''}
-          </div>
-          <div class="dashboard-chevron">
-            <span class="material-icons">arrow_forward_ios</span>
-          </div>
-        `;
-        wrapper.appendChild(card);
-      });
-
-      container.appendChild(wrapper);
-    }
-
-    document.getElementById('search-input').addEventListener('input', e => {
-      const term = e.target.value.toLowerCase();
-      renderList(customers.filter(c =>
-        (c.name && c.name.toLowerCase().includes(term)) ||
-        (c.phone && String(c.phone).includes(term)) ||
-        (c.note && c.note.toLowerCase().includes(term))
-      ));
-    });
-
-    async function openDetail(customer) {
-      currentCustomer = customer;
-      document.getElementById('page-list').classList.add('hidden');
-      document.getElementById('page-detail').classList.remove('hidden');
-      window.scrollTo(0, 0);
-
-      document.getElementById('detail-name').innerText = customer.name || '';
-      document.getElementById('detail-phone').innerText = customer.phone || '';
-      document.getElementById('detail-phone-link').href = customer.phone ? `tel:${customer.phone}` : 'javascript:void(0)';
-
-      const dateEl = document.getElementById('detail-install-date');
-      if (customer.installDate) {
-        dateEl.textContent = normalizeDateStr(customer.installDate);
-        dateEl.classList.remove('text-gray-400','italic');
-      } else {
-        dateEl.textContent = '無紀錄';
-        dateEl.classList.add('text-gray-400','italic');
-      }
-
-      setText('detail-address', customer.address);
-      setText('detail-machine', customer.machine);
-      setText('detail-filter', customer.filter);
-
-      const noteContainer = document.getElementById('note-container');
-      if (customer.note) {
-        document.getElementById('detail-note').innerText = customer.note;
-        noteContainer.classList.remove('hidden');
-      } else {
-        noteContainer.classList.add('hidden');
-      }
-
-      // 照片
-      const photoContainer = document.getElementById('customer-photos-container');
-      photoContainer.innerHTML = '';
-      let photos = [];
-      if (customer.photos && Array.isArray(customer.photos)) photos = customer.photos;
-      else if (customer.photos && typeof customer.photos === 'string') {
-        if (customer.photos.startsWith('[')) {
-          try { photos = JSON.parse(customer.photos); } catch (e) { photos = [customer.photos]; }
-        } else {
-          photos = [customer.photos];
-        }
-      }
-
-      if (photos.length > 0) {
-        photos.forEach(url => {
-          const slide = document.createElement('div');
-          slide.className = 'machine-photo-slide cursor-pointer';
-          slide.innerHTML = `<img src="${url}" alt="機器照片">`;
-          slide.onclick = () => window.open(url, '_blank');
-          photoContainer.appendChild(slide);
-        });
-      } else {
-        const empty = document.createElement('div');
-        empty.className = 'machine-photo-empty';
-        empty.innerText = '無機器照片';
-        photoContainer.appendChild(empty);
-      }
-
-      await fetchRecords(customer.id);
-      renderList(customers);
-    }
-
-    function setText(id, value) {
-      const el = document.getElementById(id);
-      if (!value) {
-        el.innerText = '未填寫';
-        el.classList.add('text-gray-400','italic');
-      } else {
-        el.innerText = value;
-        el.classList.remove('text-gray-400','italic');
-      }
-    }
-
-    function goBack() {
-      document.getElementById('page-detail').classList.add('hidden');
-      document.getElementById('page-list').classList.remove('hidden');
-      currentCustomer = null;
-      selectedRecordPhotos = [];
-      renderRecordPhotoPreview();
-    }
-
-    async function fetchRecords(custId) {
-      const listDiv = document.getElementById('record-list');
-      listDiv.innerHTML = '<div class="text-center py-4 text-sm text-gray-400">讀取中...</div>';
-
-      const records = await apiCall('getRecords', { customerId: custId }, 'GET');
-      listDiv.innerHTML = '';
-
-      if (!records || records.length === 0) {
-        listDiv.innerHTML = '<div class="text-center py-6 text-gray-400 text-sm">尚無紀錄</div>';
-        if (currentCustomer) currentCustomer.lastRecordDate = '';
-        window.currentRecords = [];
-        return;
-      }
-
-      records.sort((a, b) => new Date(a.date) - new Date(b.date)); // 先從舊到新
-      window.currentRecords = records;
-
-      // 更新 currentCustomer 的 lastRecordDate（取最後一筆）
-      const last = records[records.length - 1];
-      if (currentCustomer && last && last.date) {
-        currentCustomer.lastRecordDate = normalizeDateStr(last.date);
-      }
-// 🔥 同步更新 customers[] 裡的對應客戶資料
-const idx = customers.findIndex(c => c.id == currentCustomer.id);
-if (idx !== -1) {
-  customers[idx].lastRecordDate = currentCustomer.lastRecordDate;
-}
-      // 再由新到舊畫 timeline，比較順眼
-      records.slice().reverse().forEach(r => {
-        let photos = [];
-        if (r.photos) {
-          if (Array.isArray(r.photos)) photos = r.photos;
-          else {
-            try { photos = JSON.parse(r.photos); } catch (e) { photos = []; }
-          }
-        }
-
-        const wrapper = document.createElement('div');
-        wrapper.className = 'timeline-item';
-
-        const dot = document.createElement('div');
-        dot.className = 'timeline-dot';
-
-        const card = document.createElement('div');
-        card.className = 'record-card';
-
-        const dateStr = r.date ? normalizeDateStr(r.date) : '';
-
-        card.innerHTML = `
-          <div class="record-card-header">
-            <div class="record-date">${dateStr}</div>
-            ${r.amount ? `<div class="record-amount">NT$${r.amount}</div>` : ''}
-          </div>
-          <div class="record-items">${r.items || ''}</div>
-          ${r.note ? `<div class="record-note">備註：${r.note}</div>` : ''}
-          ${photos.length > 0 ? `
-            <div class="photo-grid mb-1">
-              ${photos.map(url => `
-                <img src="${url}" class="photo-thumb cursor-pointer" onclick="window.open('${url}','_blank')">
-              `).join('')}
-            </div>
-          ` : ''}
-          <div class="record-actions">
-            <button class="text-primary hover:bg-gray-100" onclick="openEditRecordModal('${r.id}')">編輯</button>
-            <button class="text-red-500 hover:bg-red-50" onclick="deleteRecord('${r.id}')">刪除</button>
-          </div>
-        `;
-
-        wrapper.appendChild(dot);
-        wrapper.appendChild(card);
-        listDiv.appendChild(wrapper);
-      });
-    }
-
-    function openEditRecordModal(recordId) {
-      const record = window.currentRecords.find(r => String(r.id) === String(recordId));
-      if (!record) {
-        alert('找不到紀錄');
-        return;
-      }
-
-      document.getElementById('edit-record-id').value = record.id || '';
-      document.getElementById('edit-record-date').value =
-        record.date ? normalizeDateStr(record.date) : '';
-      document.getElementById('edit-record-items').value = record.items || '';
-      document.getElementById('edit-record-amount').value = record.amount || '';
-      document.getElementById('edit-record-note').value = record.note || '';
-
-      selectedEditRecordPhotos = [];
-      document.getElementById('edit-record-photo-preview').innerHTML = '';
-
-      document.getElementById('record-modal').classList.remove('hidden');
-    }
-
-    async function saveEditedRecord() {
-      const id = document.getElementById('edit-record-id').value;
-      const items = document.getElementById('edit-record-items').value.trim();
-      if (!items) {
-        alert('請輸入項目');
-        return;
-      }
-
-      let photoUrls = [];
-      if (selectedEditRecordPhotos.length > 0) {
-        for (let base64 of selectedEditRecordPhotos) {
-          const res = await apiCall('uploadImage', { base64, type: 'image/jpeg' });
-          if (res && res.status === 'success') photoUrls.push(res.url);
-        }
-      }
-
-      const payload = {
-        id,
-        date: document.getElementById('edit-record-date').value,
-        items,
-        amount: document.getElementById('edit-record-amount').value,
-        note: document.getElementById('edit-record-note').value,
-        photos: photoUrls
-      };
-
-      const res = await apiCall('updateRecord', payload);
-      if (res && res.status === 'success') {
-        closeModal('record-modal');
-        if (currentCustomer) {
-          await fetchRecords(currentCustomer.id);
-          renderList(customers);
-        }
-      } else {
-        alert('更新失敗');
-      }
-    }
-
-    function handleEditRecordPhotoSelect(input) {
-      const files = input.files;
-      if (!files.length) return;
-      Array.from(files).forEach(file => {
-        const reader = new FileReader();
-        reader.onload = e => resizeImage(e.target.result, 1024, res => {
-          selectedEditRecordPhotos.push(res);
-          renderPhotoList('edit-record-photo-preview', selectedEditRecordPhotos);
-        });
-        reader.readAsDataURL(file);
-      });
-      input.value = '';
-    }
-
-    async function saveRecord() {
-      if (!currentCustomer) return;
-      const items = document.getElementById('record-items').value.trim();
-      if (!items) {
-        alert('請輸入項目');
-        return;
-      }
-
-      let photoUrls = [];
-      if (selectedRecordPhotos.length > 0) {
-        for (let base64 of selectedRecordPhotos) {
-          const res = await apiCall('uploadImage', { base64, type: 'image/jpeg' });
-          if (res && res.status === 'success') photoUrls.push(res.url);
-        }
-      }
-
-      const payload = {
-        customerId: currentCustomer.id,
-        date: document.getElementById('record-date').value,
-        items,
-        amount: document.getElementById('record-amount').value,
-        note: document.getElementById('record-note').value,
-        photos: photoUrls
-      };
-
-      const res = await apiCall('addRecord', payload);
-      if (res && res.status === 'success') {
-        document.getElementById('record-items').value = '';
-        document.getElementById('record-amount').value = '';
-        document.getElementById('record-note').value = '';
-        selectedRecordPhotos = [];
-        renderRecordPhotoPreview();
-        await fetchRecords(currentCustomer.id);
-        renderList(customers);
-      } else {
-        alert('新增失敗');
-      }
-    }
-
-    async function deleteRecord(id) {
-      if (!confirm('確定刪除此紀錄？')) return;
-      await apiCall('deleteRecord', { id });
-      if (currentCustomer) {
-        await fetchRecords(currentCustomer.id);
-        renderList(customers);
-      }
-    }
-
-    function resizeImage(base64, maxWidth, callback) {
-      const img = new Image();
-      img.src = base64;
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        let width = img.width;
-        let height = img.height;
-        if (width > maxWidth) {
-          height *= maxWidth / width;
-          width = maxWidth;
-        }
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, width, height);
-        callback(canvas.toDataURL('image/jpeg', 0.8));
-      };
-    }
-
-    function handleRecordPhotoSelect(input) {
-      const files = input.files;
-      if (!files.length) return;
-      Array.from(files).forEach(file => {
-        const reader = new FileReader();
-        reader.onload = e => resizeImage(e.target.result, 1024, res => {
-          selectedRecordPhotos.push(res);
-          renderRecordPhotoPreview();
-        });
-        reader.readAsDataURL(file);
-      });
-      input.value = '';
-    }
-
-    function renderRecordPhotoPreview() {
-      renderPhotoList('new-record-photos', selectedRecordPhotos);
-      document.getElementById('record-photo-count').innerText =
-        `${selectedRecordPhotos.length} 張`;
-    }
-
-    function handleCustPhotoSelect(input) {
-      const files = input.files;
-      if (!files.length) return;
-      Array.from(files).forEach(file => {
-        const reader = new FileReader();
-        reader.onload = e => resizeImage(e.target.result, 1024, res => {
-          selectedCustPhotos.push(res);
-          renderPhotoList('cust-photo-preview', selectedCustPhotos);
-        });
-        reader.readAsDataURL(file);
-      });
-      input.value = '';
-    }
-
-    function renderPhotoList(divId, arr) {
-      const div = document.getElementById(divId);
-      div.innerHTML = arr.map((src, idx) => `
-        <div class="relative flex-shrink-0">
-          <img src="${src}" class="photo-thumb">
-          <button class="absolute -top-1 -right-1 bg-gray-700 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
-            onclick="removePhoto('${divId}', ${idx})">×</button>
-        </div>
-      `).join('');
-    }
-
-    function removePhoto(divId, idx) {
-      if (divId === 'new-record-photos') {
-        selectedRecordPhotos.splice(idx, 1);
-        renderRecordPhotoPreview();
-      } else if (divId === 'cust-photo-preview') {
-        selectedCustPhotos.splice(idx, 1);
-        renderPhotoList('cust-photo-preview', selectedCustPhotos);
-      } else if (divId === 'edit-record-photo-preview') {
-        selectedEditRecordPhotos.splice(idx, 1);
-        renderPhotoList('edit-record-photo-preview', selectedEditRecordPhotos);
-      }
-    }
-
-    function showAddCustomerModal() {
-      document.getElementById('modal-title').innerText = '新增客戶';
-      document.getElementById('cust-id').value = '';
-      document.getElementById('cust-name').value = '';
-      document.getElementById('cust-phone').value = '';
-      document.getElementById('cust-address').value = '';
-      document.getElementById('cust-note').value = '';
-      document.getElementById('cust-machine').value = '';
-      document.getElementById('cust-filter').value = '';
-const d = new Date();
-const y = d.getFullYear();
-const m = String(d.getMonth() + 1).padStart(2, '0');
-const day = String(d.getDate()).padStart(2, '0');
-document.getElementById('cust-install-date').value = `${y}-${m}-${day}`;
-
-      selectedCustPhotos = [];
-      renderPhotoList('cust-photo-preview', []);
-      document.getElementById('btn-delete-customer').classList.add('hidden');
-      document.getElementById('customer-modal').classList.remove('hidden');
-    }
-const selected = currentCustomer.tags ? currentCustomer.tags.split(",") : [];
-renderTagSelector("cust-tag-selector", selected);
-
-    function showEditCustomerModal() {
-      if (!currentCustomer) return;
-      document.getElementById('modal-title').innerText = '編輯資料';
-      document.getElementById('cust-id').value = currentCustomer.id;
-      document.getElementById('cust-name').value = currentCustomer.name || '';
-      document.getElementById('cust-phone').value = currentCustomer.phone || '';
-      document.getElementById('cust-address').value = currentCustomer.address || '';
-      document.getElementById('cust-note').value = currentCustomer.note || '';
-      document.getElementById('cust-machine').value = currentCustomer.machine || '';
-      document.getElementById('cust-filter').value = currentCustomer.filter || '';
-      document.getElementById('cust-install-date').value =
-        currentCustomer.installDate ? normalizeDateStr(currentCustomer.installDate) : '';
-      selectedCustPhotos = [];
-      renderPhotoList('cust-photo-preview', []);
-      document.getElementById('btn-delete-customer').classList.remove('hidden');
-      document.getElementById('customer-modal').classList.remove('hidden');
-    }
-
-    function closeModal(id) {
-      document.getElementById(id).classList.add('hidden');
-    }
-
-    async function saveCustomer() {
-      const id = document.getElementById('cust-id').value;
-      const name = document.getElementById('cust-name').value.trim();
-      const phone = document.getElementById('cust-phone').value.trim();
-      if (!name || !phone) {
-        alert('姓名、電話必填');
-        return;
-      }
-
-      let photoUrls = [];
-      if (id && currentCustomer && currentCustomer.photos) {
-        if (Array.isArray(currentCustomer.photos)) photoUrls = [...currentCustomer.photos];
-        else {
-          try { photoUrls = JSON.parse(currentCustomer.photos); }
-          catch (e) { photoUrls = [currentCustomer.photos]; }
-        }
-      }
-      if (selectedCustPhotos.length > 0) {
-        for (let base64 of selectedCustPhotos) {
-          const res = await apiCall('uploadImage', { base64, type: 'image/jpeg' });
-          if (res && res.status === 'success') photoUrls.push(res.url);
-        }
-      }
-
-      const payload = {
-        id,
-        name,
-        phone,
-        address: document.getElementById('cust-address').value,
-        note: document.getElementById('cust-note').value,
-        machine: document.getElementById('cust-machine').value,
-        filter: document.getElementById('cust-filter').value,
-        installDate: document.getElementById('cust-install-date').value,
-        photos: photoUrls
-      };
-      tags: getSelectedTags("cust-tag-selector")
-
-
-      const action = id ? 'updateCustomer' : 'addCustomer';
-      const res = await apiCall(action, payload);
-      if (res && res.status === 'success') {
-        closeModal('customer-modal');
-        await fetchCustomers();
-        if (id && currentCustomer) {
-          currentCustomer = { ...currentCustomer, ...payload };
-          openDetail(currentCustomer);
-        }
-      } else {
-        alert('儲存失敗');
-      }
-    }
-// 取得已選標籤
-function getSelectedTags() {
-  const selected = [...document.querySelectorAll(".tag-option.selected")].map(tag => tag.dataset.value);
-  return selected.join(","); // 用逗號存成字串
-}
-
-// 初始化標籤（編輯客戶用）
-function setSelectedTags(tagString) {
-  const selectedList = tagString ? tagString.split(",") : [];
-
-  document.querySelectorAll(".tag-option").forEach(tag => {
-    if (selectedList.includes(tag.dataset.value)) {
-      tag.classList.add("selected");
-    } else {
-      tag.classList.remove("selected");
-    }
-  });
-}
-
-// 點擊選擇/取消
-document.addEventListener("click", function (e) {
-  if (e.target.classList.contains("tag-option")) {
-    e.target.classList.toggle("selected");
+  if (!list || list.length === 0) {
+    container.innerHTML =
+      `<div class="text-center text-gray-400 mt-20 text-sm">暫無資料</div>`;
+    return;
   }
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "max-w-md mx-auto px-1 pt-2 space-y-3 pb-6";
+
+  list.forEach((c) => {
+    const lastText = c.lastRecordDate
+      ? normalizeDateStr(c.lastRecordDate)
+      : "尚無保養紀錄";
+
+    const card = document.createElement("div");
+    card.className = "dashboard-card";
+    card.onclick = () => openDetail(c);
+
+    card.innerHTML = `
+      <div class="dashboard-main">
+        <div class="dashboard-name truncate">${c.name}</div>
+
+        <div class="dashboard-tag">${c.tags || "未分類"}</div>
+
+        <div class="dashboard-meta">
+          <span><span class="material-icons">phone_iphone</span>${c.phone}</span>
+          <span><span class="material-icons">history</span>${lastText}</span>
+        </div>
+
+        ${c.note ? `<div class="subtle-text mt-1 line-clamp-1">備註：${c.note}</div>` : ""}
+      </div>
+      <div class="dashboard-chevron"><span class="material-icons">arrow_forward_ios</span></div>
+    `;
+
+    wrapper.appendChild(card);
+  });
+
+  container.appendChild(wrapper);
+}
+
+/* =========================================================
+   搜尋功能
+   ========================================================= */
+document.getElementById("search-input").addEventListener("input", (e) => {
+  const term = e.target.value.toLowerCase();
+  renderList(
+    customers.filter(
+      (c) =>
+        c.name.toLowerCase().includes(term) ||
+        c.phone.includes(term) ||
+        (c.note && c.note.toLowerCase().includes(term))
+    )
+  );
 });
 
-    async function deleteCustomer() {
-      if (!confirm('確定刪除此客戶？')) return;
-      await apiCall('deleteCustomer', { id: document.getElementById('cust-id').value });
-      closeModal('customer-modal');
-      goBack();
-      fetchCustomers();
-    }
+/* =========================================================
+   打開詳細頁
+   ========================================================= */
+async function openDetail(customer) {
+  currentCustomer = customer;
 
-    function showLoading(show) {
-      document.getElementById('loading').classList.toggle('hidden', !show);
-    }
+  document.getElementById("page-list").classList.add("hidden");
+  document.getElementById("page-detail").classList.remove("hidden");
+  window.scrollTo(0, 0);
 
-    document.getElementById('customer-modal').addEventListener('click', e => {
-      if (e.target.id === 'customer-modal') closeModal('customer-modal');
+  document.getElementById("detail-name").innerText = customer.name;
+  document.getElementById("detail-phone").innerText = customer.phone;
+  document.getElementById("detail-phone-link").href = `tel:${customer.phone}`;
+  document.getElementById("detail-install-date").innerText =
+    normalizeDateStr(customer.installDate) || "無紀錄";
+  document.getElementById("detail-address").innerText = customer.address || "未填寫";
+  document.getElementById("detail-machine").innerText = customer.machine || "未填寫";
+  document.getElementById("detail-filter").innerText = customer.filter || "未填寫";
+
+  if (customer.note) {
+    document.getElementById("detail-note").innerText = customer.note;
+    document.getElementById("note-container").classList.remove("hidden");
+  } else {
+    document.getElementById("note-container").classList.add("hidden");
+  }
+
+  // 顯示機器照片
+  const photoContainer = document.getElementById("customer-photos-container");
+  photoContainer.innerHTML = "";
+
+  let photos = [];
+  if (Array.isArray(customer.photos)) photos = customer.photos;
+  else if (customer.photos) {
+    try { photos = JSON.parse(customer.photos); }
+    catch { photos = [customer.photos]; }
+  }
+
+  if (photos.length === 0) {
+    photoContainer.innerHTML =
+      `<div class="machine-photo-empty">無機器照片</div>`;
+  } else {
+    photos.forEach((url) => {
+      const slide = document.createElement("div");
+      slide.className = "machine-photo-slide";
+      slide.innerHTML = `<img src="${url}" />`;
+      slide.onclick = () => window.open(url);
+      photoContainer.appendChild(slide);
     });
-    document.getElementById('record-modal').addEventListener('click', e => {
-      if (e.target.id === 'record-modal') closeModal('record-modal');
+  }
+
+  await fetchRecords(customer.id);
+}
+
+/* =========================================================
+   返回列表
+   ========================================================= */
+function goBack() {
+  document.getElementById("page-detail").classList.add("hidden");
+  document.getElementById("page-list").classList.remove("hidden");
+}
+
+/* =========================================================
+   歷史紀錄
+   ========================================================= */
+async function fetchRecords(custId) {
+  const listDiv = document.getElementById("record-list");
+  listDiv.innerHTML = `<div class="text-center py-4 text-gray-400">讀取中...</div>`;
+
+  const records = await apiCall("getRecords", { customerId: custId }, "GET");
+
+  if (!records || records.length === 0) {
+    listDiv.innerHTML =
+      `<div class="text-center py-6 text-gray-400 text-sm">尚無紀錄</div>`;
+    updateLastRecordDate(custId, "");
+    return;
+  }
+
+  records.sort((a, b) => new Date(a.date) - new Date(b.date));
+  window.currentRecords = records;
+
+  // 更新 lastRecordDate
+  const last = normalizeDateStr(records[records.length - 1].date);
+  updateLastRecordDate(custId, last);
+
+  listDiv.innerHTML = "";
+  records
+    .slice()
+    .reverse()
+    .forEach((r) => {
+      let photos = [];
+      try { photos = Array.isArray(r.photos) ? r.photos : JSON.parse(r.photos || "[]"); }
+      catch { photos = []; }
+
+      const div = document.createElement("div");
+      div.className = "timeline-item";
+
+      div.innerHTML = `
+        <div class="timeline-dot"></div>
+        <div class="record-card">
+          <div class="flex justify-between mb-1">
+            <div class="record-date">${normalizeDateStr(r.date)}</div>
+            <div class="record-amount">${r.amount ? "NT$" + r.amount : ""}</div>
+          </div>
+
+          <div class="record-items">${r.items}</div>
+          ${r.note ? `<div class="record-note">${r.note}</div>` : ""}
+
+          ${
+            photos.length
+              ? `<div class="flex gap-2 overflow-x-auto mt-2">
+                   ${photos
+                     .map(
+                       (p) =>
+                         `<img src="${p}" class="photo-thumb" onclick="window.open('${p}')">`
+                     )
+                     .join("")}
+                 </div>`
+              : ""
+          }
+
+          <div class="record-actions mt-2 flex justify-end gap-3">
+            <button class="text-primary" onclick="openEditRecordModal('${r.id}')">編輯</button>
+            <button class="text-red-500" onclick="deleteRecord('${r.id}')">刪除</button>
+          </div>
+        </div>
+      `;
+      listDiv.appendChild(div);
     });
-    // ⭐ 動態建立標籤按鈕
-function renderTagSelector(containerId, selectedTags = []) {
+}
+
+/* =========================================================
+   更新 lastRecordDate（首頁即時顯示）
+   ========================================================= */
+function updateLastRecordDate(custId, date) {
+  const idx = customers.findIndex((c) => c.id == custId);
+  if (idx !== -1) {
+    customers[idx].lastRecordDate = date;
+  }
+  renderList(customers);
+}
+
+/* =========================================================
+   編輯紀錄 Modal
+   ========================================================= */
+function openEditRecordModal(recordId) {
+  const r = window.currentRecords.find((x) => x.id == recordId);
+  if (!r) return alert("找不到紀錄");
+
+  document.getElementById("edit-record-id").value = r.id;
+  document.getElementById("edit-record-date").value = normalizeDateStr(r.date);
+  document.getElementById("edit-record-items").value = r.items;
+  document.getElementById("edit-record-amount").value = r.amount;
+  document.getElementById("edit-record-note").value = r.note;
+
+  selectedEditRecordPhotos = [];
+  document.getElementById("edit-record-photo-preview").innerHTML = "";
+
+  document.getElementById("record-modal").classList.remove("hidden");
+}
+
+/* =========================================================
+   儲存編輯後的紀錄
+   ========================================================= */
+async function saveEditedRecord() {
+  const id = document.getElementById("edit-record-id").value;
+  const items = document.getElementById("edit-record-items").value.trim();
+  if (!items) return alert("請輸入項目");
+
+  let photoUrls = [];
+
+  for (let b64 of selectedEditRecordPhotos) {
+    const res = await apiCall("uploadImage", { base64: b64, type: "image/jpeg" });
+    if (res?.status === "success") photoUrls.push(res.url);
+  }
+
+  const payload = {
+    id,
+    date: document.getElementById("edit-record-date").value,
+    items,
+    amount: document.getElementById("edit-record-amount").value,
+    note: document.getElementById("edit-record-note").value,
+    photos: photoUrls,
+  };
+
+  const res = await apiCall("updateRecord", payload);
+  if (res?.status === "success") {
+    closeModal("record-modal");
+    await fetchRecords(currentCustomer.id);
+  } else {
+    alert("更新失敗");
+  }
+}
+
+/* =========================================================
+   新增保養紀錄
+   ========================================================= */
+async function saveRecord() {
+  if (!currentCustomer) return;
+
+  const items = document.getElementById("record-items").value.trim();
+  if (!items) return alert("請輸入項目");
+
+  let photoUrls = [];
+  for (let b64 of selectedRecordPhotos) {
+    const r = await apiCall("uploadImage", { base64: b64, type: "image/jpeg" });
+    if (r?.status === "success") photoUrls.push(r.url);
+  }
+
+  const payload = {
+    customerId: currentCustomer.id,
+    date: document.getElementById("record-date").value,
+    items,
+    amount: document.getElementById("record-amount").value,
+    note: document.getElementById("record-note").value,
+    photos: photoUrls,
+  };
+
+  const res = await apiCall("addRecord", payload);
+  if (res?.status === "success") {
+    selectedRecordPhotos = [];
+    document.getElementById("record-items").value = "";
+    document.getElementById("record-amount").value = "";
+    document.getElementById("record-note").value = "";
+    renderRecordPhotoPreview();
+    await fetchRecords(currentCustomer.id);
+  } else {
+    alert("新增失敗");
+  }
+}
+
+/* =========================================================
+   刪除紀錄
+   ========================================================= */
+async function deleteRecord(id) {
+  if (!confirm("確定刪除此紀錄？")) return;
+  await apiCall("deleteRecord", { id });
+  await fetchRecords(currentCustomer.id);
+}
+
+/* =========================================================
+   客戶照片選取
+   ========================================================= */
+function handleCustPhotoSelect(input) {
+  const files = [...input.files];
+  files.forEach((file) => {
+    const reader = new FileReader();
+    reader.onload = (e) =>
+      resizeImage(e.target.result, 1000, (res) => {
+        selectedCustPhotos.push(res);
+        renderPhotoList("cust-photo-preview", selectedCustPhotos);
+      });
+    reader.readAsDataURL(file);
+  });
+  input.value = "";
+}
+
+/* =========================================================
+   新增紀錄照片
+   ========================================================= */
+function handleRecordPhotoSelect(input) {
+  const files = [...input.files];
+  files.forEach((file) => {
+    const reader = new FileReader();
+    reader.onload = (e) =>
+      resizeImage(e.target.result, 1000, (res) => {
+        selectedRecordPhotos.push(res);
+        renderRecordPhotoPreview();
+      });
+    reader.readAsDataURL(file);
+  });
+  input.value = "";
+}
+
+function renderRecordPhotoPreview() {
+  renderPhotoList("new-record-photos", selectedRecordPhotos);
+  document.getElementById("record-photo-count").innerText =
+    `${selectedRecordPhotos.length} 張`;
+}
+
+/* =========================================================
+   編輯紀錄照片選取
+   ========================================================= */
+function handleEditRecordPhotoSelect(input) {
+  const files = [...input.files];
+  files.forEach((file) => {
+    const reader = new FileReader();
+    reader.onload = (e) =>
+      resizeImage(e.target.result, 1000, (res) => {
+        selectedEditRecordPhotos.push(res);
+        renderPhotoList("edit-record-photo-preview", selectedEditRecordPhotos);
+      });
+    reader.readAsDataURL(file);
+  });
+  input.value = "";
+}
+
+/* =========================================================
+   通用照片渲染
+   ========================================================= */
+function renderPhotoList(divId, srcList) {
+  const div = document.getElementById(divId);
+  div.innerHTML = srcList
+    .map(
+      (src, idx) => `
+      <div class="relative flex-shrink-0">
+        <img src="${src}" class="photo-thumb" />
+        <button class="absolute -top-1 -right-1 bg-black bg-opacity-50 text-white 
+          w-5 h-5 rounded-full flex items-center justify-center text-xs"
+          onclick="removePhoto('${divId}', ${idx})">×</button>
+      </div>`
+    )
+    .join("");
+}
+
+function removePhoto(divId, idx) {
+  if (divId === "cust-photo-preview") {
+    selectedCustPhotos.splice(idx, 1);
+  } else if (divId === "new-record-photos") {
+    selectedRecordPhotos.splice(idx, 1);
+  } else if (divId === "edit-record-photo-preview") {
+    selectedEditRecordPhotos.splice(idx, 1);
+  }
+  renderPhotoList(divId, eval(divId.replace("-", "")));
+}
+
+/* =========================================================
+   調整圖片大小
+   ========================================================= */
+function resizeImage(base64, maxWidth, callback) {
+  const img = new Image();
+  img.src = base64;
+  img.onload = () => {
+    let w = img.width;
+    let h = img.height;
+    if (w > maxWidth) {
+      h = (h * maxWidth) / w;
+      w = maxWidth;
+    }
+    const canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+    canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+    callback(canvas.toDataURL("image/jpeg", 0.85));
+  };
+}
+
+/* =========================================================
+   新增客戶 Modal
+   ========================================================= */
+function showAddCustomerModal() {
+  document.getElementById("modal-title").innerText = "新增客戶";
+  document.getElementById("cust-id").value = "";
+  document.getElementById("cust-name").value = "";
+  document.getElementById("cust-phone").value = "";
+  document.getElementById("cust-address").value = "";
+  document.getElementById("cust-note").value = "";
+  document.getElementById("cust-machine").value = "";
+  document.getElementById("cust-filter").value = "";
+
+  const today = new Date();
+  const y = today.getFullYear();
+  const m = String(today.getMonth() + 1).padStart(2, "0");
+  const d = String(today.getDate()).padStart(2, "0");
+  document.getElementById("cust-install-date").value = `${y}-${m}-${d}`;
+
+  selectedCustPhotos = [];
+  renderPhotoList("cust-photo-preview", []);
+
+  renderTagSelector("cust-tag-selector", []);
+  document.getElementById("btn-delete-customer").classList.add("hidden");
+
+  document.getElementById("customer-modal").classList.remove("hidden");
+}
+
+/* =========================================================
+   編輯客戶 Modal
+   ========================================================= */
+function showEditCustomerModal() {
+  if (!currentCustomer) return;
+
+  document.getElementById("modal-title").innerText = "編輯客戶";
+  document.getElementById("cust-id").value = currentCustomer.id;
+  document.getElementById("cust-name").value = currentCustomer.name;
+  document.getElementById("cust-phone").value = currentCustomer.phone;
+  document.getElementById("cust-address").value = currentCustomer.address;
+  document.getElementById("cust-note").value = currentCustomer.note;
+  document.getElementById("cust-machine").value = currentCustomer.machine;
+  document.getElementById("cust-filter").value = currentCustomer.filter;
+
+  document.getElementById("cust-install-date").value =
+    normalizeDateStr(currentCustomer.installDate);
+
+  selectedCustPhotos = [];
+  renderPhotoList("cust-photo-preview", []);
+
+  renderTagSelector(
+    "cust-tag-selector",
+    currentCustomer.tags ? currentCustomer.tags.split(",") : []
+  );
+
+  document.getElementById("btn-delete-customer").classList.remove("hidden");
+  document.getElementById("customer-modal").classList.remove("hidden");
+}
+
+/* =========================================================
+   儲存客戶（新增＋編輯）
+   ========================================================= */
+async function saveCustomer() {
+  const id = document.getElementById("cust-id").value;
+  const name = document.getElementById("cust-name").value.trim();
+  const phone = document.getElementById("cust-phone").value.trim();
+  if (!name || !phone) return alert("姓名、電話必填");
+
+  // 既有照片
+  let photoUrls = [];
+  if (id && currentCustomer?.photos) {
+    try {
+      photoUrls = Array.isArray(currentCustomer.photos)
+        ? [...currentCustomer.photos]
+        : JSON.parse(currentCustomer.photos);
+    } catch {
+      photoUrls = [];
+    }
+  }
+
+  // 新增照片
+  for (let b64 of selectedCustPhotos) {
+    const r = await apiCall("uploadImage", { base64: b64, type: "image/jpeg" });
+    if (r?.status === "success") photoUrls.push(r.url);
+  }
+
+  const payload = {
+    id,
+    name,
+    phone,
+    address: document.getElementById("cust-address").value,
+    note: document.getElementById("cust-note").value,
+    machine: document.getElementById("cust-machine").value,
+    filter: document.getElementById("cust-filter").value,
+    installDate: document.getElementById("cust-install-date").value,
+    photos: photoUrls,
+    tags: getSelectedTags("cust-tag-selector"),
+  };
+
+  const action = id ? "updateCustomer" : "addCustomer";
+  const res = await apiCall(action, payload);
+
+  if (res?.status === "success") {
+    closeModal("customer-modal");
+    await fetchCustomers();
+    if (id) {
+      currentCustomer = { ...currentCustomer, ...payload };
+      openDetail(currentCustomer);
+    }
+  } else {
+    alert("儲存失敗");
+  }
+}
+
+/* =========================================================
+   刪除客戶
+   ========================================================= */
+async function deleteCustomer() {
+  if (!confirm("確定刪除此客戶？")) return;
+  await apiCall("deleteCustomer", { id: currentCustomer.id });
+  closeModal("customer-modal");
+  goBack();
+  fetchCustomers();
+}
+
+/* =========================================================
+   標籤系統：渲染
+   ========================================================= */
+function renderTagSelector(containerId, selectedList = []) {
   const container = document.getElementById(containerId);
   container.innerHTML = "";
 
-  TAG_OPTIONS.forEach(tag => {
+  TAG_OPTIONS.forEach((tag) => {
     const div = document.createElement("div");
     div.className = "tag";
     div.dataset.tag = tag;
     div.innerText = tag;
 
-    if (selectedTags.includes(tag)) {
-      div.classList.add("active");
-    }
+    if (selectedList.includes(tag)) div.classList.add("active");
 
     div.onclick = () => div.classList.toggle("active");
+
     container.appendChild(div);
   });
 }
 
-// ⭐ 取得使用者選的標籤
+/* =========================================================
+   取得選中的標籤
+   ========================================================= */
 function getSelectedTags(containerId) {
   return [...document.querySelectorAll(`#${containerId} .tag.active`)]
-    .map(t => t.dataset.tag)
+    .map((el) => el.dataset.tag)
     .join(",");
 }
 
-  </script>
-</body>
-</html>
+/* =========================================================
+   Modal 關閉
+   ========================================================= */
+function closeModal(id) {
+  document.getElementById(id).classList.add("hidden");
+}
 
+/* =========================================================
+   Loading
+   ========================================================= */
+function showLoading(show) {
+  document.getElementById("loading").classList.toggle("hidden", !show);
+}
 
-
-
+</script>
