@@ -513,6 +513,24 @@
   display: flex;
   align-items: center;
 }
+.tag {
+  padding: 7px 14px;
+  background: #f2f2f2;
+  border-radius: 16px;
+  display: inline-block;
+  margin: 4px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  font-size: 15px;
+  color: #555;
+  transition: 0.2s;
+}
+
+.tag.active {
+  background: #007AFF;
+  border-color: #007AFF;
+  color: white;
+}
 
   </style>
 
@@ -688,6 +706,10 @@
             <input id="cust-filter" type="text" class="mb-0">
           </div>
         </div>
+<div>
+  <label>標籤（可多選）</label>
+  <div id="cust-tag-selector"></div>
+</div>
 
         <div class="bg-white rounded-xl p-3 shadow-sm">
           <label>備註</label>
@@ -756,7 +778,7 @@
 
   <script>
     // ⚠️ 記得換成你的 API URL
-    const API_URL = "https://script.google.com/macros/s/AKfycbyUekgXRFUxFYZ2M8lZ_FYdGBGMHepiHh3grCDevMZdgZdzlrDhdG2-T3fBPYKotU3A/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbyIOBdYEHKOOS4TbG0abfyQWSOoll-RlkZvd08fU8_9VSMNQYgRSNmgeyg1IGUpquE/exec";
 
     let customers = [];
     let currentCustomer = null;
@@ -764,6 +786,16 @@
     let selectedCustPhotos = [];
     let selectedEditRecordPhotos = [];
     window.currentRecords = [];
+
+    // 🔧 所有標籤都在這裡改，你要新增、刪除、改名，全改這裡即可
+const TAG_OPTIONS = [
+  "廚下型",
+  "飲水機",
+  "全戶式",
+  "工業商業",
+  "售服",
+  "其他"
+];
 
     // 統一處理日期字串：支援 "2025-02-01", "2025-01-31T16:00:00.000Z", "Sat Feb 01 2025 ..."
     function normalizeDateStr(value){
@@ -1260,6 +1292,8 @@ document.getElementById('cust-install-date').value = `${y}-${m}-${day}`;
       document.getElementById('btn-delete-customer').classList.add('hidden');
       document.getElementById('customer-modal').classList.remove('hidden');
     }
+const selected = currentCustomer.tags ? currentCustomer.tags.split(",") : [];
+renderTagSelector("cust-tag-selector", selected);
 
     function showEditCustomerModal() {
       if (!currentCustomer) return;
@@ -1318,6 +1352,8 @@ document.getElementById('cust-install-date').value = `${y}-${m}-${day}`;
         installDate: document.getElementById('cust-install-date').value,
         photos: photoUrls
       };
+      tags: getSelectedTags("cust-tag-selector")
+
 
       const action = id ? 'updateCustomer' : 'addCustomer';
       const res = await apiCall(action, payload);
@@ -1351,8 +1387,36 @@ document.getElementById('cust-install-date').value = `${y}-${m}-${day}`;
     document.getElementById('record-modal').addEventListener('click', e => {
       if (e.target.id === 'record-modal') closeModal('record-modal');
     });
+    // ⭐ 動態建立標籤按鈕
+function renderTagSelector(containerId, selectedTags = []) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = "";
+
+  TAG_OPTIONS.forEach(tag => {
+    const div = document.createElement("div");
+    div.className = "tag";
+    div.dataset.tag = tag;
+    div.innerText = tag;
+
+    if (selectedTags.includes(tag)) {
+      div.classList.add("active");
+    }
+
+    div.onclick = () => div.classList.toggle("active");
+    container.appendChild(div);
+  });
+}
+
+// ⭐ 取得使用者選的標籤
+function getSelectedTags(containerId) {
+  return [...document.querySelectorAll(`#${containerId} .tag.active`)]
+    .map(t => t.dataset.tag)
+    .join(",");
+}
+
   </script>
 </body>
 </html>
+
 
 
