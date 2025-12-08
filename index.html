@@ -347,118 +347,130 @@
   </div>
 </div>
 
-<!-- ====================== 客戶 Modal ====================== -->
+<!-- 客戶 modal -->
 <div id="customer-modal"
-     class="fixed inset-0 hidden bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center">
+     class="fixed inset-0 sheet-backdrop hidden z-50 flex items-center justify-center">
 
-  <div class="bg-white rounded-t-2xl w-full max-w-md p-4 pb-6 shadow-xl">
-    <div class="flex justify-between items-center mb-3">
-      <div class="text-primary text-lg cursor-pointer" onclick="closeModal('customer-modal')">取消</div>
-      <div id="modal-title" class="text-lg font-semibold">新增客戶</div>
-      <div class="text-primary text-lg cursor-pointer" onclick="saveCustomer()">儲存</div>
+  <div class="sheet w-full max-w-md max-h-[90vh] overflow-hidden flex flex-col rounded-2xl">
+    <div class="sheet-grabber"></div>
+
+    <div class="sheet-header">
+      <button onclick="closeModal('customer-modal')" class="sheet-btn-text">取消</button>
+      <h2 id="modal-title" class="sheet-title">新增客戶</h2>
+      <button onclick="saveCustomer()" class="sheet-btn-text font-semibold">儲存</button>
     </div>
 
-    <input type="hidden" id="cust-id">
+    <div class="sheet-body space-y-4">
+      <input type="hidden" id="cust-id">
 
-    <div class="space-y-3">
-      <div>
-        <div class="text-sm text-secondary mb-1">姓名 *</div>
-        <input id="cust-name" class="w-full border border-milk-border rounded-lg p-2 bg-milk-input">
+      <!-- 基本欄位 -->
+      <div class="space-y-3 bg-white rounded-xl p-3 shadow-sm">
+        <div>
+          <label>姓名 <span class="text-red-500">*</span></label>
+          <input id="cust-name" type="text" class="mb-0">
+        </div>
+        <div>
+          <label>電話 <span class="text-red-500">*</span></label>
+          <input id="cust-phone" type="tel" class="mb-0">
+        </div>
+        <div>
+          <label>安裝日期</label>
+          <input id="cust-install-date" type="date" class="mb-0">
+        </div>
       </div>
 
-      <div>
-        <div class="text-sm text-secondary mb-1">電話 *</div>
-        <input id="cust-phone" class="w-full border border-milk-border rounded-lg p-2 bg-milk-input">
-      </div>
-
-      <div>
-        <div class="text-sm text-secondary mb-1">安裝日期</div>
-        <input id="cust-install-date" type="date" class="w-full border border-milk-border rounded-lg p-2 bg-milk-input">
+      <!-- 設備欄位 -->
+      <div class="space-y-3 bg-white rounded-xl p-3 shadow-sm">
+        <div>
+          <label>地址</label>
+          <input id="cust-address" type="text" class="mb-0">
+        </div>
+        <div>
+          <label>機器型號</label>
+          <input id="cust-machine" type="text" class="mb-0">
+        </div>
+        <div>
+          <label>濾芯規格</label>
+          <input id="cust-filter" type="text" class="mb-0">
+        </div>
       </div>
 
       <!-- 標籤 -->
-      <div>
-        <div class="text-sm text-secondary mb-1">標籤</div>
+      <div class="space-y-2 bg-white rounded-xl p-3 shadow-sm">
+        <label>標籤（可多選）</label>
         <div id="cust-tag-selector" class="tag-selector"></div>
       </div>
 
-      <div>
-        <div class="text-sm text-secondary mb-1">地址</div>
-        <input id="cust-address" class="w-full border border-milk-border rounded-lg p-2 bg-milk-input">
-      </div>
-
-      <div>
-        <div class="text-sm text-secondary mb-1">機器型號</div>
-        <input id="cust-machine" class="w-full border border-milk-border rounded-lg p-2 bg-milk-input">
-      </div>
-
-      <div>
-        <div class="text-sm text-secondary mb-1">濾芯規格</div>
-        <input id="cust-filter" class="w-full border border-milk-border rounded-lg p-2 bg-milk-input">
-      </div>
-
-      <div>
-        <div class="text-sm text-secondary mb-1">備註</div>
-        <textarea id="cust-note" rows="2"
-                  class="w-full border border-milk-border rounded-lg p-2 bg-milk-input"></textarea>
+      <!-- 備註 -->
+      <div class="bg-white rounded-xl p-3 shadow-sm">
+        <label>備註</label>
+        <textarea id="cust-note" rows="2" class="mb-0"></textarea>
       </div>
 
       <!-- 照片 -->
-      <div>
-        <label class="text-primary font-medium flex items-center cursor-pointer">
-          <span class="material-icons mr-1">add_photo_alternate</span> 選擇機器照片
-          <input id="cust-photo-input" type="file" multiple accept="image/*"
-                 class="hidden" onchange="handleCustPhotoSelect(this)">
+      <div class="bg-white rounded-xl p-4 shadow-sm text-center">
+        <label class="text-primary font-medium flex items-center justify-center cursor-pointer">
+          <span class="material-icons mr-2">add_photo_alternate</span> 選擇機器照片
+          <input id="cust-photo-input" type="file" accept="image/*" multiple class="hidden"
+                 onchange="handleCustPhotoSelect(this)">
         </label>
-        <div id="cust-photo-preview" class="flex gap-2 mt-2"></div>
+        <div id="cust-photo-preview" class="photo-grid mt-2 justify-center"></div>
       </div>
 
-      <button id="btn-delete-customer"
-              class="w-full mt-3 py-2 text-red-600 bg-red-100 rounded-lg hidden"
-              onclick="deleteCustomer()">刪除此客戶</button>
+      <button id="btn-delete-customer" onclick="deleteCustomer()" class="danger-btn hidden">
+        刪除此客戶
+      </button>
     </div>
   </div>
 </div>
 
-
-<!-- ====================== 保養紀錄 Modal ====================== -->
+<!-- 紀錄 modal -->
 <div id="record-modal"
-     class="fixed inset-0 hidden bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center">
+     class="fixed inset-0 sheet-backdrop hidden z-50 flex items-center justify-center">
 
-  <div class="bg-white rounded-t-2xl w-full max-w-md p-4 pb-6 shadow-xl">
-    <div class="flex justify-between items-center mb-3">
-      <div class="text-primary text-lg cursor-pointer" onclick="closeModal('record-modal')">取消</div>
-      <div class="text-lg font-semibold">修改紀錄</div>
-      <div class="text-primary text-lg cursor-pointer" onclick="saveEditedRecord()">完成</div>
+  <div class="sheet w-full max-w-md max-h-[90vh] overflow-hidden flex flex-col rounded-2xl">
+    <div class="sheet-grabber"></div>
+
+    <div class="sheet-header">
+      <button onclick="closeModal('record-modal')" class="sheet-btn-text">取消</button>
+      <h2 class="sheet-title">修改紀錄</h2>
+      <button onclick="saveEditedRecord()" class="sheet-btn-text font-semibold">完成</button>
     </div>
 
-    <input type="hidden" id="edit-record-id">
+    <div class="sheet-body space-y-4">
+      <input type="hidden" id="edit-record-id">
 
-    <div class="space-y-3">
-
-      <div>
-        <div class="text-sm text-secondary mb-1">日期</div>
-        <input id="edit-record-date" type="date"
-               class="w-full border border-milk-border rounded-lg p-2 bg-milk-input">
+      <div class="space-y-3 bg-white rounded-xl p-3 shadow-sm">
+        <div>
+          <label>日期</label>
+          <input id="edit-record-date" type="date" class="mb-0">
+        </div>
+        <div>
+          <label>項目</label>
+          <input id="edit-record-items" type="text" class="mb-0 font-medium">
+        </div>
+        <div>
+          <label>金額</label>
+          <input id="edit-record-amount" type="number" class="mb-0 text-green-600 font-bold">
+        </div>
+        <div>
+          <label>備註</label>
+          <textarea id="edit-record-note" rows="2" class="mb-0"></textarea>
+        </div>
       </div>
 
-      <div>
-        <div class="text-sm text-secondary mb-1">項目</div>
-        <input id="edit-record-items"
-               class="w-full border border-milk-border rounded-lg p-2 bg-milk-input">
-      </div>
+      <div class="bg-white rounded-xl p-3 shadow-sm">
+        <label class="text-primary font-medium flex items-center justify-center cursor-pointer">
+          <span class="material-icons mr-2">add_a_photo</span> 加傳照片
+          <input id="edit-record-photo-input" type="file" accept="image/*" multiple class="hidden"
+                 onchange="handleEditRecordPhotoSelect(this)">
+        </label>
 
-      <div>
-        <div class="text-sm text-secondary mb-1">金額</div>
-        <input id="edit-record-amount" type="number"
-               class="w-full border border-milk-border rounded-lg p-2 bg-milk-input">
+        <div id="edit-record-photo-preview" class="photo-grid mt-2 justify-center"></div>
       </div>
-
-      <div>
-        <div class="text-sm text-secondary mb-1">備註</div>
-        <textarea id="edit-record-note" rows="2"
-                  class="w-full border border-milk-border rounded-lg p-2 bg-milk-input"></textarea>
-      </div>
+    </div>
+  </div>
+</div>
 
       <!-- 追加照片 -->
       <div>
@@ -1048,4 +1060,5 @@ window.onload = () => {
 
 </body>
 </html>
+
 
