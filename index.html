@@ -84,6 +84,34 @@
     }
     .search-bar input:focus { outline:none; }
 
+    /* ✨ 篩選器樣式 (新增) */
+    .filter-scroll {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 4px 0;
+      margin-top: 12px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .filter-scroll::-webkit-scrollbar { display: none; }
+    .filter-chip {
+      padding: 6px 14px;
+      background: #EFEDE7;
+      border: 1px solid var(--milk-border);
+      border-radius: 20px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-chip.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      font-weight: 600;
+    }
+
     /* 列表卡片 */
     .dashboard-card {
       background: var(--milk-card);
@@ -215,9 +243,12 @@
       <span class="material-icons text-gray-400">search</span>
       <input id="search-input" type="text" placeholder="搜尋客戶名稱、電話或備註…">
     </div>
+
+    <div id="filter-container" class="filter-scroll">
+      </div>
   </div>
 
-  <div id="customer-list" class="max-w-md mx-auto px-4 pt-4 pb-20">
+  <div id="customer-list" class="max-w-md mx-auto px-4 pt-2 pb-20">
     <div class="text-center text-gray-400 mt-20">載入中…</div>
   </div>
 
@@ -468,7 +499,8 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbxq7lgAM355tr63kVCx8IeuZOxCxijQcVFL7K0EhMDcJjER6szHY6P6RfQR5IaJQF7u/exec";
 
 // 標籤選項（你日後只要改這裡）
-const TAG_OPTIONS = ["廚下型", "飲水機", "全戶式", "工業商業", "售服", "其他"];
+const TAG_OPTIONS = ["全部", "廚下型", "飲水機", "全戶式", "工業商業", "售服", "其他"];
+let currentFilter = "全部";
 
 let customers = [];
 let currentCustomer = null;
@@ -527,16 +559,46 @@ async function fetchCustomers(){
     return;
   }
   customers = data;
+  renderFilterBar(); // 初始化篩選器按鈕
   renderList(customers);
 }
 
+/* -------------------------- 篩選器 UI -------------------------- */
+function renderFilterBar() {
+    const container = document.getElementById("filter-container");
+    container.innerHTML = TAG_OPTIONS.map(tag => 
+        `<div class="filter-chip ${tag === currentFilter ? 'active' : ''}" onclick="filterByTag('${tag}')">${tag}</div>`
+    ).join('');
+}
 
-/* ------------------------ 列表渲染 (已加入機型顯示) ------------------------ */
+function filterByTag(tag) {
+    currentFilter = tag;
+    renderFilterBar(); // 更新按鈕顏色
+    renderList(customers); // 重新渲染列表
+}
+
+/* ------------------------ 列表渲染 (含篩選、機型、上次保養日) ------------------------ */
 function renderList(list){
   const container = document.getElementById("customer-list");
   container.innerHTML = "";
 
-  if (!list.length){
+  // 1. 執行篩選
+  let filtered = list;
+  if (currentFilter !== "全部") {
+      filtered = filtered.filter(c => c.tags && c.tags.includes(currentFilter));
+  }
+  
+  // 2. 搜尋過濾
+  const searchTerm = document.getElementById("search-input").value.toLowerCase();
+  if (searchTerm) {
+      filtered = filtered.filter(c => 
+        c.name.toLowerCase().includes(searchTerm) || 
+        c.phone.includes(searchTerm) || 
+        (c.note && c.note.toLowerCase().includes(searchTerm))
+      );
+  }
+
+  if (!filtered.length){
     container.innerHTML = `<div class="text-center text-gray-400 mt-20">暫無資料</div>`;
     return;
   }
@@ -544,17 +606,19 @@ function renderList(list){
   const wrap = document.createElement("div");
   wrap.className = "space-y-3";
 
-  list.forEach(c=>{
+  filtered.forEach(c=>{
     // 後端如果還沒算 lastRecordDate，這裡就預防一下
     const last = c.lastRecordDate ? normalizeDateStr(c.lastRecordDate) : "尚無保養紀錄";
-    // 取得機型，如果沒有就顯示未填寫
+    // 如果有保養紀錄顯示綠色，沒有顯示灰色
+    const dateClass = c.lastRecordDate ? "text-green-600 font-bold" : "text-gray-400";
+    // 取得機型
     const machine = c.machine || "未填寫機型";
 
     const card = document.createElement("div");
     card.className = "dashboard-card";
     card.onclick = ()=> openDetail(c);
 
-    // ✨✨✨ 這裡修改了卡片內容，加入了機型 ✨✨✨
+    // ✨✨✨ 這是你指定的版面：有機型、有上次保養日 ✨✨✨
     card.innerHTML = `
       <div class="grow">
         <div class="dashboard-name truncate">${c.name}</div>
@@ -563,14 +627,18 @@ function renderList(list){
           ${c.tags ? c.tags.split(",").map(t=>`<div class="dashboard-tag">${t}</div>`).join("") : ""}
         </div>
 
-        <div class="text-sm text-secondary mt-1 flex items-center gap-1">
+        <div class="text-sm text-secondary mt-1 font-medium flex items-center gap-1">
            <span class="material-icons text-base">settings</span>
            ${machine}
         </div>
 
-        <div class="text-sm text-secondary flex gap-4 mt-1">
+        <div class="text-sm text-secondary flex gap-4 mt-2 justify-between items-center pr-2">
           <span class="flex items-center gap-1"><span class="material-icons text-base">phone_iphone</span>${c.phone}</span>
-          <span class="flex items-center gap-1 text-blue-600 font-medium"><span class="material-icons text-base">history</span>${last}</span>
+          
+          <div class="text-right">
+             <div class="text-xs text-gray-400">上次保養</div>
+             <div class="${dateClass}">${last}</div>
+          </div>
         </div>
       </div>
 
@@ -586,12 +654,7 @@ function renderList(list){
 
 /* ------------------------- 搜尋 ------------------------- */
 document.getElementById("search-input").addEventListener("input", e=>{
-  const val = e.target.value.toLowerCase();
-  renderList(customers.filter(c =>
-    c.name.toLowerCase().includes(val) ||
-    c.phone.includes(val) ||
-    (c.note && c.note.toLowerCase().includes(val))
-  ));
+  renderList(customers); // 只要輸入就重新過濾
 });
 
 
@@ -666,7 +729,7 @@ function goBack(){
 /* ------------------------- 讀取紀錄 ------------------------- */
 async function fetchRecords(id){
   const box = document.getElementById("record-list");
-  box.innerHTML = `<div class="text-center text-secondary">讀取中…</div>`;
+  box.innerHTML = `<div class="text-center text-secondary py-4">讀取中…</div>`;
 
   const records = await apiCall("getRecords", {customerId:id}, "GET");
 
