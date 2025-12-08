@@ -356,7 +356,7 @@
 
 <script>
 // ⚠️⚠️⚠️ 請務必確認這裡是你最新的 Google Apps Script 網址 (以 /exec 結尾) ⚠️⚠️⚠️
-const API_URL = "https://script.google.com/macros/s/AKfycbyIOBdYEHKOOS4TbG0abfyQWSOoll-RlkZvd08fU8_9VSMNQYgRSNmgeyg1IGUpquE/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbxq7lgAM355tr63kVCx8IeuZOxCxijQcVFL7K0EhMDcJjER6szHY6P6RfQR5IaJQF7u/exec";
 
 // 標籤選項
 const TAG_OPTIONS = ["廚下型", "飲水機", "全戶式", "工業商業", "售服", "其他"];
@@ -403,31 +403,48 @@ function renderList(list){
   const container = document.getElementById("customer-list");
   container.innerHTML = "";
   if (!list.length){ container.innerHTML = `<div class="text-center text-gray-400 mt-20">暫無資料</div>`; return; }
-  const wrap = document.createElement("div"); wrap.className = "space-y-3";
+  
   list.forEach(c=>{
-    const last = c.lastRecordDate ? normalizeDateStr(c.lastRecordDate) : "尚無紀錄";
-    const card = document.createElement("div"); card.className = "dashboard-card"; card.onclick = ()=> openDetail(c);
-    card.innerHTML = `
-      <div class="grow">
-        <div class="dashboard-name truncate">${c.name}</div>
-        <div class="flex gap-2 flex-wrap my-1 text-sm text-secondary">
-          ${c.tags ? c.tags.split(",").map(t=>`<div class="dashboard-tag">${t}</div>`).join("") : ""}
-        </div>
-        <div class="text-sm text-secondary flex gap-4 mt-1">
-          <span class="flex items-center gap-1"><span class="material-icons text-base">phone</span>${c.phone}</span>
-        </div>
-      </div>
-      <div class="dashboard-chevron"><span class="material-icons">arrow_forward_ios</span></div>`;
-    wrap.appendChild(card);
+    // 處理上次保養日顯示
+    const last = c.lastRecordDate ? c.lastRecordDate : "尚無紀錄";
+    // 處理日期顏色：如果有日期顯示綠色/黑色，沒紀錄顯示灰色
+    const dateColor = c.lastRecordDate ? "text-green-600 font-bold" : "text-gray-400";
+
+    const div = document.createElement("div");
+    div.className = "card p-5 cursor-pointer active:scale-[0.98] transition-transform hover:shadow-md border-l-4 border-l-transparent hover:border-l-primary";
+    div.onclick = () => openDetail(c);
+    
+    div.innerHTML = `
+        <div class="flex justify-between items-start">
+            <div class="flex-1 min-w-0 mr-4">
+                <div class="flex items-center gap-2 mb-1">
+                    <div class="font-bold text-xl text-navy-900 truncate">${c.name}</div>
+                    ${c.tags ? `<span class="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full truncate max-w-[100px]">${c.tags.split(',')[0]}</span>` : ''}
+                </div>
+                
+                <div class="text-gray-500 text-sm font-medium mb-2 flex items-center">
+                    <span class="material-icons text-sm mr-1">settings</span>
+                    ${c.machine || '未填寫機型'}
+                </div>
+
+                <div class="text-navy-500 font-medium text-base flex items-center">
+                    <span class="material-icons text-sm mr-1">phone</span>
+                    ${c.phone}
+                </div>
+            </div>
+            
+            <div class="flex flex-col items-end justify-between h-full">
+                <span class="material-icons text-gray-300 mb-4">chevron_right</span>
+                
+                <div class="text-xs text-right">
+                    <div class="text-gray-400 mb-0.5">上次保養</div>
+                    <div class="${dateColor}">${last}</div>
+                </div>
+            </div>
+        </div>`;
+    container.appendChild(div);
   });
-  container.appendChild(wrap);
 }
-
-document.getElementById("search-input").addEventListener("input", e=>{
-  const val = e.target.value.toLowerCase();
-  renderList(customers.filter(c => c.name.toLowerCase().includes(val) || c.phone.includes(val) || (c.note && c.note.toLowerCase().includes(val))));
-});
-
 async function openDetail(c){
   currentCustomer = c;
   document.getElementById("page-list").classList.add("hidden");
@@ -663,3 +680,4 @@ window.onload = () => { fetchCustomers(); const rd = document.getElementById("re
 </script>
 </body>
 </html>
+
