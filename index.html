@@ -531,6 +531,28 @@
   border-color: #007AFF;
   color: white;
 }
+.tag-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.tag-option {
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: #f1f3f5;
+  color: #555;
+  font-size: 15px;
+  border: 1px solid #ddd;
+  transition: 0.2s;
+}
+
+.tag-option.selected {
+  background: #4A90E2;
+  color: white;
+  border-color: #4A90E2;
+}
 
   </style>
 
@@ -706,10 +728,19 @@
             <input id="cust-filter" type="text" class="mb-0">
           </div>
         </div>
-<div>
-  <label>標籤（可多選）</label>
-  <div id="cust-tag-selector"></div>
+<div class="form-section">
+  <label class="form-label">標籤（可多選）</label>
+
+  <div id="tagSelector" class="tag-selector">
+    <div class="tag-option" data-value="廚下型">廚下型</div>
+    <div class="tag-option" data-value="飲水機">飲水機</div>
+    <div class="tag-option" data-value="全戶式">全戶式</div>
+    <div class="tag-option" data-value="工業商業">工業商業</div>
+    <div class="tag-option" data-value="售服">售服</div>
+    <div class="tag-option" data-value="其他">其他</div>
+  </div>
 </div>
+
 
         <div class="bg-white rounded-xl p-3 shadow-sm">
           <label>備註</label>
@@ -1368,6 +1399,31 @@ renderTagSelector("cust-tag-selector", selected);
         alert('儲存失敗');
       }
     }
+// 取得已選標籤
+function getSelectedTags() {
+  const selected = [...document.querySelectorAll(".tag-option.selected")].map(tag => tag.dataset.value);
+  return selected.join(","); // 用逗號存成字串
+}
+
+// 初始化標籤（編輯客戶用）
+function setSelectedTags(tagString) {
+  const selectedList = tagString ? tagString.split(",") : [];
+
+  document.querySelectorAll(".tag-option").forEach(tag => {
+    if (selectedList.includes(tag.dataset.value)) {
+      tag.classList.add("selected");
+    } else {
+      tag.classList.remove("selected");
+    }
+  });
+}
+
+// 點擊選擇/取消
+document.addEventListener("click", function (e) {
+  if (e.target.classList.contains("tag-option")) {
+    e.target.classList.toggle("selected");
+  }
+});
 
     async function deleteCustomer() {
       if (!confirm('確定刪除此客戶？')) return;
@@ -1417,6 +1473,7 @@ function getSelectedTags(containerId) {
   </script>
 </body>
 </html>
+
 
 
 
