@@ -349,9 +349,8 @@
 
 <!-- 客戶 modal -->
 <div id="customer-modal"
-     class="fixed inset-0 sheet-backdrop hidden z-50 flex items-center justify-center">
-
-  <div class="sheet w-full max-w-md max-h-[90vh] overflow-hidden flex flex-col rounded-2xl">
+     class="fixed inset-0 sheet-backdrop hidden z-50 flex items-end sm:items-center justify-center">
+  <div class="sheet w-full max-w-md h-[90vh] overflow-hidden flex flex-col">
     <div class="sheet-grabber"></div>
 
     <div class="sheet-header">
@@ -363,7 +362,7 @@
     <div class="sheet-body space-y-4">
       <input type="hidden" id="cust-id">
 
-      <!-- 基本欄位 -->
+      <!-- 基本資料 -->
       <div class="space-y-3 bg-white rounded-xl p-3 shadow-sm">
         <div>
           <label>姓名 <span class="text-red-500">*</span></label>
@@ -379,7 +378,7 @@
         </div>
       </div>
 
-      <!-- 設備欄位 -->
+      <!-- 設備資訊 -->
       <div class="space-y-3 bg-white rounded-xl p-3 shadow-sm">
         <div>
           <label>地址</label>
@@ -395,7 +394,7 @@
         </div>
       </div>
 
-      <!-- 標籤 -->
+      <!-- 標籤（這個是新加的） -->
       <div class="space-y-2 bg-white rounded-xl p-3 shadow-sm">
         <label>標籤（可多選）</label>
         <div id="cust-tag-selector" class="tag-selector"></div>
@@ -407,12 +406,12 @@
         <textarea id="cust-note" rows="2" class="mb-0"></textarea>
       </div>
 
-      <!-- 照片 -->
+      <!-- 機器照片 -->
       <div class="bg-white rounded-xl p-4 shadow-sm text-center">
         <label class="text-primary font-medium flex items-center justify-center cursor-pointer">
           <span class="material-icons mr-2">add_photo_alternate</span> 選擇機器照片
-          <input id="cust-photo-input" type="file" accept="image/*" multiple class="hidden"
-                 onchange="handleCustPhotoSelect(this)">
+          <input id="cust-photo-input" type="file" accept="image/*" multiple
+                 class="hidden" onchange="handleCustPhotoSelect(this)">
         </label>
         <div id="cust-photo-preview" class="photo-grid mt-2 justify-center"></div>
       </div>
@@ -426,9 +425,8 @@
 
 <!-- 紀錄 modal -->
 <div id="record-modal"
-     class="fixed inset-0 sheet-backdrop hidden z-50 flex items-center justify-center">
-
-  <div class="sheet w-full max-w-md max-h-[90vh] overflow-hidden flex flex-col rounded-2xl">
+     class="fixed inset-0 sheet-backdrop hidden z-50 flex items-end sm:items-center justify-center">
+  <div class="sheet w-full max-w-md h-auto max-h-[90vh] overflow-hidden flex flex-col">
     <div class="sheet-grabber"></div>
 
     <div class="sheet-header">
@@ -451,7 +449,8 @@
         </div>
         <div>
           <label>金額</label>
-          <input id="edit-record-amount" type="number" class="mb-0 text-green-600 font-bold">
+          <input id="edit-record-amount" type="number"
+                 class="mb-0 text-green-600 font-bold">
         </div>
         <div>
           <label>備註</label>
@@ -462,15 +461,15 @@
       <div class="bg-white rounded-xl p-3 shadow-sm">
         <label class="text-primary font-medium flex items-center justify-center cursor-pointer">
           <span class="material-icons mr-2">add_a_photo</span> 加傳照片
-          <input id="edit-record-photo-input" type="file" accept="image/*" multiple class="hidden"
-                 onchange="handleEditRecordPhotoSelect(this)">
+          <input id="edit-record-photo-input" type="file" accept="image/*" multiple
+                 class="hidden" onchange="handleEditRecordPhotoSelect(this)">
         </label>
-
         <div id="edit-record-photo-preview" class="photo-grid mt-2 justify-center"></div>
       </div>
     </div>
   </div>
 </div>
+
 
       <!-- 追加照片 -->
       <div>
@@ -1060,5 +1059,3 @@ window.onload = () => {
 
 </body>
 </html>
-
-
