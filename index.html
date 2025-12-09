@@ -38,209 +38,110 @@
 
     /* iOS Navigation Bar */
     .ios-nav-bar {
-      position: sticky;
-      top: 0;
-      padding: 12px 16px;
-      padding-top: env(safe-area-inset-top, 16px);
-      background: rgba(255,255,255,0.92);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--milk-border);
-      z-index: 50;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
+      position: sticky; top: 0; padding: 12px 16px; padding-top: env(safe-area-inset-top, 16px);
+      background: rgba(255,255,255,0.95); backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--milk-border); z-index: 50;
+      display:flex; justify-content:space-between; align-items:center;
     }
-    .ios-nav-left, .ios-nav-right {
-      display:flex;
-      align-items:center;
-      color:var(--primary);
-      font-size:16px;
-      gap:4px;
-      cursor:pointer;
-    }
-    .ios-nav-title {
-      font-size:18px;
-      font-weight:600;
-      color:var(--text-main);
-    }
+    .ios-nav-left, .ios-nav-right { display:flex; align-items:center; color:var(--primary); font-size:17px; gap:4px; cursor:pointer; font-weight: 500; }
+    .ios-nav-title { font-size:18px; font-weight:700; color:var(--text-main); }
 
     /* 搜尋列 */
     .search-bar {
-      background: #FFF;
-      border-radius: 14px;
-      padding: 10px;
-      display:flex;
-      align-items:center;
-      gap:8px;
-      border:1px solid var(--milk-border);
+      background: #FFF; border-radius: 14px; padding: 12px; display:flex; align-items:center; gap:8px; border:1px solid var(--milk-border);
     }
-    .search-bar input {
-      width:100%;
-      border:none;
-      background:transparent;
-      font-size:16px;
-    }
-    .search-bar input:focus { outline:none; }
+    .search-bar input { width:100%; border:none; background:transparent; font-size:18px; outline:none; }
 
-    /* 篩選器樣式 */
-    .filter-scroll {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding: 4px 0;
-      margin-top: 12px;
-      -webkit-overflow-scrolling: touch;
-    }
+    /* 篩選器 */
+    .filter-scroll { display: flex; gap: 8px; overflow-x: auto; padding: 4px 0; margin-top: 12px; -webkit-overflow-scrolling: touch; }
     .filter-scroll::-webkit-scrollbar { display: none; }
     .filter-chip {
-      padding: 6px 14px;
-      background: #EFEDE7;
-      border: 1px solid var(--milk-border);
-      border-radius: 20px;
-      font-size: 14px;
-      color: var(--text-secondary);
-      white-space: nowrap;
-      cursor: pointer;
-      transition: all 0.2s;
+      padding: 8px 16px; background: #EFEDE7; border: 1px solid var(--milk-border);
+      border-radius: 20px; font-size: 15px; color: var(--text-secondary);
+      white-space: nowrap; cursor: pointer; transition: all 0.2s;
     }
-    .filter-chip.active {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary);
-      font-weight: 600;
+    .filter-chip.active { background: var(--primary); color: white; border-color: var(--primary); font-weight: 600; }
+
+    /* 卡片通用 */
+    .card {
+      background: var(--milk-card); border-radius: 18px; border:1px solid var(--milk-border);
+      padding: 20px; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);
     }
 
-    /* 列表卡片 */
+    /* 首頁列表卡片 */
     .dashboard-card {
-      background: var(--milk-card);
-      border-radius: 18px;
-      border:1px solid var(--milk-border);
-      padding:16px 14px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      box-shadow:0 6px 16px rgba(0,0,0,0.06);
-      cursor:pointer;
-      transition:.12s;
+      background: var(--milk-card); border-radius: 18px; border:1px solid var(--milk-border);
+      padding: 18px 16px; display:flex; justify-content:space-between; align-items:center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04); cursor:pointer; transition:.12s; margin-bottom: 12px;
     }
-    .dashboard-card:active { transform:scale(.97); }
+    .dashboard-card:active { transform:scale(.98); background-color: #FAFAFA; }
+    .dashboard-name { font-size: 22px; font-weight: 700; color: #333; margin-bottom: 4px; }
+    .dashboard-tag { display:inline-flex; padding: 4px 10px; background: #EFEDE7; border-radius: 99px; font-size: 13px; color: #666; margin-right: 6px; }
+    .dashboard-chevron { color: #CCC; }
 
-    .dashboard-name { font-size:20px; font-weight:700; }
-
-    .dashboard-tag {
-      display:inline-flex;
-      padding:3px 10px;
-      background:#EFEDE7;
-      border:1px solid var(--milk-border);
-      border-radius:999px;
-      font-size:12px;
-      color:var(--text-secondary);
-      margin:4px 0;
-    }
-
-    .dashboard-chevron {
-      width:32px; height:32px;
-      background:#F2F0EB;
-      border-radius:50%;
-      display:flex; align-items:center; justify-content:center;
-    }
-
-    /* Timeline（保養紀錄） */
-    .timeline-item {
-      position:relative;
-      margin-bottom:18px;
-      padding-left:20px;
-    }
-    .timeline-item::before {
-      content:"";
-      position:absolute;
-      left:9px; top:0; bottom:-8px;
-      width:2px;
-      background:var(--milk-border);
-    }
-    .timeline-dot {
-      position:absolute;
-      left:4px; top:8px;
-      width:12px; height:12px;
-      background:white;
-      border:3px solid var(--primary);
-      border-radius:50%;
-    }
-    .record-card {
-      background:var(--milk-card);
-      border:1px solid var(--milk-border);
-      padding:14px;
-      border-radius:16px;
-      box-shadow:0 4px 12px rgba(0,0,0,0.05);
-    }
+    /* Timeline */
+    .timeline-item { position:relative; margin-bottom: 24px; padding-left: 24px; }
+    .timeline-item::before { content:""; position:absolute; left: 10px; top:0; bottom:-10px; width: 2px; background: var(--milk-border); }
+    .timeline-dot { position:absolute; left: 5px; top: 10px; width: 12px; height: 12px; background: white; border: 3px solid var(--primary); border-radius: 50%; }
+    .record-card { background:var(--milk-card); border:1px solid var(--milk-border); padding:14px; border-radius:16px; box-shadow:0 4px 12px rgba(0,0,0,0.05); }
     .record-date { font-weight:600; }
     .record-amount { color:#008A32; font-weight:700; }
 
-    /* 標籤與按鈕樣式 */
-    .tag-selector, .chip-container { display:flex; flex-wrap:wrap; gap:8px; }
-    .tag, .item-chip {
-      padding:6px 12px;
-      background:#EFEDE7;
-      border:1px solid var(--milk-border);
-      border-radius:999px;
-      font-size:14px;
-      cursor:pointer;
-      transition:0.15s;
-      user-select:none;
-      color:#5F564D;
+    /* 輸入框 */
+    input, textarea, select {
+        width: 100%; padding: 16px; border: 1px solid #CCC; border-radius: 12px;
+        font-size: 18px; background-color: #FAFAFA; margin-top: 6px; margin-bottom: 16px;
+        -webkit-appearance: none; appearance: none;
     }
-    .tag.active {
-      background:var(--primary);
-      border-color:var(--primary);
-      color:white;
-    }
+    input:focus, textarea:focus, select:focus { border-color: var(--primary); background-color: #FFF; outline: none; box-shadow: 0 0 0 3px rgba(0,122,255,0.1); }
+    label { font-size: 15px; font-weight: 600; color: #666; margin-left: 4px; }
+
+    /* 快速按鈕 */
+    .chip-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; margin-top: -8px; }
     .item-chip {
-        background-color: #E3F2FD;
-        color: #1565C0;
-        border-color: #BBDEFB;
-        font-weight: 600;
-        margin-top: 4px;
+        padding: 8px 14px; background-color: #E3F2FD; color: #1565C0; border: 1px solid #BBDEFB;
+        border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer;
     }
-    .item-chip:active {
-        background-color: #2196F3;
-        color: white;
+    .item-chip:active { background-color: #2196F3; color: white; }
+
+    /* 金額輸入框修正 */
+    .currency-wrap { position: relative; }
+    .currency-symbol { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); margin-top: -5px; font-size: 18px; font-weight: bold; color: #888; pointer-events: none; }
+    .currency-input { padding-left: 60px !important; color: #16a34a; font-weight: bold; font-size: 20px; }
+
+    /* 按鈕 */
+    .btn-primary {
+        background-color: var(--primary); color: white; padding: 16px; border-radius: 14px;
+        font-size: 18px; font-weight: 700; width: 100%; display: block; text-align: center;
+        box-shadow: 0 4px 10px rgba(0,122,255,0.3);
     }
+    .btn-primary:active { transform: scale(0.98); opacity: 0.9; }
+    .btn-danger {
+        background-color: #FEF2F2; color: #EF4444; border: 1px solid #FECACA;
+        padding: 14px; border-radius: 14px; font-size: 16px; font-weight: 600; width: 100%; margin-top: 20px;
+    }
+
+    /* Modal */
+    .sheet-backdrop { background: rgba(0,0,0,0.5); backdrop-filter:blur(3px); position: fixed; inset: 0; z-index: 100; display: flex; justify-content: center; align-items: flex-end; }
+    .sheet { background: #FFF; width: 100%; max-width: 600px; height: 90vh; border-radius: 24px 24px 0 0; display: flex; flex-direction: column; overflow: hidden; }
+    .sheet-header { padding: 16px 20px; border-bottom: 1px solid #EEE; display: flex; justify-content: space-between; align-items: center; background: #FFF; }
+    .sheet-body { padding: 20px; overflow-y: auto; background: #F9FAFB; flex: 1; }
 
     /* 照片 */
-    .photo-thumb {
-      width:90px; height:90px; object-fit:cover;
-      border-radius:12px;
-      border:1px solid var(--milk-border);
-      background:#E5E2DC;
-    }
+    .photo-grid { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; }
+    .photo-thumb { width: 90px; height: 90px; border-radius: 12px; object-fit: cover; border: 1px solid #EEE; }
 
-    /* Loading */
-    .loading-overlay {
-      position:fixed; inset:0;
-      background:rgba(255,255,255,0.65);
-      backdrop-filter:blur(8px);
-      display:flex; align-items:center; justify-content:center;
-      flex-direction:column; z-index:999;
+    /* 標籤選擇器 */
+    .tag-selector { display:flex; flex-wrap:wrap; gap:8px; }
+    .tag-option {
+      padding: 8px 14px; border-radius: 20px; border: 1px solid #ccc; font-size: 14px; cursor: pointer; color: #666;
     }
+    .tag-option.active { background: var(--primary); color: white; border-color: var(--primary); font-weight: 600; }
 
-    /* Sheet / Modal */
-    .sheet-backdrop { background: rgba(0,0,0,0.4); backdrop-filter:blur(2px); }
-    .sheet { background: #fff; max-height: 90vh; display: flex; flex-direction: column; }
-    .sheet-grabber { width: 40px; height: 5px; background: #E0E0E0; border-radius: 99px; margin: 10px auto 0; }
-    .sheet-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-bottom: 1px solid #eee; }
-    .sheet-title { font-weight: 700; font-size: 18px; }
-    .sheet-btn-text { color: var(--primary); font-size: 16px; }
-    .sheet-body { padding: 16px; overflow-y: auto; }
-    
-    /* 隱藏原生樣式 */
-    input, textarea, select { -webkit-appearance: none; appearance: none; }
+    .loading-overlay { position:fixed; inset:0; background:rgba(255,255,255,0.8); backdrop-filter:blur(5px); display:flex; align-items:center; justify-content:center; flex-direction:column; z-index:999; }
     .hidden { display: none !important; }
-    .danger-btn { width: 100%; color: #ff3b30; background: #fff0f0; padding: 12px; border-radius: 12px; font-weight: 600; margin-top: 10px; }
-
-    /* Toast */
-    .toast {
-      visibility: hidden; min-width: 250px; margin-left: -125px; background-color: #333; color: #fff; text-align: center; border-radius: 50px; padding: 16px; position: fixed; z-index: 1000; left: 50%; bottom: 30px; font-size: 17px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); opacity: 0; transition: opacity 0.3s, bottom 0.3s;
-    }
+    
+    .toast { visibility: hidden; min-width: 250px; margin-left: -125px; background-color: #333; color: #fff; text-align: center; border-radius: 50px; padding: 16px; position: fixed; z-index: 1000; left: 50%; bottom: 30px; font-size: 17px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); opacity: 0; transition: opacity 0.3s, bottom 0.3s; }
     .toast.show { visibility: visible; opacity: 1; bottom: 50px; }
   </style>
 </head>
@@ -248,195 +149,156 @@
 <body>
 
 <div id="page-list" class="min-h-screen">
-  <div class="pt-10 pb-4 px-4 max-w-md mx-auto">
+  <div class="pt-10 pb-4 px-4 max-w-md mx-auto bg-white/80 sticky top-0 z-10 backdrop-blur-md border-b border-gray-100">
     <div class="flex justify-between items-center mb-4">
         <div class="text-3xl font-bold text-gray-800 tracking-tight">濾芯保養系統</div>
         <button onclick="fetchCustomers()" class="w-10 h-10 bg-white rounded-full shadow-sm border border-gray-100 flex items-center justify-center text-blue-600 active:scale-90 active:bg-blue-50 transition-all">
           <span class="material-icons">refresh</span>
         </button>
     </div>
-
     <div class="search-bar">
       <span class="material-icons text-gray-400">search</span>
       <input id="search-input" type="text" placeholder="搜尋客戶名稱、電話或備註…">
     </div>
-    
     <div id="filter-container" class="filter-scroll"></div>
   </div>
 
-  <div id="customer-list" class="max-w-md mx-auto px-4 pt-2 pb-20">
+  <div id="customer-list" class="max-w-md mx-auto px-4 pt-4 pb-24">
     <div class="text-center text-gray-400 mt-20">載入中…</div>
   </div>
 
-  <div class="fixed right-6 bottom-8 bg-blue-600 text-white w-16 h-16 rounded-full flex items-center justify-center shadow-xl text-3xl cursor-pointer z-40" onclick="showAddCustomerModal()">
-    <span class="material-icons">add</span>
+  <div class="fixed right-6 bottom-8 bg-blue-600 text-white w-16 h-16 rounded-full flex items-center justify-center shadow-xl text-4xl cursor-pointer z-40 active:scale-90 transition-transform" onclick="showAddCustomerModal()">
+    <span class="material-icons" style="font-size: 32px;">add</span>
   </div>
 </div>
 
-<div id="page-detail" class="hidden min-h-screen">
+<div id="page-detail" class="hidden min-h-screen bg-gray-50">
   <div class="ios-nav-bar">
-    <div class="ios-nav-left" onclick="goBack()">
-      <span class="material-icons">arrow_back_ios</span> 返回
-    </div>
+    <div class="ios-nav-left" onclick="goBack()"><span class="material-icons">arrow_back_ios</span>返回</div>
     <div class="ios-nav-title">客戶資料</div>
     <div class="ios-nav-right" onclick="showEditCustomerModal()">編輯</div>
   </div>
 
-  <div class="pb-4 px-4 max-w-md mx-auto">
-    <div class="mt-4 mb-4">
-      <div id="customer-photos-container" class="flex gap-3 overflow-x-auto"></div>
-    </div>
-
-    <div class="record-card mb-4">
-      <div class="font-bold mb-2 text-gray-500 text-xs tracking-widest">基本資料</div>
-      <div class="flex py-1"><span class="w-20 text-secondary">姓名</span><span id="detail-name"></span></div>
-      <div class="flex py-1"><span class="w-20 text-secondary">電話</span><span><a id="detail-phone-link" class="text-blue-600 font-medium flex items-center"><span class="material-icons mr-1 text-base">phone</span><span id="detail-phone"></span></a></span></div>
-      <div class="flex py-1"><span class="w-20 text-secondary">安裝日期</span><span id="detail-install-date" class="text-gray-400 italic">無紀錄</span></div>
-      <div class="flex py-1 items-start"><span class="w-20 text-secondary pt-1">標籤</span><div id="detail-tags" class="flex flex-wrap gap-2 flex-1"></div></div>
-      <div class="flex py-1"><span class="w-20 text-secondary">保養週期</span><span id="detail-cycle" class="text-gray-800"></span></div>
-    </div>
-
-    <div class="record-card mb-4">
-      <div class="font-bold mb-2 text-gray-500 text-xs tracking-widest">設備資訊</div>
-      
-      <div class="flex py-1 items-center">
-        <span class="w-20 text-secondary flex-shrink-0">地址</span>
-        <div class="flex-1 flex items-center justify-between">
-           <span id="detail-address"></span>
-           <a id="detail-map-link" target="_blank" class="bg-blue-100 text-blue-600 px-3 py-1 rounded-lg text-sm font-bold flex items-center ml-2 hidden no-underline">
-              <span class="material-icons text-base mr-1">near_me</span>導航
-           </a>
+  <div class="pb-8 px-4 max-w-md mx-auto pt-4">
+    <div class="card relative overflow-hidden">
+        <div class="flex justify-between items-start">
+            <div>
+                <h2 id="detail-name" class="text-3xl font-bold text-gray-900 mb-1"></h2>
+                <div id="detail-tags-display" class="flex gap-2 mb-3 flex-wrap"></div>
+            </div>
+            <a id="detail-phone-link" class="bg-green-100 text-green-700 p-3 rounded-full">
+                <span class="material-icons">call</span>
+            </a>
         </div>
-      </div>
-
-      <div class="flex py-1"><span class="w-20 text-secondary">機器</span><span id="detail-machine"></span></div>
-      <div class="flex py-1"><span class="w-20 text-secondary">濾芯</span><span id="detail-filter"></span></div>
-      <div id="note-container" class="flex py-1 hidden"><span class="w-20 text-secondary">備註</span><span id="detail-note"></span></div>
+        <div class="space-y-3 mt-2">
+            <div class="flex border-b border-gray-100 pb-2"><span class="text-gray-500 w-24 flex-shrink-0">電話</span><span id="detail-phone" class="font-mono text-lg font-medium text-gray-800"></span></div>
+            <div class="flex border-b border-gray-100 pb-2 items-center justify-between">
+                <div class="flex"><span class="text-gray-500 w-24 flex-shrink-0">地址</span><span id="detail-address" class="text-gray-800"></span></div>
+                <a id="detail-map-link" target="_blank" class="hidden text-blue-600 bg-blue-50 px-3 py-1 rounded-lg text-sm font-bold flex items-center"><span class="material-icons text-base mr-1">near_me</span>導航</a>
+            </div>
+            <div class="flex border-b border-gray-100 pb-2"><span class="text-gray-500 w-24 flex-shrink-0">機器</span><span id="detail-machine" class="text-gray-800"></span></div>
+            <div class="flex border-b border-gray-100 pb-2"><span class="text-gray-500 w-24 flex-shrink-0">濾芯</span><span id="detail-filter" class="text-gray-800"></span></div>
+            <div class="flex border-b border-gray-100 pb-2"><span class="text-gray-500 w-24 flex-shrink-0">週期</span><span id="detail-cycle" class="text-blue-600 font-bold"></span></div>
+            <div id="note-container" class="hidden bg-yellow-50 p-3 rounded-lg border border-yellow-100"><div class="text-yellow-700 text-xs font-bold mb-1">備註</div><div id="detail-note" class="text-gray-800"></div></div>
+        </div>
+        <div class="mt-4"><div class="text-xs text-gray-400 font-bold mb-2">機器照片</div><div id="customer-photos-container" class="flex gap-3 overflow-x-auto"></div></div>
     </div>
 
-    <div class="record-card mb-4">
-      <div class="font-bold mb-3 text-gray-500 text-xs tracking-widest">新增保養紀錄</div>
-      <div class="grid grid-cols-2 gap-3 mb-3">
-        <div><div class="text-secondary text-sm mb-1">日期</div><input type="date" id="record-date" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2"></div>
-        <div><div class="text-secondary text-sm mb-1">金額</div><input type="number" id="record-amount" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2" placeholder="0"></div>
-      </div>
-      <div class="mb-3">
-        <div class="text-secondary text-sm mb-1">更換項目</div>
-        <input id="record-items" type="text" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2" placeholder="例如：PP、活性碳">
+    <div class="card border-2 border-blue-100 bg-blue-50/50">
+        <h3 class="font-bold text-lg text-blue-800 mb-4 flex items-center"><span class="material-icons mr-2">post_add</span>新增保養紀錄</h3>
+        <div class="grid grid-cols-2 gap-4">
+            <div><label>日期</label><input type="date" id="record-date"></div>
+            <div><label>金額</label><div class="currency-wrap"><span class="currency-symbol">NT$</span><input type="number" id="record-amount" class="currency-input" placeholder="0"></div></div>
+        </div>
+        <label>更換項目</label><input type="text" id="record-items" placeholder="例如: PP, 活性碳">
         <div id="new-record-item-chips" class="chip-container"></div>
-      </div>
-      <div class="mb-3"><div class="text-secondary text-sm mb-1">備註</div><input id="record-note" type="text" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2"></div>
-      
-      <div class="flex gap-3 mb-3 items-center">
-        <label class="bg-gray-100 text-blue-600 px-3 py-1 rounded cursor-pointer flex items-center font-medium">
-          <span class="material-icons mr-1">camera_alt</span>拍照
-          <input id="record-photo-input" type="file" accept="image/*" multiple class="hidden" onchange="handleRecordPhotoSelect(this)">
-        </label>
-        <span id="record-photo-count" class="text-sm text-secondary">0 張</span>
-      </div>
-      <div id="new-record-photos" class="flex gap-2 overflow-x-auto mb-3"></div>
-      <button class="w-full bg-blue-600 text-white rounded-xl py-3 text-lg font-semibold shadow active:scale-95 transition-transform" onclick="saveRecord()">儲存紀錄</button>
-    </div>
-
-    <div>
-      <div class="font-bold text-gray-500 text-xs tracking-widest mb-2">歷史紀錄</div>
-      <div id="record-list" class="mt-3"></div>
-    </div>
-  </div>
-</div>
-
-<div id="customer-modal" class="fixed inset-0 sheet-backdrop hidden z-50 flex items-end sm:items-center justify-center">
-  <div class="sheet w-full max-w-md max-h-[90vh] overflow-hidden flex flex-col rounded-t-2xl sm:rounded-2xl">
-    <div class="sheet-grabber"></div>
-    <div class="sheet-header">
-      <button onclick="closeModal('customer-modal')" class="sheet-btn-text">取消</button>
-      <h2 id="modal-title" class="sheet-title">新增客戶</h2>
-      <button onclick="saveCustomer()" class="sheet-btn-text font-semibold">儲存</button>
-    </div>
-    <div class="sheet-body space-y-4 bg-gray-50">
-      <input type="hidden" id="cust-id">
-      
-      <div class="space-y-3 bg-white rounded-xl p-4 shadow-sm">
-        <div><label>姓名 <span class="text-red-500">*</span></label><input id="cust-name" type="text" class="w-full p-2 border rounded"></div>
-        <div><label>電話 <span class="text-red-500">*</span></label><input id="cust-phone" type="tel" class="w-full p-2 border rounded"></div>
-        <div><label>安裝日期</label><input id="cust-install-date" type="date" class="w-full p-2 border rounded"></div>
-      </div>
-
-      <div class="space-y-3 bg-white rounded-xl p-4 shadow-sm">
-        <div><label>地址</label><input id="cust-address" type="text" class="w-full p-2 border rounded"></div>
-        <div><label>機器型號</label><input id="cust-machine" type="text" class="w-full p-2 border rounded"></div>
-        <div><label>濾芯規格</label><input id="cust-filter" type="text" class="w-full p-2 border rounded"></div>
-      </div>
-
-      <div class="space-y-2 bg-white rounded-xl p-4 shadow-sm">
-        <label>分類標籤</label>
-        <div id="cust-tag-selector" class="tag-selector mb-3"></div>
-        
-        <label>保養週期</label>
-        <select id="cust-cycle" class="w-full p-2 border rounded bg-white mt-1">
-            <option value="">未設定</option>
-            <option value="3">3 個月</option>
-            <option value="6">6 個月</option>
-            <option value="9">9 個月</option>
-            <option value="12">1 年</option>
-            <option value="24">2 年</option>
-        </select>
-      </div>
-
-      <div class="bg-white rounded-xl p-4 shadow-sm">
-        <label>備註</label>
-        <textarea id="cust-note" rows="2" class="w-full p-2 border rounded"></textarea>
-      </div>
-
-      <div class="bg-white rounded-xl p-4 shadow-sm text-center">
-        <label class="text-blue-600 font-medium flex items-center justify-center cursor-pointer p-2 border-2 border-dashed border-blue-200 rounded-lg">
-          <span class="material-icons mr-2">add_photo_alternate</span> 選擇機器照片
-          <input id="cust-photo-input" type="file" accept="image/*" multiple class="hidden" onchange="handleCustPhotoSelect(this)">
-        </label>
-        <div id="cust-photo-preview" class="photo-grid mt-2 justify-center flex gap-2 overflow-x-auto"></div>
-      </div>
-
-      <button id="btn-delete-customer" onclick="deleteCustomer()" class="danger-btn hidden">刪除此客戶</button>
-      <div class="h-10"></div>
-    </div>
-  </div>
-</div>
-
-<div id="record-modal" class="fixed inset-0 sheet-backdrop hidden z-50 flex items-end sm:items-center justify-center">
-  <div class="sheet w-full max-w-md max-h-[90vh] overflow-hidden flex flex-col rounded-t-2xl sm:rounded-2xl">
-    <div class="sheet-grabber"></div>
-    <div class="sheet-header">
-      <button onclick="closeModal('record-modal')" class="sheet-btn-text">取消</button>
-      <h2 class="sheet-title">修改紀錄</h2>
-      <button onclick="saveEditedRecord()" class="sheet-btn-text font-semibold">完成</button>
-    </div>
-    <div class="sheet-body space-y-4 bg-gray-50">
-      <input type="hidden" id="edit-record-id">
-      <div class="space-y-3 bg-white rounded-xl p-4 shadow-sm">
-        <div><label>日期</label><input id="edit-record-date" type="date" class="w-full p-2 border rounded"></div>
-        <div>
-          <label>項目</label>
-          <input id="edit-record-items" type="text" class="w-full p-2 border rounded font-medium">
-          <div id="edit-record-item-chips" class="chip-container"></div>
+        <label>備註</label><input type="text" id="record-note" placeholder="選填">
+        <div class="flex items-center justify-between bg-white p-3 rounded-xl border border-gray-200 mt-2 mb-4">
+            <label class="flex items-center text-blue-600 font-bold cursor-pointer"><span class="material-icons mr-2 text-2xl">camera_alt</span> 拍照<input type="file" id="record-photo-input" accept="image/*" multiple class="hidden" onchange="handleRecordPhotoSelect(this)"></label>
+            <span id="record-photo-count" class="text-sm text-gray-400">0 張</span>
         </div>
-        <div><label>金額</label><input id="edit-record-amount" type="number" class="w-full p-2 border rounded text-green-600 font-bold"></div>
-        <div><label>備註</label><textarea id="edit-record-note" rows="2" class="w-full p-2 border rounded"></textarea></div>
+        <div id="new-record-photos" class="photo-grid mb-4"></div>
+        <button onclick="saveRecord()" class="btn-primary shadow-lg">確認儲存紀錄</button>
+    </div>
+
+    <h3 class="font-bold text-gray-500 text-sm ml-1 mb-3 mt-6">歷史保養紀錄</h3>
+    <div id="record-list"></div>
+  </div>
+</div>
+
+<div id="customer-modal" class="sheet-backdrop hidden">
+  <div class="sheet">
+    <div class="sheet-header">
+      <button onclick="closeModal('customer-modal')" class="text-gray-500 text-lg">取消</button>
+      <h2 id="modal-title" class="text-lg font-bold">新增客戶</h2>
+      <button onclick="saveCustomer()" class="text-blue-600 font-bold text-lg">儲存</button>
+    </div>
+    <div class="sheet-body">
+      <input type="hidden" id="cust-id">
+      <div class="bg-white p-4 rounded-xl shadow-sm mb-4 border border-gray-100">
+          <label>姓名 <span class="text-red-500">*</span></label><input type="text" id="cust-name">
+          <label>電話 <span class="text-red-500">*</span></label><input type="tel" id="cust-phone" class="font-mono text-xl">
+          <label>分類標籤</label><div id="cust-tag-selector" class="tag-selector mb-4"></div>
       </div>
-      <div class="bg-white rounded-xl p-4 shadow-sm">
-        <label class="text-blue-600 font-medium flex items-center justify-center cursor-pointer p-2 border-2 border-dashed border-blue-200 rounded-lg">
-          <span class="material-icons mr-2">add_a_photo</span> 加傳照片
-          <input id="edit-record-photo-input" type="file" accept="image/*" multiple class="hidden" onchange="handleEditRecordPhotoSelect(this)">
-        </label>
-        <div id="edit-record-photo-preview" class="photo-grid mt-2 justify-center flex gap-2 overflow-x-auto"></div>
+      <div class="bg-white p-4 rounded-xl shadow-sm mb-4 border border-gray-100">
+          <label>保養週期</label>
+          <select id="cust-cycle">
+              <option value="">未設定</option><option value="3">3 個月</option><option value="6">6 個月</option><option value="9">9 個月</option><option value="12">1 年</option><option value="24">2 年</option>
+          </select>
+          <label>安裝日期</label><input type="date" id="cust-install-date">
+          <label>地址</label><textarea id="cust-address" rows="2"></textarea>
       </div>
-      <div class="h-10"></div>
+      <div class="bg-white p-4 rounded-xl shadow-sm mb-4 border border-gray-100">
+          <label>機器型號</label><input type="text" id="cust-machine">
+          <label>濾芯規格</label><input type="text" id="cust-filter">
+          <label>備註</label><textarea id="cust-note" rows="2"></textarea>
+      </div>
+      <div class="bg-white p-4 rounded-xl shadow-sm mb-4 border border-gray-100 text-center">
+          <label class="text-blue-600 font-bold flex items-center justify-center cursor-pointer p-4 border-2 border-dashed border-blue-100 rounded-xl">
+              <span class="material-icons mr-2">add_photo_alternate</span> 上傳機器照片
+              <input type="file" id="cust-photo-input" accept="image/*" multiple class="hidden" onchange="handleCustPhotoSelect(this)">
+          </label>
+          <div id="cust-photo-preview" class="photo-grid mt-4 justify-center"></div>
+      </div>
+      <button id="btn-delete-customer" onclick="deleteCustomer()" class="btn-danger hidden">刪除此客戶</button>
+      <div class="h-20"></div>
+    </div>
+  </div>
+</div>
+
+<div id="record-modal" class="sheet-backdrop hidden">
+  <div class="sheet">
+    <div class="sheet-header">
+      <button onclick="closeModal('record-modal')" class="text-gray-500 text-lg">取消</button>
+      <h2 class="text-lg font-bold">修改紀錄</h2>
+      <button onclick="saveEditedRecord()" class="text-blue-600 font-bold text-lg">完成</button>
+    </div>
+    <div class="sheet-body">
+      <input type="hidden" id="edit-record-id">
+      <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+          <label>日期</label><input type="date" id="edit-record-date">
+          <label>項目</label><input type="text" id="edit-record-items">
+          <div id="edit-record-item-chips" class="chip-container"></div>
+          <label>金額</label><div class="currency-wrap"><span class="currency-symbol">NT$</span><input type="number" id="edit-record-amount" class="currency-input"></div>
+          <label>備註</label><textarea id="edit-record-note" rows="2"></textarea>
+      </div>
+      <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mt-4">
+          <label class="text-blue-600 font-bold flex items-center justify-center cursor-pointer p-4 border-2 border-dashed border-blue-100 rounded-xl">
+              <span class="material-icons mr-2">add_a_photo</span> 加傳照片
+              <input type="file" id="edit-record-photo-input" accept="image/*" multiple class="hidden" onchange="handleEditRecordPhotoSelect(this)">
+          </label>
+          <div id="edit-record-photo-preview" class="photo-grid mt-4 justify-center"></div>
+      </div>
+      <div class="h-20"></div>
     </div>
   </div>
 </div>
 
 <div id="loading" class="loading-overlay hidden">
-  <div class="animate-spin rounded-full h-10 w-10 border-4 border-gray-300 border-t-blue-600"></div>
-  <p class="mt-3 text-secondary">處理中…</p>
+  <div class="bg-white p-6 rounded-3xl shadow-2xl flex flex-col items-center">
+    <div class="animate-spin rounded-full h-12 w-12 border-4 border-gray-100 border-t-blue-600 mb-4"></div>
+    <p class="text-gray-600 font-bold text-lg">處理中...</p>
+  </div>
 </div>
 <div id="toast" class="toast"></div>
 
@@ -444,20 +306,19 @@
 // ⚠️⚠️⚠️ 記得換成你的 Apps Script 網址 ⚠️⚠️⚠️
 const API_URL = "https://script.google.com/macros/s/AKfycbyOzg78yqgVwWkKkQM2V67Gmaicrh-ilnZ5SZ1FXq449cO4iO1nU46i5tO1xiyVZ9s/exec";
 
-// 標籤選項
+// 標籤 & 常用項目
 const TAG_OPTIONS = ["全部", "廚下型", "飲水機", "全戶式", "工業商業", "售服", "其他"];
-// 常用維修項目
 const ITEM_OPTIONS = ["PP", "UDFC","CTO","UDFR", "RO膜","大T", "小T", "保養","代更換", "維修"];
 
 let currentFilter = "全部";
-
 let customers = [];
 let currentCustomer = null;
 
-let selectedCustPhotos = [];
+let selectedCustPhotos = []; // 這現在只存「新上傳」的
+let existingCustPhotos = []; // ✨ 新增：用來存「舊照片」的網址
+
 let selectedRecordPhotos = [];
 let selectedEditRecordPhotos = [];
-
 window.currentRecords = [];
 
 function normalizeDateStr(v){
@@ -492,306 +353,180 @@ async function apiCall(action, payload={}, method="POST"){
 
 async function fetchCustomers(){
   const data = await apiCall("getCustomers", {}, "GET");
-  if (!Array.isArray(data)){
-    document.getElementById("customer-list").innerHTML =
-      `<div class="text-center text-gray-400 mt-20">讀取失敗</div>`;
-    return;
-  }
-  customers = data;
-  renderFilterBar();
-  renderList(customers);
+  if (!Array.isArray(data)){ document.getElementById("customer-list").innerHTML = `<div class="text-center text-gray-400 mt-20">讀取失敗</div>`; return; }
+  customers = data; renderFilterBar(); renderList(customers);
 }
 
 function renderFilterBar() {
     const container = document.getElementById("filter-container");
-    container.innerHTML = TAG_OPTIONS.map(tag => 
-        `<div class="filter-chip ${tag === currentFilter ? 'active' : ''}" onclick="filterByTag('${tag}')">${tag}</div>`
-    ).join('');
+    if(!container) return;
+    container.innerHTML = TAG_OPTIONS.map(tag => `<div class="filter-chip ${tag === currentFilter ? 'active' : ''}" onclick="filterByTag('${tag}')">${tag}</div>`).join('');
 }
 
-function filterByTag(tag) {
-    currentFilter = tag;
-    renderFilterBar(); 
-    renderList(customers);
-}
+function filterByTag(tag) { currentFilter = tag; renderFilterBar(); renderList(customers); }
 
 function renderItemChips(containerId, inputId) {
     const container = document.getElementById(containerId);
-    container.innerHTML = ITEM_OPTIONS.map(item => 
-        `<div class="item-chip" onclick="addItemToInput('${inputId}', '${item}')">${item}</div>`
-    ).join('');
+    if(!container) return;
+    container.innerHTML = ITEM_OPTIONS.map(item => `<div class="item-chip" onclick="addItemToInput('${inputId}', '${item}')">${item}</div>`).join('');
 }
 
 function addItemToInput(inputId, itemText) {
     const input = document.getElementById(inputId);
-    if (input.value) {
-        input.value += `, ${itemText}`;
-    } else {
-        input.value = itemText;
-    }
+    if (input.value) input.value += `, ${itemText}`; else input.value = itemText;
 }
 
-// ✨✨✨ 列表渲染 (含排序與過期提示) ✨✨✨
 function renderList(list){
   const container = document.getElementById("customer-list");
   container.innerHTML = "";
-
   let filtered = list;
-  if (currentFilter !== "全部") {
-      filtered = filtered.filter(c => c.tags && c.tags.includes(currentFilter));
-  }
-  
+  if (currentFilter !== "全部") filtered = filtered.filter(c => c.tags && c.tags.includes(currentFilter));
   const searchTerm = document.getElementById("search-input").value.toLowerCase();
-  if (searchTerm) {
-      filtered = filtered.filter(c => 
-        c.name.toLowerCase().includes(searchTerm) || 
-        c.phone.includes(searchTerm) || 
-        (c.note && c.note.toLowerCase().includes(searchTerm))
-      );
-  }
-
-  // 自動排序：根據保養狀態 (過期優先 > 即將到期 > 正常)
+  if (searchTerm) filtered = filtered.filter(c => c.name.toLowerCase().includes(searchTerm) || c.phone.includes(searchTerm) || (c.note && c.note.toLowerCase().includes(searchTerm)));
   filtered.sort((a, b) => {
       const statusA = getServiceStatus(a.lastRecordDate, a.cycle).score;
       const statusB = getServiceStatus(b.lastRecordDate, b.cycle).score;
       return statusB - statusA;
   });
-
-  if (!filtered.length){
-    container.innerHTML = `<div class="text-center text-gray-400 mt-20">暫無資料</div>`;
-    return;
-  }
-
-  const wrap = document.createElement("div");
-  wrap.className = "space-y-3";
-
+  if (!filtered.length){ container.innerHTML = `<div class="text-center text-gray-400 mt-20">暫無資料</div>`; return; }
+  const wrap = document.createElement("div"); wrap.className = "space-y-3";
   filtered.forEach(c=>{
-    // 計算保養狀態
     const status = getServiceStatus(c.lastRecordDate, c.cycle);
-    const last = c.lastRecordDate ? normalizeDateStr(c.lastRecordDate) : "尚無紀錄";
+    const last = c.lastRecordDate ? normalizeDateStr(c.lastRecordDate) : "尚無保養紀錄";
     const machine = c.machine || "未填寫機型";
-
-    // 卡片樣式判斷
     let cardClass = "dashboard-card border-l-4";
     let statusHtml = "";
     let dateClass = "text-gray-400";
-    
-    if (status.type === 'overdue') {
-        cardClass += " border-l-red-500 bg-red-50/30"; 
-        statusHtml = `<span class="bg-red-100 text-red-600 text-xs px-2 py-0.5 rounded font-bold ml-2">⚠️ 過期 ${status.days} 天</span>`;
-        dateClass = "text-red-500 font-bold";
-    } else if (status.type === 'soon') {
-        cardClass += " border-l-yellow-500 bg-yellow-50/30";
-        statusHtml = `<span class="bg-yellow-100 text-yellow-700 text-xs px-2 py-0.5 rounded font-bold ml-2">⏳ 剩 ${status.days} 天</span>`;
-        dateClass = "text-yellow-600 font-bold";
-    } else {
-        cardClass += " border-l-transparent hover:border-l-primary";
-        dateClass = c.lastRecordDate ? "text-green-600 font-bold" : "text-gray-400";
-    }
-
-    const card = document.createElement("div");
-    card.className = cardClass;
-    card.onclick = ()=> openDetail(c);
-
+    if (status.type === 'overdue') { cardClass += " border-l-red-500 bg-red-50/30"; statusHtml = `<span class="bg-red-100 text-red-600 text-xs px-2 py-0.5 rounded font-bold ml-2">⚠️ 過期 ${status.days} 天</span>`; dateClass = "text-red-500 font-bold"; }
+    else if (status.type === 'soon') { cardClass += " border-l-yellow-500 bg-yellow-50/30"; statusHtml = `<span class="bg-yellow-100 text-yellow-700 text-xs px-2 py-0.5 rounded font-bold ml-2">⏳ 剩 ${status.days} 天</span>`; dateClass = "text-yellow-600 font-bold"; }
+    else { cardClass += " border-l-transparent hover:border-l-primary"; dateClass = c.lastRecordDate ? "text-green-600 font-bold" : "text-gray-400"; }
+    const card = document.createElement("div"); card.className = cardClass; card.onclick = ()=> openDetail(c);
     card.innerHTML = `
       <div class="grow">
-        <div class="dashboard-name truncate flex items-center">
-            ${c.name}
-            ${statusHtml}
-        </div>
-
-        <div class="flex gap-2 flex-wrap my-1 text-sm text-secondary">
-          ${c.tags ? c.tags.split(",").map(t=>`<div class="dashboard-tag">${t}</div>`).join("") : ""}
-        </div>
-
-        <div class="text-sm text-secondary mt-1 font-medium flex items-center gap-1 text-gray-500">
-           <span class="material-icons text-sm">settings</span>${machine}
-        </div>
-
+        <div class="dashboard-name truncate flex items-center">${c.name}${statusHtml}</div>
+        <div class="flex gap-2 flex-wrap my-1 text-sm text-secondary">${c.tags ? c.tags.split(",").map(t=>`<div class="dashboard-tag">${t}</div>`).join("") : ""}</div>
+        <div class="text-sm text-secondary mt-1 font-medium flex items-center gap-1 text-gray-500"><span class="material-icons text-sm">settings</span>${machine}</div>
         <div class="text-sm text-secondary flex gap-4 mt-2 justify-between items-center pr-2">
           <span class="flex items-center gap-1 font-mono text-lg text-gray-700"><span class="material-icons text-sm">phone_iphone</span>${c.phone}</span>
-          <div class="text-right">
-             <div class="text-xs text-gray-400">上次保養</div>
-             <div class="${dateClass}">${last}</div>
-          </div>
+          <div class="text-right"><div class="text-xs text-gray-400">上次保養</div><div class="${dateClass}">${last}</div></div>
         </div>
       </div>
-      <div class="dashboard-chevron"><span class="material-icons">arrow_forward_ios</span></div>
-    `;
+      <div class="dashboard-chevron"><span class="material-icons">arrow_forward_ios</span></div>`;
     wrap.appendChild(card);
   });
   container.appendChild(wrap);
 }
 
-// ✨✨✨ 狀態計算函式 ✨✨✨
 function getServiceStatus(lastDateStr, cycleMonths) {
     if (!lastDateStr || !cycleMonths) return { type: 'normal', score: 1 };
-    
     const lastDate = new Date(lastDateStr);
     const nextDate = new Date(lastDate);
     nextDate.setMonth(nextDate.getMonth() + parseInt(cycleMonths));
-    
-    const today = new Date();
-    today.setHours(0,0,0,0);
-    
+    const today = new Date(); today.setHours(0,0,0,0);
     const diffTime = nextDate - today;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-    if (diffDays < 0) {
-        return { type: 'overdue', days: Math.abs(diffDays), score: 3 }; 
-    } else if (diffDays <= 14) {
-        return { type: 'soon', days: diffDays, score: 2 }; 
-    } else {
-        return { type: 'normal', days: diffDays, score: 1 }; 
-    }
+    if (diffDays < 0) return { type: 'overdue', days: Math.abs(diffDays), score: 3 }; 
+    else if (diffDays <= 14) return { type: 'soon', days: diffDays, score: 2 }; 
+    else return { type: 'normal', days: diffDays, score: 1 }; 
 }
 
-document.getElementById("search-input").addEventListener("input", e=>{
-  renderList(customers);
-});
+document.getElementById("search-input").addEventListener("input", e=>{ renderList(customers); });
 
 async function openDetail(c){
   currentCustomer = c;
   document.getElementById("page-list").classList.add("hidden");
   document.getElementById("page-detail").classList.remove("hidden");
   window.scrollTo(0,0);
-
   document.getElementById("detail-name").innerText = c.name;
   document.getElementById("detail-phone").innerText = c.phone;
   document.getElementById("detail-phone-link").href = `tel:${c.phone}`;
   document.getElementById("detail-install-date").innerText = c.installDate ? normalizeDateStr(c.installDate) : "無紀錄";
-  
   const cycleText = c.cycle ? `${c.cycle} 個月` : "未設定";
   document.getElementById("detail-cycle").innerText = cycleText;
-
-  const addr = c.address || "";
-  document.getElementById("detail-address").innerText = addr || "未填寫";
+  const addr = c.address || ""; document.getElementById("detail-address").innerText = addr || "未填寫";
   const mapLink = document.getElementById("detail-map-link");
-  if (addr) {
-      mapLink.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr)}`;
-      mapLink.classList.remove("hidden");
-  } else {
-      mapLink.classList.add("hidden");
-  }
-
+  if (addr) { mapLink.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr)}`; mapLink.classList.remove("hidden"); } else { mapLink.classList.add("hidden"); }
   document.getElementById("detail-machine").innerText = c.machine || "未填寫";
   document.getElementById("detail-filter").innerText = c.filter || "未填寫";
-
-  const tagBox = document.getElementById("detail-tags");
-  tagBox.innerHTML = c.tags ? c.tags.split(",").map(t=>`<div class="dashboard-tag">${t}</div>`).join("") : `<span class="text-secondary">未設定</span>`;
-
-  if (c.note){
-    document.getElementById("detail-note").innerText = c.note;
-    document.getElementById("note-container").classList.remove("hidden");
-  } else {
-    document.getElementById("note-container").classList.add("hidden");
-  }
-
-  const photoDiv = document.getElementById("customer-photos-container");
-  photoDiv.innerHTML = "";
+  const tagBox = document.getElementById("detail-tags"); tagBox.innerHTML = c.tags ? c.tags.split(",").map(t=>`<div class="dashboard-tag">${t}</div>`).join("") : `<span class="text-secondary">未設定</span>`;
+  if (c.note){ document.getElementById("detail-note").innerText = c.note; document.getElementById("note-container").classList.remove("hidden"); } else { document.getElementById("note-container").classList.add("hidden"); }
+  const photoDiv = document.getElementById("customer-photos-container"); photoDiv.innerHTML = "";
   let photos = [];
-  if (Array.isArray(c.photos)) photos = c.photos;
-  else if (typeof c.photos==="string" && c.photos.startsWith("[")) { try { photos = JSON.parse(c.photos); } catch {} }
-  
-  if (photos.length){
-    photos.forEach(url=>{
-      const img = document.createElement("img"); img.src = url; img.className = "photo-thumb cursor-pointer flex-shrink-0";
-      img.onclick = ()=>window.open(url); photoDiv.appendChild(img);
-    });
-  } else { photoDiv.innerHTML = `<div class="text-secondary text-sm p-2">無照片</div>`; }
-
+  if (Array.isArray(c.photos)) photos = c.photos; else if (typeof c.photos==="string" && c.photos.startsWith("[")) { try { photos = JSON.parse(c.photos); } catch {} }
+  if (photos.length){ photos.forEach(url=>{ const img = document.createElement("img"); img.src = url; img.className = "photo-thumb cursor-pointer flex-shrink-0"; img.onclick = ()=>window.open(url); photoDiv.appendChild(img); }); } else { photoDiv.innerHTML = `<div class="text-secondary text-sm p-2">無照片</div>`; }
   await fetchRecords(c.id);
 }
 
-function goBack(){
-  document.getElementById("page-detail").classList.add("hidden");
-  document.getElementById("page-list").classList.remove("hidden");
-  // 重新渲染列表以更新狀態
-  renderList(customers);
-}
+function goBack(){ document.getElementById("page-detail").classList.add("hidden"); document.getElementById("page-list").classList.remove("hidden"); renderList(customers); }
 
 async function fetchRecords(id){
-  const box = document.getElementById("record-list");
-  box.innerHTML = `<div class="text-center text-secondary py-4">讀取中…</div>`;
-
+  const box = document.getElementById("record-list"); box.innerHTML = `<div class="text-center text-secondary py-4">讀取中…</div>`;
   const records = await apiCall("getRecords", {customerId:id}, "GET");
-
-  if (!records.length){
-    box.innerHTML = `<div class="text-secondary text-center py-4">尚無紀錄</div>`;
-    return;
-  }
-
-  // 🔥 關鍵：把資料存到全域變數，稍後編輯時用 ID 來這裡找
-  window.currentRecords = records;
-
-  box.innerHTML = "";
+  if (!records.length){ box.innerHTML = `<div class="text-secondary text-center py-4">尚無紀錄</div>`; return; }
+  window.currentRecords = records; box.innerHTML = "";
   records.sort((a,b)=>new Date(b.date)-new Date(a.date));
-
   records.forEach(r=>{
     const photos = Array.isArray(r.photos) ? r.photos : [];
-    
-    // ❌ 刪除原本容易出錯的 rData
-    // const rData = ... (這行不要了)
-
-    const item = document.createElement("div");
-    item.className = "timeline-item";
-
+    const item = document.createElement("div"); item.className = "timeline-item";
     item.innerHTML = `
       <div class="timeline-dot"></div>
       <div class="record-card">
-
-        <div class="flex justify-between mb-2">
-          <div class="record-date text-lg">${normalizeDateStr(r.date)}</div>
-          <div class="record-amount text-lg">${r.amount ? "NT$"+r.amount : ""}</div>
+        <div class="flex justify-between mb-3 border-b border-gray-100 pb-2">
+          <div class="record-date text-xl text-gray-800">${normalizeDateStr(r.date)}</div>
+          <div class="record-amount text-xl">${r.amount ? "NT$"+r.amount : ""}</div>
         </div>
-
-        <div class="font-bold text-gray-800 text-lg mb-2">${r.items}</div>
-
-        ${r.note ? `<div class="text-gray-500 text-sm mb-2 bg-gray-50 p-2 rounded">備註：${r.note}</div>` : ""}
-
-        ${
-          photos.length
-          ? `<div class="flex gap-2 overflow-x-auto mb-2">
-              ${photos.map(p=>`<img class="photo-thumb cursor-pointer" src="${p}" onclick="window.open('${p}')">`).join("")}
-            </div>`
-          : ""
-        }
-
-        <div class="flex justify-end gap-4 text-blue-600 mt-2 text-sm font-medium pt-2 border-t border-gray-100">
-          <span class="cursor-pointer px-2" onclick="openEditRecordModal('${r.id}')">編輯</span>
-          <span class="text-red-600 cursor-pointer px-2" onclick="deleteRecord('${r.id}')">刪除</span>
+        <div class="mb-3"><div class="text-gray-400 text-xs mb-1">項目</div><div class="font-bold text-gray-900 text-2xl leading-snug">${r.items}</div></div>
+        ${r.note ? `<div class="mb-3 bg-gray-50 p-3 rounded-lg border border-gray-100"><div class="text-gray-400 text-xs mb-1">備註</div><div class="text-gray-700 text-lg">${r.note}</div></div>` : ""}
+        ${photos.length ? `<div class="flex gap-2 overflow-x-auto mb-3 pt-2 border-t border-gray-50">${photos.map(p=>`<img class="photo-thumb cursor-pointer" src="${p}" onclick="window.open('${p}')">`).join("")}</div>` : ""}
+        <div class="flex justify-end gap-3 mt-2 pt-2 border-t border-gray-50 items-center">
+          <button onclick="copyLineReport('${r.id}')" class="text-green-600 bg-green-50 px-3 py-2 rounded-lg font-bold text-sm flex items-center mr-auto"><span class="material-icons text-base mr-1">chat</span>LINE</button>
+          <button onclick="openEditRecordModal('${r.id}')" class="text-blue-600 bg-blue-50 px-3 py-2 rounded-lg font-bold text-sm">編輯</button>
+          <button onclick="deleteRecord('${r.id}')" class="text-red-500 bg-red-50 px-3 py-2 rounded-lg font-bold text-sm">刪除</button>
         </div>
-
-      </div>
-    `;
-
+      </div>`;
     box.appendChild(item);
   });
 }
 
-function openEditRecordModal(id){
-  // 🔥 關鍵：從全域變數 window.currentRecords 裡面找出這筆資料
-  const r = window.currentRecords.find(x => String(x.id) === String(id));
-  
-  if (!r){ 
-      alert("找不到紀錄 (ID錯誤)"); 
-      return; 
-  }
+// ✨ LINE 回報
+function copyLineReport(recordId) {
+    const r = window.currentRecords.find(x => String(x.id) === String(recordId));
+    if (!r) return;
+    const c = currentCustomer;
+    let nextDateStr = "未設定";
+    if (c.cycle) {
+         const recordDate = new Date(r.date);
+         recordDate.setMonth(recordDate.getMonth() + parseInt(c.cycle));
+         nextDateStr = `${recordDate.getFullYear()}/${String(recordDate.getMonth()+1).padStart(2,'0')}/${String(recordDate.getDate()).padStart(2,'0')}`;
+    }
+    const text = `💧 *濾芯保養完成通知*\n\n` +
+                 `親愛的 *${c.name}* 您好：\n` +
+                 `感謝您使用我們的保養服務！\n\n` +
+                 `📅 保養日期：${normalizeDateStr(r.date)}\n` +
+                 `🛠 更換項目：${r.items}\n` +
+                 `💰 本單金額：NT$${r.amount || 0}\n` +
+                 (r.note ? `📝 備註事項：${r.note}\n` : "") +
+                 `⏳ 預計下次保養：${nextDateStr}\n\n` +
+                 `祝您用水愉快！如有問題請隨時聯繫。`;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => { showToast("已複製！請貼上 LINE"); window.location.href = "https://line.me/R/"; }).catch(() => alert("複製失敗"));
+    } else {
+        const textarea = document.createElement("textarea"); textarea.value = text; document.body.appendChild(textarea); textarea.select(); document.execCommand("copy"); document.body.removeChild(textarea);
+        showToast("已複製！請貼上 LINE"); window.location.href = "https://line.me/R/";
+    }
+}
 
+function openEditRecordModal(id){
+  const r = window.currentRecords.find(x=>String(x.id)===String(id));
+  if (!r){ alert("找不到紀錄"); return; }
   document.getElementById("edit-record-id").value = r.id;
   document.getElementById("edit-record-date").value = normalizeDateStr(r.date);
   document.getElementById("edit-record-items").value = r.items;
   document.getElementById("edit-record-amount").value = r.amount || "";
   document.getElementById("edit-record-note").value = r.note || "";
-
   selectedEditRecordPhotos = [];
   document.getElementById("edit-record-photo-preview").innerHTML = "";
-
-  // 渲染快速按鈕 (如果有這個功能的話)
-  if (typeof renderItemChips === "function") {
-      renderItemChips("edit-record-item-chips", "edit-record-items");
-  }
-
+  renderItemChips("edit-record-item-chips", "edit-record-items");
   document.getElementById("record-modal").classList.remove("hidden");
 }
 
@@ -805,16 +540,9 @@ async function saveEditedRecord(){
     const res = await apiCall("uploadImage", {base64, type:"image/jpeg"});
     if (res?.status==="success") photoUrls.push(res.url);
   }
-  const payload = {
-    id, date, items,
-    amount: document.getElementById("edit-record-amount").value,
-    note: document.getElementById("edit-record-note").value,
-    photos: photoUrls
-  };
+  const payload = { id, date, items, amount: document.getElementById("edit-record-amount").value, note: document.getElementById("edit-record-note").value, photos: photoUrls };
   const res = await apiCall("updateRecord", payload);
-  if (res?.status==="success"){
-    closeModal("record-modal"); await fetchRecords(currentCustomer.id); renderList(customers);
-  }
+  if (res?.status==="success"){ closeModal("record-modal"); await fetchRecords(currentCustomer.id); renderList(customers); }
 }
 
 async function saveRecord(){
@@ -826,29 +554,12 @@ async function saveRecord(){
     const res = await apiCall("uploadImage", {base64, type:"image/jpeg"});
     if (res?.status==="success") photoUrls.push(res.url);
   }
-  const payload = {
-    customerId: currentCustomer.id,
-    date: document.getElementById("record-date").value,
-    items,
-    amount: document.getElementById("record-amount").value,
-    note: document.getElementById("record-note").value,
-    photos: photoUrls
-  };
+  const payload = { customerId: currentCustomer.id, date: document.getElementById("record-date").value, items, amount: document.getElementById("record-amount").value, note: document.getElementById("record-note").value, photos: photoUrls };
   const res = await apiCall("addRecord", payload);
-  if (res?.status==="success"){
-    showToast("儲存成功");
-    selectedRecordPhotos = [];
-    document.getElementById("new-record-photos").innerHTML = "";
-    document.getElementById("record-items").value=""; document.getElementById("record-amount").value=""; document.getElementById("record-note").value="";
-    await fetchRecords(currentCustomer.id);
-  }
+  if (res?.status==="success"){ showToast("儲存成功"); selectedRecordPhotos = []; document.getElementById("new-record-photos").innerHTML = ""; document.getElementById("record-items").value=""; document.getElementById("record-amount").value=""; document.getElementById("record-note").value=""; await fetchRecords(currentCustomer.id); }
 }
 
-async function deleteRecord(id){
-  if (!confirm("確定刪除？")) return;
-  await apiCall("deleteRecord", {id});
-  await fetchRecords(currentCustomer.id);
-}
+async function deleteRecord(id){ if (!confirm("確定刪除？")) return; await apiCall("deleteRecord", {id}); await fetchRecords(currentCustomer.id); }
 
 function showAddCustomerModal(){
   document.getElementById("modal-title").innerText = "新增客戶";
@@ -859,9 +570,14 @@ function showAddCustomerModal(){
   document.getElementById("cust-note").value = "";
   document.getElementById("cust-machine").value = "";
   document.getElementById("cust-filter").value = "";
-  document.getElementById("cust-cycle").value = ""; // 清空週期
+  document.getElementById("cust-cycle").value = ""; 
   const d = new Date(); document.getElementById("cust-install-date").value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-  selectedCustPhotos = []; document.getElementById("cust-photo-preview").innerHTML = "";
+  
+  // 清空照片陣列
+  selectedCustPhotos = []; 
+  existingCustPhotos = []; 
+  renderCustPhotoPreview(); // 重繪預覽
+  
   renderTagSelector("cust-tag-selector", []);
   document.getElementById("btn-delete-customer").classList.add("hidden");
   document.getElementById("customer-modal").classList.remove("hidden");
@@ -877,12 +593,69 @@ function showEditCustomerModal(){
   document.getElementById("cust-note").value = c.note || "";
   document.getElementById("cust-machine").value = c.machine || "";
   document.getElementById("cust-filter").value = c.filter || "";
-  document.getElementById("cust-cycle").value = c.cycle || ""; // 載入週期
+  document.getElementById("cust-cycle").value = c.cycle || ""; 
   document.getElementById("cust-install-date").value = c.installDate ? normalizeDateStr(c.installDate) : "";
-  selectedCustPhotos = []; document.getElementById("cust-photo-preview").innerHTML = "";
+
+  selectedCustPhotos = []; // 清空新照片
+  
+  // 解析舊照片
+  existingCustPhotos = [];
+  if (Array.isArray(c.photos)) existingCustPhotos = [...c.photos];
+  else if (typeof c.photos === 'string' && c.photos.startsWith('[')) {
+      try { existingCustPhotos = JSON.parse(c.photos); } catch {}
+  }
+  
+  renderCustPhotoPreview(); // 顯示舊照片
+  
   renderTagSelector("cust-tag-selector", c.tags ? c.tags.split(",") : []);
   document.getElementById("btn-delete-customer").classList.remove("hidden");
   document.getElementById("customer-modal").classList.remove("hidden");
+}
+
+// ✨✨✨ 修正後的照片預覽與刪除邏輯 ✨✨✨
+function renderCustPhotoPreview() {
+    const div = document.getElementById('cust-photo-preview');
+    div.innerHTML = '';
+    
+    // 1. 顯示舊照片 (來自 existingCustPhotos)
+    existingCustPhotos.forEach((url, idx) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'relative flex-shrink-0';
+        wrapper.innerHTML = `
+            <img src="${url}" class="photo-thumb opacity-90 border-2 border-blue-200">
+            <button onclick="removeExistingPhoto(${idx})" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center border-2 border-white shadow-sm z-10">
+                <span class="material-icons text-xs font-bold">close</span>
+            </button>
+            <div class="absolute bottom-0 w-full bg-black/50 text-white text-[10px] text-center rounded-b-lg">已存</div>
+        `;
+        div.appendChild(wrapper);
+    });
+
+    // 2. 顯示新選擇的照片 (來自 selectedCustPhotos)
+    selectedCustPhotos.forEach((src, idx) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'relative flex-shrink-0';
+        wrapper.innerHTML = `
+            <img src="${src}" class="photo-thumb border-2 border-green-400">
+            <button onclick="removeNewPhoto(${idx})" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center border-2 border-white shadow-sm z-10">
+                <span class="material-icons text-xs font-bold">close</span>
+            </button>
+            <div class="absolute bottom-0 w-full bg-green-600/80 text-white text-[10px] text-center rounded-b-lg">新圖</div>
+        `;
+        div.appendChild(wrapper);
+    });
+}
+
+function removeExistingPhoto(index) {
+    if(confirm("確定移除這張舊照片嗎？(儲存後生效)")) {
+        existingCustPhotos.splice(index, 1);
+        renderCustPhotoPreview();
+    }
+}
+
+function removeNewPhoto(index) {
+    selectedCustPhotos.splice(index, 1);
+    renderCustPhotoPreview();
 }
 
 async function saveCustomer(){
@@ -890,15 +663,15 @@ async function saveCustomer(){
   const name = document.getElementById("cust-name").value.trim();
   const phone = document.getElementById("cust-phone").value.trim();
   if (!name || !phone){ alert("姓名、電話必填"); return; }
-  let photoUrls = [];
-  if (id && currentCustomer?.photos){
-    if (Array.isArray(currentCustomer.photos)) photoUrls = [...currentCustomer.photos];
-    else try { photoUrls = JSON.parse(currentCustomer.photos); } catch(e) { photoUrls = [currentCustomer.photos]; }
-  }
+
+  let photoUrls = [...existingCustPhotos]; // 先放入舊照片
+
+  // 上傳新照片
   for (let base64 of selectedCustPhotos){
     const res = await apiCall("uploadImage", {base64, type:"image/jpeg"});
     if (res?.status==="success") photoUrls.push(res.url);
   }
+
   const tags = getSelectedTags("cust-tag-selector");
   const payload = {
     id, name, phone,
@@ -908,7 +681,8 @@ async function saveCustomer(){
     filter: document.getElementById("cust-filter").value,
     installDate: document.getElementById("cust-install-date").value,
     cycle: document.getElementById("cust-cycle").value,
-    photos: photoUrls, tags
+    photos: photoUrls, // 這裡是合併後的照片清單
+    tags
   };
   const act = id ? "updateCustomer" : "addCustomer";
   const res = await apiCall(act, payload);
@@ -936,7 +710,18 @@ function renderTagSelector(containerId, selected=[]){
 }
 function getSelectedTags(containerId){ return [...document.querySelectorAll(`#${containerId} .tag.active`)].map(x=>x.dataset.tag).join(","); }
 
-function handleCustPhotoSelect(input){ handlePhotoSelect(input, selectedCustPhotos, "cust-photo-preview"); }
+function handleCustPhotoSelect(input){
+  [...input.files].forEach(file=>{
+    const reader = new FileReader();
+    reader.onload = e => resizeImage(e.target.result, 900, out=>{
+      selectedCustPhotos.push(out);
+      renderCustPhotoPreview();
+    });
+    reader.readAsDataURL(file);
+  });
+  input.value = ''; // 清空，允許重複選同一張
+}
+
 function handleRecordPhotoSelect(input){ handlePhotoSelect(input, selectedRecordPhotos, "new-record-photos", "record-photo-count"); }
 function handleEditRecordPhotoSelect(input){ handlePhotoSelect(input, selectedEditRecordPhotos, "edit-record-photo-preview"); }
 
@@ -980,4 +765,3 @@ window.onload = () => {
 
 </body>
 </html>
-
