@@ -126,9 +126,13 @@
 <body>
 
 <div id="page-list" class="min-h-screen">
-  <div class="pt-10 pb-4 px-4 max-w-md mx-auto">
-    <div class="text-3xl font-semibold mb-3">濾芯保養系統</div>
-    <div class="search-bar">
+ <div class="pt-10 pb-4 px-4 max-w-md mx-auto">
+  <div class="flex justify-between items-center mb-4">
+    <div class="text-3xl font-bold text-gray-800 tracking-tight">濾芯保養系統</div>
+    <button onclick="fetchCustomers()" class="w-10 h-10 bg-white rounded-full shadow-sm border border-gray-100 flex items-center justify-center text-blue-600 active:scale-90 active:bg-blue-50 transition-all">
+      <span class="material-icons">refresh</span>
+    </button>
+  </div>
       <span class="material-icons text-gray-400">search</span>
       <input id="search-input" type="text" placeholder="搜尋客戶名稱、電話或備註…">
     </div>
@@ -821,5 +825,6 @@ window.onload = () => {
 
 </body>
 </html>
+
 
 
