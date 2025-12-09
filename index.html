@@ -8,7 +8,7 @@
 
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="apple-touch-icon" href="icon.png">
+ <link rel="apple-touch-icon" href="icon.png">
 
   <script src="https://cdn.tailwindcss.com"></script>
 
@@ -38,193 +38,68 @@
 
     /* iOS Navigation Bar */
     .ios-nav-bar {
-      position: sticky;
-      top: 0;
-      padding: 12px 16px;
-      padding-top: env(safe-area-inset-top, 16px);
-      background: rgba(255,255,255,0.92);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--milk-border);
-      z-index: 50;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
+      position: sticky; top: 0; padding: 12px 16px; padding-top: env(safe-area-inset-top, 16px);
+      background: rgba(255,255,255,0.92); backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--milk-border); z-index: 50;
+      display:flex; justify-content:space-between; align-items:center;
     }
-    .ios-nav-left, .ios-nav-right {
-      display:flex;
-      align-items:center;
-      color:var(--primary);
-      font-size:16px;
-      gap:4px;
-      cursor:pointer;
-    }
-    .ios-nav-title {
-      font-size:18px;
-      font-weight:600;
-      color:var(--text-main);
-    }
+    .ios-nav-left, .ios-nav-right { display:flex; align-items:center; color:var(--primary); font-size:16px; gap:4px; cursor:pointer; }
+    .ios-nav-title { font-size:18px; font-weight:600; color:var(--text-main); }
 
     /* 搜尋列 */
     .search-bar {
-      background: #FFF;
-      border-radius: 14px;
-      padding: 10px;
-      display:flex;
-      align-items:center;
-      gap:8px;
-      border:1px solid var(--milk-border);
+      background: #FFF; border-radius: 14px; padding: 10px; display:flex; align-items:center; gap:8px; border:1px solid var(--milk-border);
     }
-    .search-bar input {
-      width:100%;
-      border:none;
-      background:transparent;
-      font-size:16px;
-    }
-    .search-bar input:focus { outline:none; }
+    .search-bar input { width:100%; border:none; background:transparent; font-size:16px; outline:none; }
 
     /* 篩選器樣式 */
-    .filter-scroll {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding: 4px 0;
-      margin-top: 12px;
-      -webkit-overflow-scrolling: touch;
-    }
+    .filter-scroll { display: flex; gap: 8px; overflow-x: auto; padding: 4px 0; margin-top: 12px; -webkit-overflow-scrolling: touch; }
     .filter-scroll::-webkit-scrollbar { display: none; }
     .filter-chip {
-      padding: 6px 14px;
-      background: #EFEDE7;
-      border: 1px solid var(--milk-border);
-      border-radius: 20px;
-      font-size: 14px;
-      color: var(--text-secondary);
-      white-space: nowrap;
-      cursor: pointer;
-      transition: all 0.2s;
+      padding: 6px 14px; background: #EFEDE7; border: 1px solid var(--milk-border);
+      border-radius: 20px; font-size: 14px; color: var(--text-secondary);
+      white-space: nowrap; cursor: pointer; transition: all 0.2s;
     }
-    .filter-chip.active {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary);
-      font-weight: 600;
-    }
+    .filter-chip.active { background: var(--primary); color: white; border-color: var(--primary); font-weight: 600; }
 
     /* 列表卡片 */
     .dashboard-card {
-      background: var(--milk-card);
-      border-radius: 18px;
-      border:1px solid var(--milk-border);
-      padding:16px 14px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      box-shadow:0 6px 16px rgba(0,0,0,0.06);
-      cursor:pointer;
-      transition:.12s;
+      background: var(--milk-card); border-radius: 18px; border:1px solid var(--milk-border);
+      padding:16px 14px; display:flex; justify-content:space-between; align-items:center;
+      box-shadow:0 6px 16px rgba(0,0,0,0.06); cursor:pointer; transition:.12s;
     }
     .dashboard-card:active { transform:scale(.97); }
-
     .dashboard-name { font-size:20px; font-weight:700; }
-
     .dashboard-tag {
-      display:inline-flex;
-      padding:3px 10px;
-      background:#EFEDE7;
-      border:1px solid var(--milk-border);
-      border-radius:999px;
-      font-size:12px;
-      color:var(--text-secondary);
-      margin:4px 0;
+      display:inline-flex; padding:3px 10px; background:#EFEDE7; border:1px solid var(--milk-border);
+      border-radius:999px; font-size:12px; color:var(--text-secondary); margin:4px 0;
     }
-
-    .dashboard-chevron {
-      width:32px; height:32px;
-      background:#F2F0EB;
-      border-radius:50%;
-      display:flex; align-items:center; justify-content:center;
-    }
+    .dashboard-chevron { width:32px; height:32px; background:#F2F0EB; border-radius:50%; display:flex; align-items:center; justify-content:center; }
 
     /* Timeline（保養紀錄） */
-    .timeline-item {
-      position:relative;
-      margin-bottom:18px;
-      padding-left:20px;
-    }
-    .timeline-item::before {
-      content:"";
-      position:absolute;
-      left:9px; top:0; bottom:-8px;
-      width:2px;
-      background:var(--milk-border);
-    }
-    .timeline-dot {
-      position:absolute;
-      left:4px; top:8px;
-      width:12px; height:12px;
-      background:white;
-      border:3px solid var(--primary);
-      border-radius:50%;
-    }
-    .record-card {
-      background:var(--milk-card);
-      border:1px solid var(--milk-border);
-      padding:14px;
-      border-radius:16px;
-      box-shadow:0 4px 12px rgba(0,0,0,0.05);
-    }
+    .timeline-item { position:relative; margin-bottom:18px; padding-left:20px; }
+    .timeline-item::before { content:""; position:absolute; left:9px; top:0; bottom:-8px; width:2px; background:var(--milk-border); }
+    .timeline-dot { position:absolute; left:4px; top:8px; width:12px; height:12px; background:white; border:3px solid var(--primary); border-radius:50%; }
+    .record-card { background:var(--milk-card); border:1px solid var(--milk-border); padding:14px; border-radius:16px; box-shadow:0 4px 12px rgba(0,0,0,0.05); }
     .record-date { font-weight:600; }
     .record-amount { color:#008A32; font-weight:700; }
 
     /* 標籤與按鈕樣式 */
     .tag-selector, .chip-container { display:flex; flex-wrap:wrap; gap:8px; }
-    
     .tag, .item-chip {
-      padding:6px 12px;
-      background:#EFEDE7;
-      border:1px solid var(--milk-border);
-      border-radius:999px;
-      font-size:14px;
-      cursor:pointer;
-      transition:0.15s;
-      user-select:none;
-      color:#5F564D;
+      padding:6px 12px; background:#EFEDE7; border:1px solid var(--milk-border);
+      border-radius:999px; font-size:14px; cursor:pointer; transition:0.15s;
+      user-select:none; color:#5F564D;
     }
-    .tag.active {
-      background:var(--primary);
-      border-color:var(--primary);
-      color:white;
-    }
-    
-    /* ✨ 快速輸入按鈕樣式 */
-    .item-chip {
-        background-color: #E3F2FD;
-        color: #1565C0;
-        border-color: #BBDEFB;
-        font-weight: 600;
-        margin-top: 4px;
-    }
-    .item-chip:active {
-        background-color: #2196F3;
-        color: white;
-    }
+    .tag.active { background:var(--primary); border-color:var(--primary); color:white; }
+    .item-chip { background-color: #E3F2FD; color: #1565C0; border-color: #BBDEFB; font-weight: 600; margin-top: 4px; }
+    .item-chip:active { background-color: #2196F3; color: white; }
 
     /* 照片 */
-    .photo-thumb {
-      width:90px; height:90px; object-fit:cover;
-      border-radius:12px;
-      border:1px solid var(--milk-border);
-      background:#E5E2DC;
-    }
+    .photo-thumb { width:90px; height:90px; object-fit:cover; border-radius:12px; border:1px solid var(--milk-border); background:#E5E2DC; }
 
     /* Loading */
-    .loading-overlay {
-      position:fixed; inset:0;
-      background:rgba(255,255,255,0.65);
-      backdrop-filter:blur(8px);
-      display:flex; align-items:center; justify-content:center;
-      flex-direction:column; z-index:999;
-    }
+    .loading-overlay { position:fixed; inset:0; background:rgba(255,255,255,0.65); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; flex-direction:column; z-index:999; }
 
     /* Sheet / Modal */
     .sheet-backdrop { background: rgba(0,0,0,0.4); backdrop-filter:blur(2px); }
@@ -240,30 +115,11 @@
     .hidden { display: none !important; }
     .danger-btn { width: 100%; color: #ff3b30; background: #fff0f0; padding: 12px; border-radius: 12px; font-weight: 600; margin-top: 10px; }
 
-    /* Toast 通知樣式 */
+    /* Toast */
     .toast {
-      visibility: hidden;
-      min-width: 250px;
-      margin-left: -125px;
-      background-color: #333;
-      color: #fff;
-      text-align: center;
-      border-radius: 50px;
-      padding: 16px;
-      position: fixed;
-      z-index: 1000;
-      left: 50%;
-      bottom: 30px;
-      font-size: 17px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      opacity: 0;
-      transition: opacity 0.3s, bottom 0.3s;
+      visibility: hidden; min-width: 250px; margin-left: -125px; background-color: #333; color: #fff; text-align: center; border-radius: 50px; padding: 16px; position: fixed; z-index: 1000; left: 50%; bottom: 30px; font-size: 17px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); opacity: 0; transition: opacity 0.3s, bottom 0.3s;
     }
-    .toast.show {
-      visibility: visible;
-      opacity: 1;
-      bottom: 50px;
-    }
+    .toast.show { visibility: visible; opacity: 1; bottom: 50px; }
   </style>
 </head>
 
@@ -308,11 +164,11 @@
       <div class="flex py-1"><span class="w-20 text-secondary">電話</span><span><a id="detail-phone-link" class="text-blue-600 font-medium flex items-center"><span class="material-icons mr-1 text-base">phone</span><span id="detail-phone"></span></a></span></div>
       <div class="flex py-1"><span class="w-20 text-secondary">安裝日期</span><span id="detail-install-date" class="text-gray-400 italic">無紀錄</span></div>
       <div class="flex py-1 items-start"><span class="w-20 text-secondary pt-1">標籤</span><div id="detail-tags" class="flex flex-wrap gap-2 flex-1"></div></div>
+      <div class="flex py-1"><span class="w-20 text-secondary">保養週期</span><span id="detail-cycle" class="text-gray-800"></span></div>
     </div>
 
     <div class="record-card mb-4">
       <div class="font-bold mb-2 text-gray-500 text-xs tracking-widest">設備資訊</div>
-      
       <div class="flex py-1 items-center">
         <span class="w-20 text-secondary flex-shrink-0">地址</span>
         <div class="flex-1 flex items-center justify-between">
@@ -322,7 +178,6 @@
            </a>
         </div>
       </div>
-
       <div class="flex py-1"><span class="w-20 text-secondary">機器</span><span id="detail-machine"></span></div>
       <div class="flex py-1"><span class="w-20 text-secondary">濾芯</span><span id="detail-filter"></span></div>
       <div id="note-container" class="flex py-1 hidden"><span class="w-20 text-secondary">備註</span><span id="detail-note"></span></div>
@@ -339,11 +194,9 @@
         <input id="record-items" type="text" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2" placeholder="例如：PP、活性碳">
         <div id="new-record-item-chips" class="chip-container"></div>
       </div>
-
       <div class="mb-3"><div class="text-secondary text-sm mb-1">備註</div><input id="record-note" type="text" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2"></div>
-      
       <div class="flex gap-3 mb-3 items-center">
-        <label class="bg-gray-100 text-blue-600 px-3 py-1 rounded cursor-pointer flex items-center">
+        <label class="bg-gray-100 text-blue-600 px-3 py-1 rounded cursor-pointer flex items-center font-medium">
           <span class="material-icons mr-1">camera_alt</span>拍照
           <input id="record-photo-input" type="file" accept="image/*" multiple class="hidden" onchange="handleRecordPhotoSelect(this)">
         </label>
@@ -378,6 +231,17 @@
       </div>
 
       <div class="space-y-3 bg-white rounded-xl p-4 shadow-sm">
+        <div>
+            <label>保養週期</label>
+            <select id="cust-cycle" class="w-full p-2 border rounded bg-white">
+                <option value="">未設定</option>
+                <option value="3">3 個月</option>
+                <option value="6">6 個月</option>
+                <option value="9">9 個月</option>
+                <option value="12">1 年</option>
+                <option value="24">2 年</option>
+            </select>
+        </div>
         <div><label>地址</label><input id="cust-address" type="text" class="w-full p-2 border rounded"></div>
         <div><label>機器型號</label><input id="cust-machine" type="text" class="w-full p-2 border rounded"></div>
         <div><label>濾芯規格</label><input id="cust-filter" type="text" class="w-full p-2 border rounded"></div>
@@ -419,13 +283,11 @@
       <input type="hidden" id="edit-record-id">
       <div class="space-y-3 bg-white rounded-xl p-4 shadow-sm">
         <div><label>日期</label><input id="edit-record-date" type="date" class="w-full p-2 border rounded"></div>
-        
         <div>
           <label>項目</label>
           <input id="edit-record-items" type="text" class="w-full p-2 border rounded font-medium">
           <div id="edit-record-item-chips" class="chip-container"></div>
         </div>
-
         <div><label>金額</label><input id="edit-record-amount" type="number" class="w-full p-2 border rounded text-green-600 font-bold"></div>
         <div><label>備註</label><textarea id="edit-record-note" rows="2" class="w-full p-2 border rounded"></textarea></div>
       </div>
@@ -448,14 +310,13 @@
 <div id="toast" class="toast"></div>
 
 <script>
-// ⚠️⚠️⚠️ 請務必確認這裡是你最新的 Google Apps Script 網址 (以 /exec 結尾) ⚠️⚠️⚠️
-const API_URL = "https://script.google.com/macros/s/AKfycbxq7lgAM355tr63kVCx8IeuZOxCxijQcVFL7K0EhMDcJjER6szHY6P6RfQR5IaJQF7u/exec";
+// ⚠️⚠️⚠️ 請務必確認這裡是你最新的 Google Apps Script 網址 ⚠️⚠️⚠️
+const API_URL = "https://script.google.com/macros/s/AKfycbyOzg78yqgVwWkKkQM2V67Gmaicrh-ilnZ5SZ1FXq449cO4iO1nU46i5tO1xiyVZ9s/exec";
 
 // 標籤選項
 const TAG_OPTIONS = ["全部", "廚下型", "飲水機", "全戶式", "工業商業", "售服", "其他"];
-
-// ✨✨✨ 這裡設定你的常用維修項目 ✨✨✨
-const ITEM_OPTIONS = ["PP", "UDFC","CTO","UDFR", "RO膜","大T", "小T", "保養","代更換", "維修"];
+// 常用維修項目
+const ITEM_OPTIONS = ["PP濾芯", "活性碳", "RO膜", "後置活性碳", "全套保養", "維修"];
 
 let currentFilter = "全部";
 
@@ -506,7 +367,7 @@ async function fetchCustomers(){
     return;
   }
   customers = data;
-  renderFilterBar(); // 初始化篩選器按鈕
+  renderFilterBar();
   renderList(customers);
 }
 
@@ -523,7 +384,6 @@ function filterByTag(tag) {
     renderList(customers);
 }
 
-/* ✨✨✨ 新增：渲染快速輸入按鈕 ✨✨✨ */
 function renderItemChips(containerId, inputId) {
     const container = document.getElementById(containerId);
     container.innerHTML = ITEM_OPTIONS.map(item => 
@@ -544,13 +404,11 @@ function renderList(list){
   const container = document.getElementById("customer-list");
   container.innerHTML = "";
 
-  // 1. 執行篩選
   let filtered = list;
   if (currentFilter !== "全部") {
       filtered = filtered.filter(c => c.tags && c.tags.includes(currentFilter));
   }
   
-  // 2. 搜尋過濾
   const searchTerm = document.getElementById("search-input").value.toLowerCase();
   if (searchTerm) {
       filtered = filtered.filter(c => 
@@ -580,32 +438,24 @@ function renderList(list){
     card.innerHTML = `
       <div class="grow">
         <div class="dashboard-name truncate">${c.name}</div>
-
         <div class="flex gap-2 flex-wrap my-1 text-sm text-secondary">
           ${c.tags ? c.tags.split(",").map(t=>`<div class="dashboard-tag">${t}</div>`).join("") : ""}
         </div>
-
         <div class="text-sm text-secondary mt-1 font-medium flex items-center gap-1">
-           <span class="material-icons text-base">settings</span>
-           ${machine}
+           <span class="material-icons text-base">settings</span>${machine}
         </div>
-
         <div class="text-sm text-secondary flex gap-4 mt-2 justify-between items-center pr-2">
           <span class="flex items-center gap-1"><span class="material-icons text-base">phone_iphone</span>${c.phone}</span>
-          
           <div class="text-right">
              <div class="text-xs text-gray-400">上次保養</div>
              <div class="${dateClass}">${last}</div>
           </div>
         </div>
       </div>
-
       <div class="dashboard-chevron"><span class="material-icons">arrow_forward_ios</span></div>
     `;
-
     wrap.appendChild(card);
   });
-
   container.appendChild(wrap);
 }
 
@@ -615,7 +465,6 @@ document.getElementById("search-input").addEventListener("input", e=>{
 
 async function openDetail(c){
   currentCustomer = c;
-
   document.getElementById("page-list").classList.add("hidden");
   document.getElementById("page-detail").classList.remove("hidden");
   window.scrollTo(0,0);
@@ -623,11 +472,12 @@ async function openDetail(c){
   document.getElementById("detail-name").innerText = c.name;
   document.getElementById("detail-phone").innerText = c.phone;
   document.getElementById("detail-phone-link").href = `tel:${c.phone}`;
+  document.getElementById("detail-install-date").innerText = c.installDate ? normalizeDateStr(c.installDate) : "無紀錄";
+  
+  // 顯示週期
+  const cycleText = c.cycle ? `${c.cycle} 個月` : "未設定";
+  document.getElementById("detail-cycle").innerText = cycleText;
 
-  document.getElementById("detail-install-date").innerText =
-    c.installDate ? normalizeDateStr(c.installDate) : "無紀錄";
-
-  // 設定地址與導航連結
   const addr = c.address || "";
   document.getElementById("detail-address").innerText = addr || "未填寫";
   const mapLink = document.getElementById("detail-map-link");
@@ -642,9 +492,7 @@ async function openDetail(c){
   document.getElementById("detail-filter").innerText = c.filter || "未填寫";
 
   const tagBox = document.getElementById("detail-tags");
-  tagBox.innerHTML = c.tags
-    ? c.tags.split(",").map(t=>`<div class="dashboard-tag">${t}</div>`).join("")
-    : `<span class="text-secondary">未設定</span>`;
+  tagBox.innerHTML = c.tags ? c.tags.split(",").map(t=>`<div class="dashboard-tag">${t}</div>`).join("") : `<span class="text-secondary">未設定</span>`;
 
   if (c.note){
     document.getElementById("detail-note").innerText = c.note;
@@ -656,24 +504,15 @@ async function openDetail(c){
   const photoDiv = document.getElementById("customer-photos-container");
   photoDiv.innerHTML = "";
   let photos = [];
-
   if (Array.isArray(c.photos)) photos = c.photos;
-  else if (typeof c.photos==="string" && c.photos.startsWith("[")) {
-    try { photos = JSON.parse(c.photos); }
-    catch {}
-  }
-
+  else if (typeof c.photos==="string" && c.photos.startsWith("[")) { try { photos = JSON.parse(c.photos); } catch {} }
+  
   if (photos.length){
     photos.forEach(url=>{
-      const img = document.createElement("img");
-      img.src = url;
-      img.className = "photo-thumb cursor-pointer";
-      img.onclick = ()=>window.open(url);
-      photoDiv.appendChild(img);
+      const img = document.createElement("img"); img.src = url; img.className = "photo-thumb cursor-pointer";
+      img.onclick = ()=>window.open(url); photoDiv.appendChild(img);
     });
-  } else {
-    photoDiv.innerHTML = `<div class="text-secondary text-sm">無照片</div>`;
-  }
+  } else { photoDiv.innerHTML = `<div class="text-secondary text-sm">無照片</div>`; }
 
   await fetchRecords(c.id);
 }
@@ -686,54 +525,30 @@ function goBack(){
 async function fetchRecords(id){
   const box = document.getElementById("record-list");
   box.innerHTML = `<div class="text-center text-secondary py-4">讀取中…</div>`;
-
   const records = await apiCall("getRecords", {customerId:id}, "GET");
-
-  if (!records.length){
-    box.innerHTML = `<div class="text-secondary">尚無紀錄</div>`;
-    return;
-  }
-
+  if (!records.length){ box.innerHTML = `<div class="text-secondary">尚無紀錄</div>`; return; }
   window.currentRecords = records;
-
   box.innerHTML = "";
   records.sort((a,b)=>new Date(b.date)-new Date(a.date));
-
+  
   records.forEach(r=>{
     const photos = Array.isArray(r.photos) ? r.photos : [];
-
-    const item = document.createElement("div");
-    item.className = "timeline-item";
-
+    const item = document.createElement("div"); item.className = "timeline-item";
     item.innerHTML = `
       <div class="timeline-dot"></div>
       <div class="record-card">
-
         <div class="flex justify-between mb-2">
           <div class="record-date">${normalizeDateStr(r.date)}</div>
           <div class="record-amount">${r.amount ? "NT$"+r.amount : ""}</div>
         </div>
-
         <div class="font-medium mb-1">${r.items}</div>
-
         ${r.note ? `<div class="text-secondary text-sm mb-2">備註：${r.note}</div>` : ""}
-
-        ${
-          photos.length
-          ? `<div class="flex gap-2 overflow-x-auto mb-2">
-              ${photos.map(p=>`<img class="photo-thumb cursor-pointer" src="${p}" onclick="window.open('${p}')">`).join("")}
-            </div>`
-          : ""
-        }
-
+        ${photos.length ? `<div class="flex gap-2 overflow-x-auto mb-2">${photos.map(p=>`<img class="photo-thumb cursor-pointer" src="${p}" onclick="window.open('${p}')">`).join("")}</div>` : ""}
         <div class="flex justify-end gap-3 text-primary mt-2 text-sm">
           <span class="cursor-pointer" onclick="openEditRecordModal('${r.id}')">編輯</span>
           <span class="text-red-600 cursor-pointer" onclick="deleteRecord('${r.id}')">刪除</span>
         </div>
-
-      </div>
-    `;
-
+      </div>`;
     box.appendChild(item);
   });
 }
@@ -741,16 +556,13 @@ async function fetchRecords(id){
 function openEditRecordModal(id){
   const r = window.currentRecords.find(x=>x.id==id);
   if (!r){ alert("找不到紀錄"); return; }
-
   document.getElementById("edit-record-id").value = r.id;
   document.getElementById("edit-record-date").value = normalizeDateStr(r.date);
   document.getElementById("edit-record-items").value = r.items;
   document.getElementById("edit-record-amount").value = r.amount || "";
   document.getElementById("edit-record-note").value = r.note || "";
-
   selectedEditRecordPhotos = [];
   document.getElementById("edit-record-photo-preview").innerHTML = "";
-
   document.getElementById("record-modal").classList.remove("hidden");
 }
 
@@ -758,47 +570,33 @@ async function saveEditedRecord(){
   const id = document.getElementById("edit-record-id").value;
   const items = document.getElementById("edit-record-items").value.trim();
   const date = document.getElementById("edit-record-date").value;
-
   if (!items){ alert("請輸入項目"); return; }
-
   let photoUrls = [];
-
   for (let base64 of selectedEditRecordPhotos){
     const res = await apiCall("uploadImage", {base64, type:"image/jpeg"});
     if (res?.status==="success") photoUrls.push(res.url);
   }
-
   const payload = {
-    id,
-    date,
-    items,
+    id, date, items,
     amount: document.getElementById("edit-record-amount").value,
     note: document.getElementById("edit-record-note").value,
     photos: photoUrls
   };
-
   const res = await apiCall("updateRecord", payload);
-
   if (res?.status==="success"){
-    closeModal("record-modal");
-    await fetchRecords(currentCustomer.id);
-    renderList(customers);
+    closeModal("record-modal"); await fetchRecords(currentCustomer.id); renderList(customers);
   }
 }
 
 async function saveRecord(){
   if (!currentCustomer) return;
-
   const items = document.getElementById("record-items").value.trim();
   if (!items){ alert("請輸入項目"); return; }
-
   let photoUrls = [];
-
   for (let base64 of selectedRecordPhotos){
     const res = await apiCall("uploadImage", {base64, type:"image/jpeg"});
     if (res?.status==="success") photoUrls.push(res.url);
   }
-
   const payload = {
     customerId: currentCustomer.id,
     date: document.getElementById("record-date").value,
@@ -807,9 +605,7 @@ async function saveRecord(){
     note: document.getElementById("record-note").value,
     photos: photoUrls
   };
-
   const res = await apiCall("addRecord", payload);
-
   if (res?.status==="success"){
     showToast("儲存成功");
     selectedRecordPhotos = [];
@@ -827,7 +623,6 @@ async function deleteRecord(id){
 
 function showAddCustomerModal(){
   document.getElementById("modal-title").innerText = "新增客戶";
-
   document.getElementById("cust-id").value = "";
   document.getElementById("cust-name").value = "";
   document.getElementById("cust-phone").value = "";
@@ -835,16 +630,12 @@ function showAddCustomerModal(){
   document.getElementById("cust-note").value = "";
   document.getElementById("cust-machine").value = "";
   document.getElementById("cust-filter").value = "";
+  document.getElementById("cust-cycle").value = ""; // 清空週期
 
   const d = new Date();
-  document.getElementById("cust-install-date").value =
-    `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-
-  selectedCustPhotos = [];
-  document.getElementById("cust-photo-preview").innerHTML = "";
-
+  document.getElementById("cust-install-date").value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+  selectedCustPhotos = []; document.getElementById("cust-photo-preview").innerHTML = "";
   renderTagSelector("cust-tag-selector", []);
-
   document.getElementById("btn-delete-customer").classList.add("hidden");
   document.getElementById("customer-modal").classList.remove("hidden");
 }
@@ -852,7 +643,6 @@ function showAddCustomerModal(){
 function showEditCustomerModal(){
   const c = currentCustomer;
   document.getElementById("modal-title").innerText = "編輯資料";
-
   document.getElementById("cust-id").value = c.id;
   document.getElementById("cust-name").value = c.name;
   document.getElementById("cust-phone").value = c.phone;
@@ -860,14 +650,10 @@ function showEditCustomerModal(){
   document.getElementById("cust-note").value = c.note || "";
   document.getElementById("cust-machine").value = c.machine || "";
   document.getElementById("cust-filter").value = c.filter || "";
-  document.getElementById("cust-install-date").value =
-    c.installDate ? normalizeDateStr(c.installDate) : "";
-
-  selectedCustPhotos = [];
-  document.getElementById("cust-photo-preview").innerHTML = "";
-
+  document.getElementById("cust-cycle").value = c.cycle || ""; // 載入週期
+  document.getElementById("cust-install-date").value = c.installDate ? normalizeDateStr(c.installDate) : "";
+  selectedCustPhotos = []; document.getElementById("cust-photo-preview").innerHTML = "";
   renderTagSelector("cust-tag-selector", c.tags ? c.tags.split(",") : []);
-
   document.getElementById("btn-delete-customer").classList.remove("hidden");
   document.getElementById("customer-modal").classList.remove("hidden");
 }
@@ -876,166 +662,90 @@ async function saveCustomer(){
   const id = document.getElementById("cust-id").value;
   const name = document.getElementById("cust-name").value.trim();
   const phone = document.getElementById("cust-phone").value.trim();
-
   if (!name || !phone){ alert("姓名、電話必填"); return; }
 
   let photoUrls = [];
-
-  // 原照片
   if (id && currentCustomer?.photos){
-    if (Array.isArray(currentCustomer.photos))
-      photoUrls = [...currentCustomer.photos];
-    else {
-      try { photoUrls = JSON.parse(currentCustomer.photos); }
-      catch { photoUrls = []; }
-    }
+    if (Array.isArray(currentCustomer.photos)) photoUrls = [...currentCustomer.photos];
+    else try { photoUrls = JSON.parse(currentCustomer.photos); } catch { photoUrls = []; }
   }
-
-  // 新照片
   for (let base64 of selectedCustPhotos){
     const res = await apiCall("uploadImage", {base64, type:"image/jpeg"});
     if (res?.status==="success") photoUrls.push(res.url);
   }
-
   const tags = getSelectedTags("cust-tag-selector");
-
   const payload = {
-    id,
-    name,
-    phone,
+    id, name, phone,
     address: document.getElementById("cust-address").value,
     note: document.getElementById("cust-note").value,
     machine: document.getElementById("cust-machine").value,
     filter: document.getElementById("cust-filter").value,
     installDate: document.getElementById("cust-install-date").value,
-    photos: photoUrls,
-    tags
+    cycle: document.getElementById("cust-cycle").value, // ✨ 傳送週期
+    photos: photoUrls, tags
   };
-
   const act = id ? "updateCustomer" : "addCustomer";
   const res = await apiCall(act, payload);
-
   if (res?.status==="success"){
     showToast("儲存成功");
-    closeModal("customer-modal");
-    await fetchCustomers();
+    closeModal("customer-modal"); await fetchCustomers();
     if(id && currentCustomer) openDetail({...currentCustomer, ...payload, photos: photoUrls});
   }
 }
 
 async function deleteCustomer(){
   if (!confirm("確定刪除此客戶？")) return;
-  const id = document.getElementById("cust-id").value;
-  await apiCall("deleteCustomer", {id});
-  closeModal("customer-modal");
-  goBack();
-  fetchCustomers();
+  await apiCall("deleteCustomer", {id: document.getElementById("cust-id").value});
+  closeModal("customer-modal"); goBack(); fetchCustomers();
 }
 
 function renderTagSelector(containerId, selected=[]){
-  const box = document.getElementById(containerId);
-  box.innerHTML = "";
-
+  const box = document.getElementById(containerId); box.innerHTML = "";
   TAG_OPTIONS.forEach(t=>{
-    const div = document.createElement("div");
-    div.className = "tag" + (selected.includes(t) ? " active" : "");
-    div.dataset.tag = t;
-    div.innerText = t;
-    div.onclick = ()=> div.classList.toggle("active");
+    const div = document.createElement("div"); div.className = "tag" + (selected.includes(t) ? " active" : "");
+    div.dataset.tag = t; div.innerText = t; div.onclick = ()=> div.classList.toggle("active");
     box.appendChild(div);
   });
 }
+function getSelectedTags(containerId){ return [...document.querySelectorAll(`#${containerId} .tag.active`)].map(x=>x.dataset.tag).join(","); }
 
-function getSelectedTags(containerId){
-  return [...document.querySelectorAll(`#${containerId} .tag.active`)]
-    .map(x=>x.dataset.tag)
-    .join(",");
-}
+function handleCustPhotoSelect(input){ handlePhotoSelect(input, selectedCustPhotos, "cust-photo-preview"); }
+function handleRecordPhotoSelect(input){ handlePhotoSelect(input, selectedRecordPhotos, "new-record-photos", "record-photo-count"); }
+function handleEditRecordPhotoSelect(input){ handlePhotoSelect(input, selectedEditRecordPhotos, "edit-record-photo-preview"); }
 
-function handleCustPhotoSelect(input){
+function handlePhotoSelect(input, arr, previewId, countId){
   [...input.files].forEach(file=>{
     const reader = new FileReader();
     reader.onload = e => resizeImage(e.target.result, 900, out=>{
-      selectedCustPhotos.push(out);
-      renderPreview("cust-photo-preview", selectedCustPhotos);
+      arr.push(out); renderPreview(previewId, arr);
+      if(countId) document.getElementById(countId).innerText = `${arr.length} 張`;
     });
     reader.readAsDataURL(file);
   });
 }
-
-function handleRecordPhotoSelect(input){
-  [...input.files].forEach(file=>{
-    const reader = new FileReader();
-    reader.onload = e => resizeImage(e.target.result, 900, out=>{
-      selectedRecordPhotos.push(out);
-      renderPreview("new-record-photos", selectedRecordPhotos);
-      document.getElementById("record-photo-count").innerText = `${selectedRecordPhotos.length} 張`;
-    });
-    reader.readAsDataURL(file);
-  });
-}
-
-function handleEditRecordPhotoSelect(input){
-  [...input.files].forEach(file=>{
-    const reader = new FileReader();
-    reader.onload = e => resizeImage(e.target.result, 900, out=>{
-      selectedEditRecordPhotos.push(out);
-      renderPreview("edit-record-photo-preview", selectedEditRecordPhotos);
-    });
-    reader.readAsDataURL(file);
-  });
-}
-
-function renderPreview(id, arr){
-  document.getElementById(id).innerHTML =
-    arr.map(src => `<img class="photo-thumb" src="${src}">`).join("");
-}
-
+function renderPreview(id, arr){ document.getElementById(id).innerHTML = arr.map(src => `<img class="photo-thumb" src="${src}">`).join(""); }
 function resizeImage(base64, maxW, cb){
-  const img = new Image();
-  img.src = base64;
+  const img = new Image(); img.src = base64;
   img.onload = ()=>{
-    let w = img.width, h = img.height;
-    if (w > maxW){ h *= maxW/w; w = maxW; }
-    const c = document.createElement("canvas");
-    c.width = w; c.height = h;
-    c.getContext("2d").drawImage(img,0,0,w,h);
-    cb(c.toDataURL("image/jpeg",0.8));
+    let w = img.width, h = img.height; if (w > maxW){ h *= maxW/w; w = maxW; }
+    const c = document.createElement("canvas"); c.width = w; c.height = h;
+    c.getContext("2d").drawImage(img,0,0,w,h); cb(c.toDataURL("image/jpeg",0.8));
   };
 }
 
-function closeModal(id){
-  document.getElementById(id).classList.add("hidden");
-}
-
-document.getElementById("customer-modal").addEventListener("click", e=>{
-  if (e.target.id==="customer-modal") closeModal("customer-modal");
-});
-document.getElementById("record-modal").addEventListener("click", e=>{
-  if (e.target.id==="record-modal") closeModal("record-modal");
-});
-
-function showLoading(show){
-  document.getElementById("loading").classList.toggle("hidden", !show);
-}
-
+function closeModal(id){ document.getElementById(id).classList.add("hidden"); }
+document.getElementById("customer-modal").addEventListener("click", e=>{ if (e.target.id==="customer-modal") closeModal("customer-modal"); });
+document.getElementById("record-modal").addEventListener("click", e=>{ if (e.target.id==="record-modal") closeModal("record-modal"); });
+function showLoading(show){ document.getElementById("loading").classList.toggle("hidden", !show); }
 function showToast(message) {
-    const x = document.getElementById("toast");
-    x.innerText = message;
-    x.className = "toast show";
+    const x = document.getElementById("toast"); x.innerText = message; x.className = "toast show";
     setTimeout(function(){ x.className = "toast"; }, 3000);
 }
 
 window.onload = () => {
   fetchCustomers();
-
   const rd = document.getElementById("record-date");
-  if (rd){
-    const d = new Date();
-    rd.value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-  }
-
-  // ✨ 初始化按鈕
+  if (rd){ const d = new Date(); rd.value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; }
   renderItemChips("new-record-item-chips", "record-items");
   renderItemChips("edit-record-item-chips", "edit-record-items");
 };
@@ -1043,4 +753,3 @@ window.onload = () => {
 
 </body>
 </html>
-
