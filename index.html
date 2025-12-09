@@ -711,87 +711,59 @@ function goBack(){
 }
 
 async function fetchRecords(id){
-  const box = document.getElementById("record-list");
-  box.innerHTML = `<div class="text-center text-secondary py-4">讀取中…</div>`;
+  const box = document.getElementById("record-list");
+  box.innerHTML = `<div class="text-center text-secondary py-4">讀取中…</div>`;
+  const records = await apiCall("getRecords", {customerId:id}, "GET");
+  if (!records.length){ box.innerHTML = `<div class="text-secondary text-center py-4">尚無紀錄</div>`; return; }
+  window.currentRecords = records;
+  box.innerHTML = "";
+  records.sort((a,b)=>new Date(b.date)-new Date(a.date));
+  
+  records.forEach(r=>{
+    const photos = Array.isArray(r.photos) ? r.photos : [];
+    const rData = JSON.stringify(r).replace(/"/g, '"'); 
+    const item = document.createElement("div"); item.className = "timeline-item";
+    item.innerHTML = `
+      <div class="timeline-dot"></div>
+      <div class="record-card">
+        <div class="flex justify-between mb-3 border-b border-gray-100 pb-2">
+          <div class="record-date text-xl text-gray-800">${normalizeDateStr(r.date)}</div>
+          <div class="record-amount text-xl">${r.amount ? "NT$"+r.amount : ""}</div>
+        </div>
+        
+        <div class="mb-3">
+             <div class="text-gray-400 text-xs mb-1">項目</div>
+             <div class="font-bold text-gray-900 text-2xl leading-snug">${r.items}</div>
+        </div>
 
-  const records = await apiCall("getRecords", { customerId: id }, "GET");
-
-  if (!records || !records.length){
-    box.innerHTML = `<div class="text-secondary text-center py-4">尚無紀錄</div>`;
-    window.currentRecords = [];
-    return;
-  }
-
-  window.currentRecords = records;
-  box.innerHTML = "";
-  records.sort((a,b)=> new Date(b.date) - new Date(a.date));
-
-  records.forEach(r => {
-    let photos = [];
-    if (Array.isArray(r.photos)) {
-      photos = r.photos;
-    } else if (typeof r.photos === "string" && r.photos.startsWith("[")) {
-      try { photos = JSON.parse(r.photos); } catch(e) {}
-    }
-
-    const item = document.createElement("div");
-    item.className = "timeline-item";
-    item.innerHTML = `
-      <div class="timeline-dot"></div>
-      <div class="record-card">
-        <div class="flex justify-between mb-3 border-b border-gray-100 pb-2">
-          <div class="record-date text-xl text-gray-800">${normalizeDateStr(r.date)}</div>
-          <div class="record-amount text-xl">${r.amount ? "NT$" + r.amount : ""}</div>
-        </div>
-
-        <div class="mb-3">
-          <div class="text-gray-400 text-xs mb-1">項目</div>
-          <div class="font-bold text-gray-900 text-2xl leading-snug">${r.items}</div>
-        </div>
-
-        ${r.note ? `
-          <div class="mb-3 bg-gray-50 p-3 rounded-lg border border-gray-100">
-            <div class="text-gray-400 text-xs mb-1">備註</div>
-            <div class="text-gray-700 text-lg">${r.note}</div>
-          </div>` : ""}
-
-        ${photos.length ? `
-          <div class="flex gap-2 overflow-x-auto mb-3 pt-2 border-t border-gray-50">
-            ${photos.map(p => `
-              <img class="photo-thumb cursor-pointer" src="${p}" onclick="window.open('${p}')">
-            `).join("")}
-          </div>` : ""}
-
-        <div class="flex justify-end gap-3 mt-2 pt-2">
-          <button onclick="openEditRecordModal('${r.id}')" class="text-blue-600 bg-blue-50 px-4 py-2 rounded-lg font-bold text-base">編輯</button>
-          <button onclick="deleteRecord('${r.id}')" class="text-red-500 bg-red-50 px-4 py-2 rounded-lg font-bold text-base">刪除</button>
-        </div>
-      </div>
-    `;
-    box.appendChild(item);
-  });
+        ${r.note ? `
+            <div class="mb-3 bg-gray-50 p-3 rounded-lg border border-gray-100">
+                <div class="text-gray-400 text-xs mb-1">備註</div>
+                <div class="text-gray-700 text-lg">${r.note}</div>
+            </div>` : ""}
+            
+        ${photos.length ? `<div class="flex gap-2 overflow-x-auto mb-3 pt-2 border-t border-gray-50">${photos.map(p=>`<img class="photo-thumb cursor-pointer" src="${p}" onclick="window.open('${p}')">`).join("")}</div>` : ""}
+        
+        <div class="flex justify-end gap-3 mt-2 pt-2">
+          <button onclick="openEditRecordModal('${rData}')" class="text-blue-600 bg-blue-50 px-4 py-2 rounded-lg font-bold text-base">編輯</button>
+          <button onclick="deleteRecord('${r.id}')" class="text-red-500 bg-red-50 px-4 py-2 rounded-lg font-bold text-base">刪除</button>
+        </div>
+      </div>`;
+    box.appendChild(item);
+  });
 }
 
-
-function openEditRecordModal(recordId){
-  const r = window.currentRecords.find(rec => String(rec.id) === String(recordId));
-  if (!r) {
-    alert("找不到紀錄");
-    return;
-  }
-
-  document.getElementById("edit-record-id").value = r.id;
-  document.getElementById("edit-record-date").value  = normalizeDateStr(r.date);
-  document.getElementById("edit-record-items").value = r.items || "";
-  document.getElementById("edit-record-amount").value = r.amount || "";
-  document.getElementById("edit-record-note").value  = r.note || "";
-
-  selectedEditRecordPhotos = [];
-  document.getElementById("edit-record-photo-preview").innerHTML = "";
-
-  document.getElementById("record-modal").classList.remove("hidden");
+function openEditRecordModal(recordStr){
+  const r = JSON.parse(recordStr);
+  document.getElementById("edit-record-id").value = r.id;
+  document.getElementById("edit-record-date").value = normalizeDateStr(r.date);
+  document.getElementById("edit-record-items").value = r.items;
+  document.getElementById("edit-record-amount").value = r.amount || "";
+  document.getElementById("edit-record-note").value = r.note || "";
+  selectedEditRecordPhotos = [];
+  document.getElementById("edit-record-photo-preview").innerHTML = "";
+  document.getElementById("record-modal").classList.remove("hidden");
 }
-
 
 async function saveEditedRecord(){
   const id = document.getElementById("edit-record-id").value;
