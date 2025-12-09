@@ -8,7 +8,7 @@
 
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
- <link rel="apple-touch-icon" href="icon.png">
+  <link rel="apple-touch-icon" href="icon.png">
 
   <script src="https://cdn.tailwindcss.com"></script>
 
@@ -82,7 +82,7 @@
     }
     .search-bar input:focus { outline:none; }
 
-    /* ✨ 篩選器樣式 */
+    /* 篩選器樣式 */
     .filter-scroll {
       display: flex;
       gap: 8px;
@@ -176,9 +176,10 @@
     .record-date { font-weight:600; }
     .record-amount { color:#008A32; font-weight:700; }
 
-    /* 標籤系統 */
-    .tag-selector { display:flex; flex-wrap:wrap; gap:8px; }
-    .tag {
+    /* 標籤與按鈕樣式 */
+    .tag-selector, .chip-container { display:flex; flex-wrap:wrap; gap:8px; }
+    
+    .tag, .item-chip {
       padding:6px 12px;
       background:#EFEDE7;
       border:1px solid var(--milk-border);
@@ -193,6 +194,19 @@
       background:var(--primary);
       border-color:var(--primary);
       color:white;
+    }
+    
+    /* ✨ 快速輸入按鈕樣式 */
+    .item-chip {
+        background-color: #E3F2FD;
+        color: #1565C0;
+        border-color: #BBDEFB;
+        font-weight: 600;
+        margin-top: 4px;
+    }
+    .item-chip:active {
+        background-color: #2196F3;
+        color: white;
     }
 
     /* 照片 */
@@ -320,11 +334,16 @@
         <div><div class="text-secondary text-sm mb-1">日期</div><input type="date" id="record-date" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2"></div>
         <div><div class="text-secondary text-sm mb-1">金額</div><input type="number" id="record-amount" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2" placeholder="0"></div>
       </div>
-      <div class="mb-3"><div class="text-secondary text-sm mb-1">更換項目</div><input id="record-items" type="text" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2" placeholder="例如：PP、活性碳"></div>
+      <div class="mb-3">
+        <div class="text-secondary text-sm mb-1">更換項目</div>
+        <input id="record-items" type="text" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2" placeholder="例如：PP、活性碳">
+        <div id="new-record-item-chips" class="chip-container"></div>
+      </div>
+
       <div class="mb-3"><div class="text-secondary text-sm mb-1">備註</div><input id="record-note" type="text" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2"></div>
       
       <div class="flex gap-3 mb-3 items-center">
-        <label class="bg-gray-100 text-blue-600 px-3 py-2 rounded-lg cursor-pointer flex items-center font-medium">
+        <label class="bg-gray-100 text-blue-600 px-3 py-1 rounded cursor-pointer flex items-center">
           <span class="material-icons mr-1">camera_alt</span>拍照
           <input id="record-photo-input" type="file" accept="image/*" multiple class="hidden" onchange="handleRecordPhotoSelect(this)">
         </label>
@@ -379,7 +398,7 @@
           <span class="material-icons mr-2">add_photo_alternate</span> 選擇機器照片
           <input id="cust-photo-input" type="file" accept="image/*" multiple class="hidden" onchange="handleCustPhotoSelect(this)">
         </label>
-        <div id="cust-photo-preview" class="photo-grid mt-2 justify-center flex gap-2 overflow-x-auto"></div>
+        <div id="cust-photo-preview" class="flex gap-2 overflow-x-auto mt-2 justify-center"></div>
       </div>
 
       <button id="btn-delete-customer" onclick="deleteCustomer()" class="danger-btn hidden">刪除此客戶</button>
@@ -400,7 +419,13 @@
       <input type="hidden" id="edit-record-id">
       <div class="space-y-3 bg-white rounded-xl p-4 shadow-sm">
         <div><label>日期</label><input id="edit-record-date" type="date" class="w-full p-2 border rounded"></div>
-        <div><label>項目</label><input id="edit-record-items" type="text" class="w-full p-2 border rounded font-medium"></div>
+        
+        <div>
+          <label>項目</label>
+          <input id="edit-record-items" type="text" class="w-full p-2 border rounded font-medium">
+          <div id="edit-record-item-chips" class="chip-container"></div>
+        </div>
+
         <div><label>金額</label><input id="edit-record-amount" type="number" class="w-full p-2 border rounded text-green-600 font-bold"></div>
         <div><label>備註</label><textarea id="edit-record-note" rows="2" class="w-full p-2 border rounded"></textarea></div>
       </div>
@@ -428,6 +453,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxq7lgAM355tr63kVCx8Ieu
 
 // 標籤選項
 const TAG_OPTIONS = ["全部", "廚下型", "飲水機", "全戶式", "工業商業", "售服", "其他"];
+
+// ✨✨✨ 這裡設定你的常用維修項目 ✨✨✨
+const ITEM_OPTIONS = ["PP濾芯", "活性碳", "RO膜", "後置活性碳", "全套保養", "維修"];
+
 let currentFilter = "全部";
 
 let customers = [];
@@ -490,8 +519,25 @@ function renderFilterBar() {
 
 function filterByTag(tag) {
     currentFilter = tag;
-    renderFilterBar(); // 更新按鈕顏色
-    renderList(customers); // 重新渲染列表
+    renderFilterBar(); 
+    renderList(customers);
+}
+
+/* ✨✨✨ 新增：渲染快速輸入按鈕 ✨✨✨ */
+function renderItemChips(containerId, inputId) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = ITEM_OPTIONS.map(item => 
+        `<div class="item-chip" onclick="addItemToInput('${inputId}', '${item}')">${item}</div>`
+    ).join('');
+}
+
+function addItemToInput(inputId, itemText) {
+    const input = document.getElementById(inputId);
+    if (input.value) {
+        input.value += `, ${itemText}`;
+    } else {
+        input.value = itemText;
+    }
 }
 
 function renderList(list){
@@ -581,7 +627,7 @@ async function openDetail(c){
   document.getElementById("detail-install-date").innerText =
     c.installDate ? normalizeDateStr(c.installDate) : "無紀錄";
 
-  // ✨✨✨ 修改：設定地址並顯示導航按鈕 ✨✨✨
+  // 設定地址與導航連結
   const addr = c.address || "";
   document.getElementById("detail-address").innerText = addr || "未填寫";
   const mapLink = document.getElementById("detail-map-link");
@@ -765,7 +811,7 @@ async function saveRecord(){
   const res = await apiCall("addRecord", payload);
 
   if (res?.status==="success"){
-    showToast("儲存成功"); // 使用 Toast
+    showToast("儲存成功");
     selectedRecordPhotos = [];
     document.getElementById("new-record-photos").innerHTML = "";
     document.getElementById("record-items").value=""; document.getElementById("record-amount").value=""; document.getElementById("record-note").value="";
@@ -835,6 +881,7 @@ async function saveCustomer(){
 
   let photoUrls = [];
 
+  // 原照片
   if (id && currentCustomer?.photos){
     if (Array.isArray(currentCustomer.photos))
       photoUrls = [...currentCustomer.photos];
@@ -844,6 +891,7 @@ async function saveCustomer(){
     }
   }
 
+  // 新照片
   for (let base64 of selectedCustPhotos){
     const res = await apiCall("uploadImage", {base64, type:"image/jpeg"});
     if (res?.status==="success") photoUrls.push(res.url);
@@ -868,9 +916,10 @@ async function saveCustomer(){
   const res = await apiCall(act, payload);
 
   if (res?.status==="success"){
-    showToast("儲存成功"); // 使用 Toast
+    showToast("儲存成功");
     closeModal("customer-modal");
     await fetchCustomers();
+    if(id && currentCustomer) openDetail({...currentCustomer, ...payload, photos: photoUrls});
   }
 }
 
@@ -879,6 +928,7 @@ async function deleteCustomer(){
   const id = document.getElementById("cust-id").value;
   await apiCall("deleteCustomer", {id});
   closeModal("customer-modal");
+  goBack();
   fetchCustomers();
 }
 
@@ -973,7 +1023,7 @@ function showToast(message) {
     const x = document.getElementById("toast");
     x.innerText = message;
     x.className = "toast show";
-    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+    setTimeout(function(){ x.className = "toast"; }, 3000);
 }
 
 window.onload = () => {
@@ -984,10 +1034,12 @@ window.onload = () => {
     const d = new Date();
     rd.value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
   }
+
+  // ✨ 初始化按鈕
+  renderItemChips("new-record-item-chips", "record-items");
+  renderItemChips("edit-record-item-chips", "edit-record-items");
 };
 </script>
 
 </body>
 </html>
-
-
