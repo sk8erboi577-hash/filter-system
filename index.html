@@ -400,15 +400,18 @@ function addItemToInput(inputId, itemText) {
     }
 }
 
+/* ------------------------ 列表渲染 (含保養提醒功能) ------------------------ */
 function renderList(list){
   const container = document.getElementById("customer-list");
   container.innerHTML = "";
 
+  // 1. 執行篩選
   let filtered = list;
   if (currentFilter !== "全部") {
       filtered = filtered.filter(c => c.tags && c.tags.includes(currentFilter));
   }
   
+  // 2. 搜尋過濾
   const searchTerm = document.getElementById("search-input").value.toLowerCase();
   if (searchTerm) {
       filtered = filtered.filter(c => 
@@ -417,6 +420,14 @@ function renderList(list){
         (c.note && c.note.toLowerCase().includes(searchTerm))
       );
   }
+
+  // ✨✨✨ 新增：排序功能 (把該保養的排在最上面) ✨✨✨
+  filtered.sort((a, b) => {
+      // 算出兩者的狀態分數 (過期=3, 即將=2, 正常=1)
+      const statusA = getServiceStatus(a.lastRecordDate, a.cycle).score;
+      const statusB = getServiceStatus(b.lastRecordDate, b.cycle).score;
+      return statusB - statusA; // 分數高的排前面
+  });
 
   if (!filtered.length){
     container.innerHTML = `<div class="text-center text-gray-400 mt-20">暫無資料</div>`;
@@ -427,42 +438,99 @@ function renderList(list){
   wrap.className = "space-y-3";
 
   filtered.forEach(c=>{
-    const last = c.lastRecordDate ? normalizeDateStr(c.lastRecordDate) : "尚無保養紀錄";
-    const dateClass = c.lastRecordDate ? "text-green-600 font-bold" : "text-gray-400";
+    // 計算保養狀態
+    const status = getServiceStatus(c.lastRecordDate, c.cycle);
+    const last = c.lastRecordDate ? normalizeDateStr(c.lastRecordDate) : "尚無紀錄";
     const machine = c.machine || "未填寫機型";
 
+    // 根據狀態改變卡片樣式
+    let cardClass = "dashboard-card border-l-4";
+    let statusHtml = "";
+    
+    if (status.type === 'overdue') {
+        // 🔴 過期：紅框 + 紅色警告
+        cardClass += " border-l-red-500 bg-red-50/30"; 
+        statusHtml = `<div class="text-red-600 font-bold text-sm bg-red-100 px-2 py-1 rounded-md flex items-center">
+                        <span class="material-icons text-sm mr-1">warning</span>過期 ${status.days} 天
+                      </div>`;
+    } else if (status.type === 'soon') {
+        // 🟡 即將到期 (14天內)：黃框 + 黃色提醒
+        cardClass += " border-l-yellow-500 bg-yellow-50/30";
+        statusHtml = `<div class="text-yellow-700 font-bold text-sm bg-yellow-100 px-2 py-1 rounded-md flex items-center">
+                        <span class="material-icons text-sm mr-1">schedule</span>剩 ${status.days} 天
+                      </div>`;
+    } else {
+        // 🔵 正常：原本的藍色或灰色
+        cardClass += " border-l-transparent hover:border-l-primary";
+        if (c.cycle) {
+             // 顯示下次日期
+             statusHtml = `<div class="text-gray-400 text-xs">下次: ${status.nextDate}</div>`;
+        }
+    }
+
     const card = document.createElement("div");
-    card.className = "dashboard-card";
+    card.className = cardClass;
     card.onclick = ()=> openDetail(c);
 
     card.innerHTML = `
       <div class="grow">
-        <div class="dashboard-name truncate">${c.name}</div>
+        <div class="flex justify-between items-start mb-1">
+             <div class="dashboard-name truncate text-navy-900">${c.name}</div>
+             ${statusHtml} </div>
+
         <div class="flex gap-2 flex-wrap my-1 text-sm text-secondary">
           ${c.tags ? c.tags.split(",").map(t=>`<div class="dashboard-tag">${t}</div>`).join("") : ""}
         </div>
+
         <div class="text-sm text-secondary mt-1 font-medium flex items-center gap-1">
-           <span class="material-icons text-base">settings</span>${machine}
+           <span class="material-icons text-base text-gray-400">settings</span>
+           ${machine}
         </div>
+
         <div class="text-sm text-secondary flex gap-4 mt-2 justify-between items-center pr-2">
-          <span class="flex items-center gap-1"><span class="material-icons text-base">phone_iphone</span>${c.phone}</span>
+          <span class="flex items-center gap-1"><span class="material-icons text-base text-gray-400">phone_iphone</span>${c.phone}</span>
+          
           <div class="text-right">
              <div class="text-xs text-gray-400">上次保養</div>
-             <div class="${dateClass}">${last}</div>
+             <div class="font-medium ${status.type === 'overdue' ? 'text-red-500' : 'text-gray-700'}">${last}</div>
           </div>
         </div>
       </div>
-      <div class="dashboard-chevron"><span class="material-icons">arrow_forward_ios</span></div>
+
+      <div class="dashboard-chevron ml-2"><span class="material-icons">arrow_forward_ios</span></div>
     `;
+
     wrap.appendChild(card);
   });
+
   container.appendChild(wrap);
 }
 
-document.getElementById("search-input").addEventListener("input", e=>{
-  renderList(customers);
-});
+// ✨✨✨ 幫手函式：計算保養狀態 ✨✨✨
+function getServiceStatus(lastDateStr, cycleMonths) {
+    // 沒有上次紀錄或沒有設定週期，就當作正常
+    if (!lastDateStr || !cycleMonths) return { type: 'normal', score: 1 };
+    
+    const lastDate = new Date(lastDateStr);
+    const nextDate = new Date(lastDate);
+    nextDate.setMonth(nextDate.getMonth() + parseInt(cycleMonths));
+    
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    
+    // 計算差距天數
+    const diffTime = nextDate - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const nextDateStr = `${nextDate.getFullYear()}-${String(nextDate.getMonth()+1).padStart(2,'0')}-${String(nextDate.getDate()).padStart(2,'0')}`;
 
+    if (diffDays < 0) {
+        return { type: 'overdue', days: Math.abs(diffDays), nextDate: nextDateStr, score: 3 }; // 過期 (分數最高排最前)
+    } else if (diffDays <= 14) {
+        return { type: 'soon', days: diffDays, nextDate: nextDateStr, score: 2 }; // 即將到期 (14天內)
+    } else {
+        return { type: 'normal', days: diffDays, nextDate: nextDateStr, score: 1 }; // 正常
+    }
+}
 async function openDetail(c){
   currentCustomer = c;
   document.getElementById("page-list").classList.add("hidden");
@@ -753,3 +821,4 @@ window.onload = () => {
 
 </body>
 </html>
+
