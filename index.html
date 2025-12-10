@@ -120,6 +120,17 @@
       visibility: hidden; min-width: 250px; margin-left: -125px; background-color: #333; color: #fff; text-align: center; border-radius: 50px; padding: 16px; position: fixed; z-index: 1000; left: 50%; bottom: 30px; font-size: 17px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); opacity: 0; transition: opacity 0.3s, bottom 0.3s;
     }
     .toast.show { visibility: visible; opacity: 1; bottom: 50px; }
+    /* 照片編輯區域樣式 */
+.photo-wrapper { position: relative; display: inline-block; margin-right: 8px; flex-shrink: 0; }
+.photo-thumb-edit { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; }
+.btn-remove-photo {
+  position: absolute; top: -6px; right: -6px;
+  background: #ff3b30; color: white;
+  border-radius: 50%; width: 22px; height: 22px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: bold; cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 10;
+}
   </style>
 </head>
 
@@ -328,6 +339,66 @@ let selectedRecordPhotos = [];
 let selectedEditRecordPhotos = [];
 
 window.currentRecords = [];
+
+  // --- 新增變數：用來暫存編輯時「原本已存在」的照片 (網址) ---
+let existingCustPhotos = [];
+let existingRecordPhotos = [];
+
+// --- 新增功能：通用的照片渲染器 (含刪除按鈕) ---
+// containerId: 容器ID, existingArr: 舊照片陣列, newArr: 新照片陣列, type: 'cust' 或 'record'
+function renderPhotoEditor(containerId, existingArr, newArr, type) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = "";
+
+  // 1. 渲染舊照片 (顯示網址圖片)
+  existingArr.forEach((url, index) => {
+    const wrap = document.createElement("div");
+    wrap.className = "photo-wrapper";
+    wrap.innerHTML = `
+      <img src="${url}" class="photo-thumb-edit">
+      <div class="btn-remove-photo" onclick="removeExistingPhoto('${type}', ${index})">×</div>
+    `;
+    container.appendChild(wrap);
+  });
+
+  // 2. 渲染新選擇的照片 (顯示 Base64 預覽)
+  newArr.forEach((base64, index) => {
+    const wrap = document.createElement("div");
+    wrap.className = "photo-wrapper";
+    wrap.innerHTML = `
+      <img src="${base64}" class="photo-thumb-edit">
+      <div class="btn-remove-photo" onclick="removeNewPhoto('${type}', ${index})">×</div>
+    `;
+    container.appendChild(wrap);
+  });
+}
+
+// 移除舊照片 (僅從陣列移除，按儲存時才會生效)
+function removeExistingPhoto(type, index) {
+  if (type === 'cust') {
+    existingCustPhotos.splice(index, 1);
+    renderPhotoEditor("cust-photo-preview", existingCustPhotos, selectedCustPhotos, 'cust');
+  } else if (type === 'record') {
+    existingRecordPhotos.splice(index, 1);
+    renderPhotoEditor("edit-record-photo-preview", existingRecordPhotos, selectedEditRecordPhotos, 'record');
+  }
+}
+
+// 移除新選擇的照片 (尚未上傳)
+function removeNewPhoto(type, index) {
+  if (type === 'cust') {
+    selectedCustPhotos.splice(index, 1);
+    renderPhotoEditor("cust-photo-preview", existingCustPhotos, selectedCustPhotos, 'cust');
+  } else if (type === 'record') {
+    selectedEditRecordPhotos.splice(index, 1);
+    renderPhotoEditor("edit-record-photo-preview", existingRecordPhotos, selectedEditRecordPhotos, 'record');
+  } else if (type === 'newRecord') {
+     // 這是給「新增紀錄」用的特殊處理
+     selectedRecordPhotos.splice(index, 1);
+     renderPreview("new-record-photos", selectedRecordPhotos); // 新增介面維持原樣或也改用 Editor 都可以
+     document.getElementById("record-photo-count").innerText = `${selectedRecordPhotos.length} 張`;
+  }
+}
 
 function normalizeDateStr(v){
   if (!v) return "";
@@ -629,11 +700,18 @@ function openEditRecordModal(id){
   document.getElementById("edit-record-items").value = r.items;
   document.getElementById("edit-record-amount").value = r.amount || "";
   document.getElementById("edit-record-note").value = r.note || "";
+  
+  // --- 修改開始 ---
+  existingRecordPhotos = [];
+  if (r.photos && Array.isArray(r.photos)) {
+      existingRecordPhotos = [...r.photos];
+  }
   selectedEditRecordPhotos = [];
-  document.getElementById("edit-record-photo-preview").innerHTML = "";
+  renderPhotoEditor("edit-record-photo-preview", existingRecordPhotos, selectedEditRecordPhotos, 'record');
+  // --- 修改結束 ---
+
   document.getElementById("record-modal").classList.remove("hidden");
 }
-
 async function saveEditedRecord(){
   const id = document.getElementById("edit-record-id").value;
   const items = document.getElementById("edit-record-items").value.trim();
@@ -707,7 +785,7 @@ function showAddCustomerModal(){
   document.getElementById("btn-delete-customer").classList.add("hidden");
   document.getElementById("customer-modal").classList.remove("hidden");
 }
-
+  
 function showEditCustomerModal(){
   const c = currentCustomer;
   document.getElementById("modal-title").innerText = "編輯資料";
@@ -718,46 +796,50 @@ function showEditCustomerModal(){
   document.getElementById("cust-note").value = c.note || "";
   document.getElementById("cust-machine").value = c.machine || "";
   document.getElementById("cust-filter").value = c.filter || "";
-  document.getElementById("cust-cycle").value = c.cycle || ""; // 載入週期
+  document.getElementById("cust-cycle").value = c.cycle || "";
   document.getElementById("cust-install-date").value = c.installDate ? normalizeDateStr(c.installDate) : "";
-  selectedCustPhotos = []; document.getElementById("cust-photo-preview").innerHTML = "";
+  
+  // --- 修改開始 ---
+  // 解析舊照片
+  existingCustPhotos = [];
+  if (c.photos) {
+      if (Array.isArray(c.photos)) existingCustPhotos = [...c.photos];
+      else try { existingCustPhotos = JSON.parse(c.photos); } catch { existingCustPhotos = []; }
+  }
+  selectedCustPhotos = []; // 清空新照片暫存
+  // 使用新的渲染器
+  renderPhotoEditor("cust-photo-preview", existingCustPhotos, selectedCustPhotos, 'cust');
+  // --- 修改結束 ---
+
   renderTagSelector("cust-tag-selector", c.tags ? c.tags.split(",") : []);
   document.getElementById("btn-delete-customer").classList.remove("hidden");
   document.getElementById("customer-modal").classList.remove("hidden");
 }
 
-async function saveCustomer(){
-  const id = document.getElementById("cust-id").value;
-  const name = document.getElementById("cust-name").value.trim();
-  const phone = document.getElementById("cust-phone").value.trim();
-  if (!name || !phone){ alert("姓名、電話必填"); return; }
+async function saveEditedRecord(){
+  const id = document.getElementById("edit-record-id").value;
+  const items = document.getElementById("edit-record-items").value.trim();
+  const date = document.getElementById("edit-record-date").value;
+  if (!items){ alert("請輸入項目"); return; }
+  
+  // --- 修改開始 ---
+  let photoUrls = [...existingRecordPhotos]; // 使用編輯後剩下的舊照片
 
-  let photoUrls = [];
-  if (id && currentCustomer?.photos){
-    if (Array.isArray(currentCustomer.photos)) photoUrls = [...currentCustomer.photos];
-    else try { photoUrls = JSON.parse(currentCustomer.photos); } catch { photoUrls = []; }
-  }
-  for (let base64 of selectedCustPhotos){
+  for (let base64 of selectedEditRecordPhotos){
     const res = await apiCall("uploadImage", {base64, type:"image/jpeg"});
     if (res?.status==="success") photoUrls.push(res.url);
   }
-  const tags = getSelectedTags("cust-tag-selector");
+  // --- 修改結束 ---
+
   const payload = {
-    id, name, phone,
-    address: document.getElementById("cust-address").value,
-    note: document.getElementById("cust-note").value,
-    machine: document.getElementById("cust-machine").value,
-    filter: document.getElementById("cust-filter").value,
-    installDate: document.getElementById("cust-install-date").value,
-    cycle: document.getElementById("cust-cycle").value, // ✨ 傳送週期
-    photos: photoUrls, tags
+    id, date, items,
+    amount: document.getElementById("edit-record-amount").value,
+    note: document.getElementById("edit-record-note").value,
+    photos: photoUrls
   };
-  const act = id ? "updateCustomer" : "addCustomer";
-  const res = await apiCall(act, payload);
+  const res = await apiCall("updateRecord", payload);
   if (res?.status==="success"){
-    showToast("儲存成功");
-    closeModal("customer-modal"); await fetchCustomers();
-    if(id && currentCustomer) openDetail({...currentCustomer, ...payload, photos: photoUrls});
+    closeModal("record-modal"); await fetchRecords(currentCustomer.id); renderList(customers);
   }
 }
 
@@ -777,20 +859,37 @@ function renderTagSelector(containerId, selected=[]){
 }
 function getSelectedTags(containerId){ return [...document.querySelectorAll(`#${containerId} .tag.active`)].map(x=>x.dataset.tag).join(","); }
 
-function handleCustPhotoSelect(input){ handlePhotoSelect(input, selectedCustPhotos, "cust-photo-preview"); }
+// 修改這兩個函式，讓它們選完照片後呼叫新的 renderPhotoEditor
+function handleCustPhotoSelect(input){ 
+    handlePhotoSelect(input, selectedCustPhotos, null, null, () => {
+        renderPhotoEditor("cust-photo-preview", existingCustPhotos, selectedCustPhotos, 'cust');
+    }); 
+}
+  
 function handleRecordPhotoSelect(input){ handlePhotoSelect(input, selectedRecordPhotos, "new-record-photos", "record-photo-count"); }
-function handleEditRecordPhotoSelect(input){ handlePhotoSelect(input, selectedEditRecordPhotos, "edit-record-photo-preview"); }
-
-function handlePhotoSelect(input, arr, previewId, countId){
+  
+function handleEditRecordPhotoSelect(input){ 
+    handlePhotoSelect(input, selectedEditRecordPhotos, null, null, () => {
+        renderPhotoEditor("edit-record-photo-preview", existingRecordPhotos, selectedEditRecordPhotos, 'record');
+    }); 
+}
+// 修改原本的 handlePhotoSelect 支援 callback
+function handlePhotoSelect(input, arr, previewId, countId, callback){
   [...input.files].forEach(file=>{
     const reader = new FileReader();
     reader.onload = e => resizeImage(e.target.result, 900, out=>{
-      arr.push(out); renderPreview(previewId, arr);
+      arr.push(out); 
+      // 如果有傳入 previewId 就用舊邏輯 (給新增紀錄用)，不然就執行 callback (給編輯用)
+      if (previewId) renderPreview(previewId, arr);
+      else if (callback) callback();
+      
       if(countId) document.getElementById(countId).innerText = `${arr.length} 張`;
     });
     reader.readAsDataURL(file);
   });
+  input.value = ""; // 清空 input 讓同樣照片可以再次選擇
 }
+  
 function renderPreview(id, arr){ document.getElementById(id).innerHTML = arr.map(src => `<img class="photo-thumb" src="${src}">`).join(""); }
 function resizeImage(base64, maxW, cb){
   const img = new Image(); img.src = base64;
@@ -821,4 +920,5 @@ window.onload = () => {
 
 </body>
 </html>
+
 
