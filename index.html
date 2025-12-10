@@ -938,9 +938,7 @@ function handleEditRecordPhotoSelect(input){
     handlePhotoSelect(input, selectedEditRecordPhotos, null, null, () => {
         renderPhotoEditor("edit-record-photo-preview", existingRecordPhotos, selectedEditRecordPhotos, 'record');
     }); 
-}
-  
-// 3. 通用的照片處理核心函式 (修正版)
+}// 3. 通用的照片處理核心函式 (修正版)
 function handlePhotoSelect(input, arr, previewId, countId, callback){
   [...input.files].forEach(file=>{
     const reader = new FileReader();
@@ -991,6 +989,7 @@ window.onload = () => {
 
 </body>
 </html>
+
 
 
 
