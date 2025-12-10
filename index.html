@@ -52,6 +52,20 @@
     }
     .search-bar input { width:100%; border:none; background:transparent; font-size:16px; outline:none; }
 
+    /* 儀表板樣式 (新增) */
+    .stats-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+    .stat-card {
+      background: #fff; padding: 12px; border-radius: 16px; border: 1px solid var(--milk-border);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.03); cursor: pointer; transition: 0.2s;
+    }
+    .stat-card:active { transform: scale(0.97); background: #fafafa; }
+    .stat-card.active-filter { border: 2px solid var(--primary); background: #f0f7ff; }
+    .stat-value { font-size: 24px; font-weight: 800; line-height: 1.2; }
+    .stat-label { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+    .text-red-alert { color: #ff3b30; }
+    .text-orange-alert { color: #ff9500; }
+
     /* 篩選器樣式 */
     .filter-scroll { display: flex; gap: 8px; overflow-x: auto; padding: 4px 0; margin-top: 12px; -webkit-overflow-scrolling: touch; }
     .filter-scroll::-webkit-scrollbar { display: none; }
@@ -155,6 +169,17 @@
 <div id="page-list" class="min-h-screen">
   <div class="pt-10 pb-4 px-4 max-w-md mx-auto">
     <div class="text-3xl font-semibold mb-3">濾芯保養系統</div>
+
+    <div class="stats-container">
+      <div id="card-overdue" class="stat-card" onclick="toggleDashboardFilter('overdue')">
+        <div id="stat-overdue-val" class="stat-value text-red-alert">0</div>
+        <div class="stat-label">🔴 逾期未保養</div>
+      </div>
+      <div id="card-month" class="stat-card" onclick="toggleDashboardFilter('month')">
+        <div id="stat-month-val" class="stat-value text-orange-alert">0</div>
+        <div class="stat-label">🟡 本月需保養</div>
+      </div>
+    </div>
     <div class="search-bar">
       <span class="material-icons text-gray-400">search</span>
       <input id="search-input" type="text" placeholder="搜尋客戶名稱、電話或備註…" oninput="renderList(customers)">
@@ -346,6 +371,7 @@ const TAG_OPTIONS = ["全部", "廚下型", "飲水機", "全戶式", "工業商
 const ITEM_OPTIONS = ["PP", "UDFC","CTO","UDFR", "RO膜","大T", "小T", "保養","代更換", "維修"];
 
 let currentFilter = "全部";
+let dashboardFilter = null; // ✨ 新增：儀表板篩選狀態
 
 let customers = [];
 let currentCustomer = null;
@@ -454,9 +480,57 @@ async function fetchCustomers(){
     return;
   }
   customers = data;
+  updateDashboard(customers); // ✨ 載入後計算儀表板
   renderFilterBar();
   renderList(customers);
 }
+
+// ✨✨✨ 新增：更新儀表板數字 ✨✨✨
+function updateDashboard(list) {
+  let overdueCount = 0;
+  let thisMonthCount = 0;
+  const currentMonth = new Date().getMonth();
+
+  list.forEach(c => {
+    const status = getServiceStatus(c.lastRecordDate, c.cycle);
+    if (status.type === 'overdue') {
+      overdueCount++;
+    } else {
+      // 檢查正常或即將到期的，下次保養日是否在「這個月」
+      const nextD = new Date(status.nextDate);
+      if (nextD.getMonth() === currentMonth) {
+        thisMonthCount++;
+      }
+    }
+  });
+
+  document.getElementById("stat-overdue-val").innerText = overdueCount;
+  document.getElementById("stat-month-val").innerText = thisMonthCount;
+}
+
+// ✨✨✨ 新增：點擊儀表板篩選 ✨✨✨
+function toggleDashboardFilter(type) {
+    const overdueCard = document.getElementById("card-overdue");
+    const monthCard = document.getElementById("card-month");
+
+    // 切換選取狀態
+    if (dashboardFilter === type) {
+        // 取消篩選
+        dashboardFilter = null;
+        overdueCard.classList.remove("active-filter");
+        monthCard.classList.remove("active-filter");
+    } else {
+        // 套用篩選
+        dashboardFilter = type;
+        overdueCard.classList.remove("active-filter");
+        monthCard.classList.remove("active-filter");
+        
+        if (type === 'overdue') overdueCard.classList.add("active-filter");
+        if (type === 'month') monthCard.classList.add("active-filter");
+    }
+    renderList(customers);
+}
+
 
 function renderFilterBar() {
     const container = document.getElementById("filter-container");
@@ -467,6 +541,11 @@ function renderFilterBar() {
 
 function filterByTag(tag) {
     currentFilter = tag;
+    // 重置儀表板篩選
+    dashboardFilter = null;
+    document.getElementById("card-overdue").classList.remove("active-filter");
+    document.getElementById("card-month").classList.remove("active-filter");
+
     renderFilterBar(); 
     renderList(customers);
 }
@@ -523,7 +602,7 @@ function renderList(list){
   const container = document.getElementById("customer-list");
   container.innerHTML = "";
 
-  // 1. 執行篩選
+  // 1. 執行 TAG 篩選
   let filtered = list;
   if (currentFilter !== "全部") {
       filtered = filtered.filter(c => c.tags && c.tags.includes(currentFilter));
@@ -539,7 +618,19 @@ function renderList(list){
       );
   }
 
-  // ✨✨✨ 新增：排序功能 (把該保養的排在最上面) ✨✨✨
+  // ✨✨✨ 3. 儀表板過濾邏輯 ✨✨✨
+  if (dashboardFilter === 'overdue') {
+      filtered = filtered.filter(c => getServiceStatus(c.lastRecordDate, c.cycle).type === 'overdue');
+  } else if (dashboardFilter === 'month') {
+      const currentMonth = new Date().getMonth();
+      filtered = filtered.filter(c => {
+          const status = getServiceStatus(c.lastRecordDate, c.cycle);
+          if (status.type === 'overdue') return false; // 排除已過期的
+          return new Date(status.nextDate).getMonth() === currentMonth;
+      });
+  }
+
+  // 排序功能 (把該保養的排在最上面)
   filtered.sort((a, b) => {
       // 算出兩者的狀態分數 (過期=3, 即將=2, 正常=1)
       const statusA = getServiceStatus(a.lastRecordDate, a.cycle).score;
