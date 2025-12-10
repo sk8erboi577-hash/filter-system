@@ -8,7 +8,7 @@
 
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
- <link rel="apple-touch-icon" href="icon.png">
+  <link rel="apple-touch-icon" href="icon.png">
 
   <script src="https://cdn.tailwindcss.com"></script>
 
@@ -109,7 +109,7 @@
     .sheet-title { font-weight: 700; font-size: 18px; }
     .sheet-btn-text { color: var(--primary); font-size: 16px; }
     .sheet-body { padding: 16px; overflow-y: auto; }
-    
+     
     /* 隱藏原生樣式 */
     input, textarea, select { -webkit-appearance: none; appearance: none; }
     .hidden { display: none !important; }
@@ -120,17 +120,18 @@
       visibility: hidden; min-width: 250px; margin-left: -125px; background-color: #333; color: #fff; text-align: center; border-radius: 50px; padding: 16px; position: fixed; z-index: 1000; left: 50%; bottom: 30px; font-size: 17px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); opacity: 0; transition: opacity 0.3s, bottom 0.3s;
     }
     .toast.show { visibility: visible; opacity: 1; bottom: 50px; }
+    
     /* 照片編輯區域樣式 */
-.photo-wrapper { position: relative; display: inline-block; margin-right: 8px; flex-shrink: 0; }
-.photo-thumb-edit { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; }
-.btn-remove-photo {
-  position: absolute; top: -6px; right: -6px;
-  background: #ff3b30; color: white;
-  border-radius: 50%; width: 22px; height: 22px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; font-weight: bold; cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 10;
-}
+    .photo-wrapper { position: relative; display: inline-block; margin-right: 8px; flex-shrink: 0; }
+    .photo-thumb-edit { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; }
+    .btn-remove-photo {
+      position: absolute; top: -6px; right: -6px;
+      background: #ff3b30; color: white;
+      border-radius: 50%; width: 22px; height: 22px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: bold; cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 10;
+    }
   </style>
 </head>
 
@@ -230,11 +231,11 @@
     <div class="sheet-header">
       <button onclick="closeModal('customer-modal')" class="sheet-btn-text">取消</button>
       <h2 id="modal-title" class="sheet-title">新增客戶</h2>
-      <button onclick="()" class="sheet-btn-text font-semibold">儲存</button>
+      <button onclick="saveCustomer()" class="sheet-btn-text font-semibold">儲存</button>
     </div>
     <div class="sheet-body space-y-4 bg-gray-50">
       <input type="hidden" id="cust-id">
-      
+       
       <div class="space-y-3 bg-white rounded-xl p-4 shadow-sm">
         <div><label>姓名 <span class="text-red-500">*</span></label><input id="cust-name" type="text" class="w-full p-2 border rounded"></div>
         <div><label>電話 <span class="text-red-500">*</span></label><input id="cust-phone" type="tel" class="w-full p-2 border rounded"></div>
@@ -340,7 +341,7 @@ let selectedEditRecordPhotos = [];
 
 window.currentRecords = [];
 
-  // --- 新增變數：用來暫存編輯時「原本已存在」的照片 (網址) ---
+// --- 新增變數：用來暫存編輯時「原本已存在」的照片 (網址) ---
 let existingCustPhotos = [];
 let existingRecordPhotos = [];
 
@@ -395,7 +396,7 @@ function removeNewPhoto(type, index) {
   } else if (type === 'newRecord') {
      // 這是給「新增紀錄」用的特殊處理
      selectedRecordPhotos.splice(index, 1);
-     renderPreview("new-record-photos", selectedRecordPhotos); // 新增介面維持原樣或也改用 Editor 都可以
+     renderPreview("new-record-photos", selectedRecordPhotos); 
      document.getElementById("record-photo-count").innerText = `${selectedRecordPhotos.length} 張`;
   }
 }
@@ -481,7 +482,7 @@ function renderList(list){
   if (currentFilter !== "全部") {
       filtered = filtered.filter(c => c.tags && c.tags.includes(currentFilter));
   }
-  
+   
   // 2. 搜尋過濾
   const searchTerm = document.getElementById("search-input").value.toLowerCase();
   if (searchTerm) {
@@ -560,7 +561,7 @@ function renderList(list){
 
         <div class="text-sm text-secondary flex gap-4 mt-2 justify-between items-center pr-2">
           <span class="flex items-center gap-1"><span class="material-icons text-base text-gray-400">phone_iphone</span>${c.phone}</span>
-          
+           
           <div class="text-right">
              <div class="text-xs text-gray-400">上次保養</div>
              <div class="font-medium ${status.type === 'overdue' ? 'text-red-500' : 'text-gray-700'}">${last}</div>
@@ -612,7 +613,7 @@ async function openDetail(c){
   document.getElementById("detail-phone").innerText = c.phone;
   document.getElementById("detail-phone-link").href = `tel:${c.phone}`;
   document.getElementById("detail-install-date").innerText = c.installDate ? normalizeDateStr(c.installDate) : "無紀錄";
-  
+   
   // 顯示週期
   const cycleText = c.cycle ? `${c.cycle} 個月` : "未設定";
   document.getElementById("detail-cycle").innerText = cycleText;
@@ -645,7 +646,7 @@ async function openDetail(c){
   let photos = [];
   if (Array.isArray(c.photos)) photos = c.photos;
   else if (typeof c.photos==="string" && c.photos.startsWith("[")) { try { photos = JSON.parse(c.photos); } catch {} }
-  
+   
   if (photos.length){
     photos.forEach(url=>{
       const img = document.createElement("img"); img.src = url; img.className = "photo-thumb cursor-pointer";
@@ -669,7 +670,7 @@ async function fetchRecords(id){
   window.currentRecords = records;
   box.innerHTML = "";
   records.sort((a,b)=>new Date(b.date)-new Date(a.date));
-  
+   
   records.forEach(r=>{
     const photos = Array.isArray(r.photos) ? r.photos : [];
     const item = document.createElement("div"); item.className = "timeline-item";
@@ -700,28 +701,32 @@ function openEditRecordModal(id){
   document.getElementById("edit-record-items").value = r.items;
   document.getElementById("edit-record-amount").value = r.amount || "";
   document.getElementById("edit-record-note").value = r.note || "";
-  
-  // --- 修改開始 ---
+   
   existingRecordPhotos = [];
   if (r.photos && Array.isArray(r.photos)) {
       existingRecordPhotos = [...r.photos];
   }
   selectedEditRecordPhotos = [];
   renderPhotoEditor("edit-record-photo-preview", existingRecordPhotos, selectedEditRecordPhotos, 'record');
-  // --- 修改結束 ---
 
   document.getElementById("record-modal").classList.remove("hidden");
 }
+
 async function saveEditedRecord(){
   const id = document.getElementById("edit-record-id").value;
   const items = document.getElementById("edit-record-items").value.trim();
   const date = document.getElementById("edit-record-date").value;
   if (!items){ alert("請輸入項目"); return; }
-  let photoUrls = [];
+   
+  // --- 修改開始 ---
+  let photoUrls = [...existingRecordPhotos]; // 使用編輯後剩下的舊照片
+
   for (let base64 of selectedEditRecordPhotos){
     const res = await apiCall("uploadImage", {base64, type:"image/jpeg"});
     if (res?.status==="success") photoUrls.push(res.url);
   }
+  // --- 修改結束 ---
+
   const payload = {
     id, date, items,
     amount: document.getElementById("edit-record-amount").value,
@@ -766,11 +771,12 @@ async function deleteRecord(id){
   await apiCall("deleteRecord", {id});
   await fetchRecords(currentCustomer.id);
 }
+
 async function saveCustomer(){
   const id = document.getElementById("cust-id").value;
   const name = document.getElementById("cust-name").value.trim();
   const phone = document.getElementById("cust-phone").value.trim();
-  
+   
   if (!name || !phone){ 
       alert("姓名、電話必填"); 
       return; 
@@ -792,7 +798,7 @@ async function saveCustomer(){
   // ------------------
 
   const tags = getSelectedTags("cust-tag-selector");
-  
+   
   const payload = {
     id, 
     name, 
@@ -808,10 +814,10 @@ async function saveCustomer(){
   };
 
   const act = id ? "updateCustomer" : "addCustomer";
-  
+   
   // 呼叫 API
   const res = await apiCall(act, payload);
-  
+   
   if (res?.status === "success"){
     showToast("儲存成功");
     closeModal("customer-modal"); 
@@ -824,6 +830,7 @@ async function saveCustomer(){
     alert("儲存失敗，請檢查網路或稍後再試");
   }
 }
+
 function showAddCustomerModal(){
   document.getElementById("modal-title").innerText = "新增客戶";
   document.getElementById("cust-id").value = "";
@@ -837,7 +844,7 @@ function showAddCustomerModal(){
 
   const d = new Date();
   document.getElementById("cust-install-date").value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-  
+   
   // --- 修正重點：重置照片變數 ---
   selectedCustPhotos = []; 
   existingCustPhotos = []; // 新增時，舊照片一定是空的
@@ -848,7 +855,7 @@ function showAddCustomerModal(){
   document.getElementById("btn-delete-customer").classList.add("hidden");
   document.getElementById("customer-modal").classList.remove("hidden");
 }
-  
+   
 function showEditCustomerModal(){
   const c = currentCustomer;
   document.getElementById("modal-title").innerText = "編輯資料";
@@ -861,8 +868,7 @@ function showEditCustomerModal(){
   document.getElementById("cust-filter").value = c.filter || "";
   document.getElementById("cust-cycle").value = c.cycle || "";
   document.getElementById("cust-install-date").value = c.installDate ? normalizeDateStr(c.installDate) : "";
-  
-  // --- 修改開始 ---
+   
   // 解析舊照片
   existingCustPhotos = [];
   if (c.photos) {
@@ -872,38 +878,10 @@ function showEditCustomerModal(){
   selectedCustPhotos = []; // 清空新照片暫存
   // 使用新的渲染器
   renderPhotoEditor("cust-photo-preview", existingCustPhotos, selectedCustPhotos, 'cust');
-  // --- 修改結束 ---
 
   renderTagSelector("cust-tag-selector", c.tags ? c.tags.split(",") : []);
   document.getElementById("btn-delete-customer").classList.remove("hidden");
   document.getElementById("customer-modal").classList.remove("hidden");
-}
-
-async function saveEditedRecord(){
-  const id = document.getElementById("edit-record-id").value;
-  const items = document.getElementById("edit-record-items").value.trim();
-  const date = document.getElementById("edit-record-date").value;
-  if (!items){ alert("請輸入項目"); return; }
-  
-  // --- 修改開始 ---
-  let photoUrls = [...existingRecordPhotos]; // 使用編輯後剩下的舊照片
-
-  for (let base64 of selectedEditRecordPhotos){
-    const res = await apiCall("uploadImage", {base64, type:"image/jpeg"});
-    if (res?.status==="success") photoUrls.push(res.url);
-  }
-  // --- 修改結束 ---
-
-  const payload = {
-    id, date, items,
-    amount: document.getElementById("edit-record-amount").value,
-    note: document.getElementById("edit-record-note").value,
-    photos: photoUrls
-  };
-  const res = await apiCall("updateRecord", payload);
-  if (res?.status==="success"){
-    closeModal("record-modal"); await fetchRecords(currentCustomer.id); renderList(customers);
-  }
 }
 
 async function deleteCustomer(){
@@ -922,43 +900,43 @@ function renderTagSelector(containerId, selected=[]){
 }
 function getSelectedTags(containerId){ return [...document.querySelectorAll(`#${containerId} .tag.active`)].map(x=>x.dataset.tag).join(","); }
 
-// 1. 處理客戶照片選擇 (修正版)
+// 1. 處理客戶照片選擇
 function handleCustPhotoSelect(input){ 
-    // 注意：這裡結尾有 }); 是一組的
     handlePhotoSelect(input, selectedCustPhotos, null, null, () => {
         renderPhotoEditor("cust-photo-preview", existingCustPhotos, selectedCustPhotos, 'cust');
     }); 
 }
-  
+   
 function handleRecordPhotoSelect(input){ handlePhotoSelect(input, selectedRecordPhotos, "new-record-photos", "record-photo-count"); }
-  
-// 2. 處理紀錄照片選擇 (修正版)
+   
+// 2. 處理紀錄照片選擇
 function handleEditRecordPhotoSelect(input){ 
-    // 注意：這裡結尾有 }); 是一組的
     handlePhotoSelect(input, selectedEditRecordPhotos, null, null, () => {
         renderPhotoEditor("edit-record-photo-preview", existingRecordPhotos, selectedEditRecordPhotos, 'record');
     }); 
-}// 3. 通用的照片處理核心函式 (修正版)
+}
+
+// 3. 通用的照片處理核心函式
 function handlePhotoSelect(input, arr, previewId, countId, callback){
   [...input.files].forEach(file=>{
     const reader = new FileReader();
     reader.onload = e => resizeImage(e.target.result, 900, out=>{
       arr.push(out); 
-      
+       
       // 判斷是用舊邏輯(預覽ID) 還是新邏輯(回呼函式)
       if (previewId) {
           renderPreview(previewId, arr);
       } else if (callback) {
           callback();
       }
-      
+       
       if(countId) document.getElementById(countId).innerText = `${arr.length} 張`;
     });
     reader.readAsDataURL(file);
   });
   input.value = ""; 
 }
-  
+   
 function renderPreview(id, arr){ document.getElementById(id).innerHTML = arr.map(src => `<img class="photo-thumb" src="${src}">`).join(""); }
 function resizeImage(base64, maxW, cb){
   const img = new Image(); img.src = base64;
@@ -989,9 +967,3 @@ window.onload = () => {
 
 </body>
 </html>
-
-
-
-
-
-
