@@ -132,6 +132,19 @@
       font-size: 14px; font-weight: bold; cursor: pointer;
       box-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 10;
     }
+    /* LINE 按鈕樣式 */
+.btn-line {
+  background-color: #06C755; color: white;
+  border: none; padding: 6px 12px; border-radius: 99px;
+  font-size: 13px; font-weight: 600; display: inline-flex; align-items: center;
+  gap: 4px; cursor: pointer; text-decoration: none;
+}
+.btn-line:active { background-color: #05b34c; }
+/* 完工結案彈窗 */
+.finish-modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000;
+  display: flex; align-items: center; justify-content: center;
+}
   </style>
 </head>
 
@@ -471,7 +484,36 @@ function addItemToInput(inputId, itemText) {
         input.value = itemText;
     }
 }
+// --- LINE 訊息產生器 ---
 
+// 1. 產生保養提醒文字
+function sendLineReminder(e, name, nextDate) {
+  e.stopPropagation(); // 阻止點擊卡片觸發開啟詳情
+  
+  // 📝 這裡可以修改你的提醒文案 (%0D%0A 代表換行)
+  const text = `親愛的 ${name} 您好：%0D%0A` +
+               `這裡是【濾芯保養通知】，您的設備預計於 ${nextDate} 需要進行保養更換。%0D%0A` +
+               `為了確保飲水品質，建議您近期安排時間。%0D%0A` +
+               `若需預約請直接回覆此訊息，謝謝！`;
+               
+  window.open(`https://line.me/R/msg/text/?${text}`);
+}
+
+// 2. 產生完工結案文字
+function sendLineReport(name, date, items, amount, nextDate) {
+  // 📝 這裡可以修改你的完工文案
+  const text = `【保養完工通知】%0D%0A` +
+               `親愛的 ${name} 您好，感謝您的支持！%0D%0A` +
+               `------------------%0D%0A` +
+               `📅 日期：${date}%0D%0A` +
+               `🛠️ 項目：${items}%0D%0A` +
+               `💰 金額：${amount} 元%0D%0A` +
+               `------------------%0D%0A` +
+               `下次保養預計：${nextDate}%0D%0A` +
+               `附上本次保養照片供您留存。`;
+
+  window.open(`https://line.me/R/msg/text/?${text}`);
+}
 /* ------------------------ 列表渲染 (含保養提醒功能) ------------------------ */
 function renderList(list){
   const container = document.getElementById("customer-list");
@@ -518,6 +560,7 @@ function renderList(list){
     // 根據狀態改變卡片樣式
     let cardClass = "dashboard-card border-l-4";
     let statusHtml = "";
+    let btnHtml = ""; // 新增這個變數用來裝按鈕
     
     if (status.type === 'overdue') {
         // 🔴 過期：紅框 + 紅色警告
@@ -525,6 +568,10 @@ function renderList(list){
         statusHtml = `<div class="text-red-600 font-bold text-sm bg-red-100 px-2 py-1 rounded-md flex items-center">
                         <span class="material-icons text-sm mr-1">warning</span>過期 ${status.days} 天
                       </div>`;
+      // 加入 LINE 提醒按鈕
+        btnHtml = `<button class="btn-line ml-2" onclick="sendLineReminder(event, '${c.name}', '${status.nextDate}')">
+                     <span class="material-icons text-sm">chat</span> 提醒
+                   </button>`;
     } else if (status.type === 'soon') {
         // 🟡 即將到期 (14天內)：黃框 + 黃色提醒
         cardClass += " border-l-yellow-500 bg-yellow-50/30";
@@ -544,11 +591,16 @@ function renderList(list){
     card.className = cardClass;
     card.onclick = ()=> openDetail(c);
 
+  // 👇 修改這裡的 innerHTML，把 ${btnHtml} 加在第一行的 flex 裡面
     card.innerHTML = `
       <div class="grow">
         <div class="flex justify-between items-start mb-1">
-             <div class="dashboard-name truncate text-navy-900">${c.name}</div>
-             ${statusHtml} </div>
+             <div class="flex items-center gap-2">
+                <div class="dashboard-name truncate text-navy-900">${c.name}</div>
+                ${btnHtml} 
+             </div>
+             ${statusHtml} 
+        </div>
 
         <div class="flex gap-2 flex-wrap my-1 text-sm text-secondary">
           ${c.tags ? c.tags.split(",").map(t=>`<div class="dashboard-tag">${t}</div>`).join("") : ""}
@@ -756,13 +808,38 @@ async function saveRecord(){
     note: document.getElementById("record-note").value,
     photos: photoUrls
   };
-  const res = await apiCall("addRecord", payload);
+const res = await apiCall("addRecord", payload);
+
   if (res?.status==="success"){
-    showToast("儲存成功");
+    // 1. 清空表單與照片 (保持原本邏輯)
     selectedRecordPhotos = [];
     document.getElementById("new-record-photos").innerHTML = "";
-    document.getElementById("record-items").value=""; document.getElementById("record-amount").value=""; document.getElementById("record-note").value="";
+    document.getElementById("record-items").value=""; 
+    document.getElementById("record-amount").value=""; 
+    document.getElementById("record-note").value="";
+    document.getElementById("record-photo-count").innerText = "0 張"; // 記得歸零計數
+
+    // 2. 重新讀取紀錄 (保持原本邏輯)
     await fetchRecords(currentCustomer.id);
+    // 順便更新列表，讓首頁的下次保養日更新
+    await fetchCustomers(); 
+
+    // 3. ✨ 計算下次保養日 (為了寫在 LINE 裡)
+    const nextStatus = getServiceStatus(payload.date, currentCustomer.cycle);
+    
+    // 4. ✨ 跳出確認視窗 (使用瀏覽器內建 confirm 最簡單，或是你要做漂亮彈窗也可以)
+    // 這裡用 confirm 比較快，若要漂亮可以再寫 HTML Modal
+    if(confirm("✅ 紀錄已儲存！\n\n要傳送「完工結案報告」給客戶嗎？\n(將開啟 LINE 自動貼上文字)")) {
+        sendLineReport(
+            currentCustomer.name, 
+            payload.date, 
+            payload.items, 
+            payload.amount,
+            nextStatus.nextDate // 傳入下次日期
+        );
+    } else {
+        showToast("儲存成功");
+    }
   }
 }
 
@@ -967,3 +1044,4 @@ window.onload = () => {
 
 </body>
 </html>
+
