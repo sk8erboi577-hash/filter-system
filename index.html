@@ -230,7 +230,7 @@
     <div class="sheet-header">
       <button onclick="closeModal('customer-modal')" class="sheet-btn-text">取消</button>
       <h2 id="modal-title" class="sheet-title">新增客戶</h2>
-      <button onclick="saveCustomer()" class="sheet-btn-text font-semibold">儲存</button>
+      <button onclick="()" class="sheet-btn-text font-semibold">儲存</button>
     </div>
     <div class="sheet-body space-y-4 bg-gray-50">
       <input type="hidden" id="cust-id">
@@ -766,7 +766,64 @@ async function deleteRecord(id){
   await apiCall("deleteRecord", {id});
   await fetchRecords(currentCustomer.id);
 }
+async function saveCustomer(){
+  const id = document.getElementById("cust-id").value;
+  const name = document.getElementById("cust-name").value.trim();
+  const phone = document.getElementById("cust-phone").value.trim();
+  
+  if (!name || !phone){ 
+      alert("姓名、電話必填"); 
+      return; 
+  }
 
+  // --- 處理照片邏輯 ---
+  // 防呆：確保 existingCustPhotos 是陣列，避免報錯
+  let safeExisting = Array.isArray(existingCustPhotos) ? existingCustPhotos : [];
+  let photoUrls = [...safeExisting]; 
+
+  // 上傳新選擇的照片 (Base64)
+  for (let base64 of selectedCustPhotos){
+    // 這裡若是多張照片，建議顯示 loading，避免使用者以為沒反應
+    const res = await apiCall("uploadImage", {base64, type:"image/jpeg"});
+    if (res?.status === "success") {
+        photoUrls.push(res.url);
+    }
+  }
+  // ------------------
+
+  const tags = getSelectedTags("cust-tag-selector");
+  
+  const payload = {
+    id, 
+    name, 
+    phone,
+    address: document.getElementById("cust-address").value,
+    note: document.getElementById("cust-note").value,
+    machine: document.getElementById("cust-machine").value,
+    filter: document.getElementById("cust-filter").value,
+    installDate: document.getElementById("cust-install-date").value,
+    cycle: document.getElementById("cust-cycle").value,
+    photos: photoUrls, 
+    tags
+  };
+
+  const act = id ? "updateCustomer" : "addCustomer";
+  
+  // 呼叫 API
+  const res = await apiCall(act, payload);
+  
+  if (res?.status === "success"){
+    showToast("儲存成功");
+    closeModal("customer-modal"); 
+    await fetchCustomers();
+    // 如果是在編輯模式，順便更新背後的詳細頁面資訊
+    if(id && currentCustomer) {
+        openDetail({...currentCustomer, ...payload, photos: photoUrls});
+    }
+  } else {
+    alert("儲存失敗，請檢查網路或稍後再試");
+  }
+}
 function showAddCustomerModal(){
   document.getElementById("modal-title").innerText = "新增客戶";
   document.getElementById("cust-id").value = "";
@@ -926,6 +983,7 @@ window.onload = () => {
 
 </body>
 </html>
+
 
 
 
