@@ -776,11 +776,17 @@ function showAddCustomerModal(){
   document.getElementById("cust-note").value = "";
   document.getElementById("cust-machine").value = "";
   document.getElementById("cust-filter").value = "";
-  document.getElementById("cust-cycle").value = ""; // 清空週期
+  document.getElementById("cust-cycle").value = ""; 
 
   const d = new Date();
   document.getElementById("cust-install-date").value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-  selectedCustPhotos = []; document.getElementById("cust-photo-preview").innerHTML = "";
+  
+  // --- 修正重點：重置照片變數 ---
+  selectedCustPhotos = []; 
+  existingCustPhotos = []; // 新增時，舊照片一定是空的
+  renderPhotoEditor("cust-photo-preview", existingCustPhotos, selectedCustPhotos, 'cust');
+  // ---------------------------
+
   renderTagSelector("cust-tag-selector", []);
   document.getElementById("btn-delete-customer").classList.add("hidden");
   document.getElementById("customer-modal").classList.remove("hidden");
@@ -920,5 +926,6 @@ window.onload = () => {
 
 </body>
 </html>
+
 
 
