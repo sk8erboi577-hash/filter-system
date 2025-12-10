@@ -922,8 +922,9 @@ function renderTagSelector(containerId, selected=[]){
 }
 function getSelectedTags(containerId){ return [...document.querySelectorAll(`#${containerId} .tag.active`)].map(x=>x.dataset.tag).join(","); }
 
-// 修改這兩個函式，讓它們選完照片後呼叫新的 renderPhotoEditor
+// 1. 處理客戶照片選擇 (修正版)
 function handleCustPhotoSelect(input){ 
+    // 注意：這裡結尾有 }); 是一組的
     handlePhotoSelect(input, selectedCustPhotos, null, null, () => {
         renderPhotoEditor("cust-photo-preview", existingCustPhotos, selectedCustPhotos, 'cust');
     }); 
@@ -931,26 +932,33 @@ function handleCustPhotoSelect(input){
   
 function handleRecordPhotoSelect(input){ handlePhotoSelect(input, selectedRecordPhotos, "new-record-photos", "record-photo-count"); }
   
+// 2. 處理紀錄照片選擇 (修正版)
 function handleEditRecordPhotoSelect(input){ 
+    // 注意：這裡結尾有 }); 是一組的
     handlePhotoSelect(input, selectedEditRecordPhotos, null, null, () => {
         renderPhotoEditor("edit-record-photo-preview", existingRecordPhotos, selectedEditRecordPhotos, 'record');
     }); 
 }
-// 修改原本的 handlePhotoSelect 支援 callback
+  
+// 3. 通用的照片處理核心函式 (修正版)
 function handlePhotoSelect(input, arr, previewId, countId, callback){
   [...input.files].forEach(file=>{
     const reader = new FileReader();
     reader.onload = e => resizeImage(e.target.result, 900, out=>{
       arr.push(out); 
-      // 如果有傳入 previewId 就用舊邏輯 (給新增紀錄用)，不然就執行 callback (給編輯用)
-      if (previewId) renderPreview(previewId, arr);
-      else if (callback) callback();
+      
+      // 判斷是用舊邏輯(預覽ID) 還是新邏輯(回呼函式)
+      if (previewId) {
+          renderPreview(previewId, arr);
+      } else if (callback) {
+          callback();
+      }
       
       if(countId) document.getElementById(countId).innerText = `${arr.length} 張`;
     });
     reader.readAsDataURL(file);
   });
-  input.value = ""; // 清空 input 讓同樣照片可以再次選擇
+  input.value = ""; 
 }
   
 function renderPreview(id, arr){ document.getElementById(id).innerHTML = arr.map(src => `<img class="photo-thumb" src="${src}">`).join(""); }
@@ -983,6 +991,7 @@ window.onload = () => {
 
 </body>
 </html>
+
 
 
 
