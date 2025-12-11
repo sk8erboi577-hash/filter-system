@@ -50,9 +50,9 @@
     .search-bar {
       background: #FFF; border-radius: 14px; padding: 10px; display:flex; align-items:center; gap:8px; border:1px solid var(--milk-border);
     }
-    .search-bar input { width:100%; border:none; background:transparent; font-size:16px; out:none; }
+    .search-bar input { width:100%; border:none; background:transparent; font-size:16px; outline:none; }
 
-    /* 儀表板樣式 (新增) */
+    /* 儀表板樣式 */
     .stats-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
     .stat-card {
       background: #fff; padding: 12px; border-radius: 16px; border: 1px solid var(--milk-border);
@@ -61,7 +61,7 @@
     }
     .stat-card:active { transform: scale(0.97); background: #fafafa; }
     .stat-card.active-filter { border: 2px solid var(--primary); background: #f0f7ff; }
-    .stat-value { font-size: 24px; font-weight: 800; -height: 1.2; }
+    .stat-value { font-size: 24px; font-weight: 800; line-height: 1.2; }
     .stat-label { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
     .text-red-alert { color: #ff3b30; }
     .text-orange-alert { color: #ff9500; }
@@ -85,7 +85,7 @@
     .dashboard-card:active { transform:scale(.97); }
     .dashboard-name { font-size:20px; font-weight:700; }
     .dashboard-tag {
-      display:in-flex; padding:3px 10px; background:#EFEDE7; border:1px solid var(--milk-border);
+      display:inline-flex; padding:3px 10px; background:#EFEDE7; border:1px solid var(--milk-border);
       border-radius:999px; font-size:12px; color:var(--text-secondary); margin:4px 0;
     }
     .dashboard-chevron { width:32px; height:32px; background:#F2F0EB; border-radius:50%; display:flex; align-items:center; justify-content:center; }
@@ -161,6 +161,21 @@
       position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000;
       display: flex; align-items: center; justify-content: center;
     }
+
+    /* ✨✨✨ 新增：燈箱樣式 ✨✨✨ */
+    .lightbox-overlay {
+        position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 3000;
+        display: flex; align-items: center; justify-content: center;
+        opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    }
+    .lightbox-overlay.active { opacity: 1; pointer-events: auto; }
+    .lightbox-img { max-width: 100vw; max-height: 100vh; object-fit: contain; }
+    .lightbox-close {
+        position: absolute; top: 20px; right: 20px; color: white;
+        background: rgba(255,255,255,0.2); border-radius: 50%;
+        width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+        font-size: 24px; cursor: pointer; z-index: 3001;
+    }
   </style>
 </head>
 
@@ -180,9 +195,10 @@
         <div class="stat-label">🟡 本月需保養</div>
       </div>
     </div>
+
     <div class="search-bar">
       <span class="material-icons text-gray-400">search</span>
-      <input id="search-input" type="text" placeholder="搜尋客戶名稱、電話或備註…" oninput="renderList(customers)">
+      <input id="search-input" type="text" placeholder="搜尋客戶名稱、電話、地址或備註…" oninput="renderList(customers)">
     </div>
     <div id="filter-container" class="filter-scroll"></div>
   </div>
@@ -246,7 +262,13 @@
         <input id="record-items" type="text" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2" placeholder="例如：PP、活性碳">
         <div id="new-record-item-chips" class="chip-container"></div>
       </div>
-      <div class="mb-3"><div class="text-secondary text-sm mb-1">備註</div><input id="record-note" type="text" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2"></div>
+      
+      <div class="mb-3">
+        <div class="text-secondary text-sm mb-1">備註</div>
+        <input id="record-note" type="text" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2" placeholder="備註...">
+        <div id="new-record-note-chips" class="chip-container mt-2"></div>
+      </div>
+
       <div class="flex gap-3 mb-3 items-center">
         <label class="bg-gray-100 text-blue-600 px-3 py-1 rounded cursor-pointer flex items-center font-medium">
           <span class="material-icons mr-1">camera_alt</span>拍照
@@ -341,7 +363,13 @@
           <div id="edit-record-item-chips" class="chip-container"></div>
         </div>
         <div><label>金額</label><input id="edit-record-amount" type="number" class="w-full p-2 border rounded text-green-600 font-bold"></div>
-        <div><label>備註</label><textarea id="edit-record-note" rows="2" class="w-full p-2 border rounded"></textarea></div>
+        
+        <div>
+          <label>備註</label>
+          <textarea id="edit-record-note" rows="2" class="w-full p-2 border rounded"></textarea>
+          <div id="edit-record-note-chips" class="chip-container mt-2"></div>
+        </div>
+
       </div>
       <div class="bg-white rounded-xl p-4 shadow-sm">
         <label class="text-blue-600 font-medium flex items-center justify-center cursor-pointer p-2 border-2 border-dashed border-blue-200 rounded-lg">
@@ -353,6 +381,11 @@
       <div class="h-10"></div>
     </div>
   </div>
+</div>
+
+<div id="lightbox" class="lightbox-overlay" onclick="closeLightbox()">
+    <div class="lightbox-close">×</div>
+    <img id="lightbox-img" class="lightbox-img" src="">
 </div>
 
 <div id="loading" class="loading-overlay hidden">
@@ -370,8 +403,11 @@ const TAG_OPTIONS = ["全部", "廚下型", "飲水機", "全戶式", "工業商
 // 常用維修項目
 const ITEM_OPTIONS = ["PP", "UDFC","CTO","UDFR", "RO膜","大T", "小T", "保養","代更換", "維修"];
 
+// 常用備註選項
+const NOTE_OPTIONS = ["水壓正常", "管線更新", "更換接頭", "漏水處理", "無人在家", "客戶指定時間"];
+
 let currentFilter = "全部";
-let dashboardFilter = null; // ✨ 新增：儀表板篩選狀態
+let dashboardFilter = null; 
 
 let customers = [];
 let currentCustomer = null;
@@ -386,6 +422,16 @@ window.currentRecords = [];
 let existingCustPhotos = [];
 let existingRecordPhotos = [];
 
+// --- 燈箱功能 ---
+function openLightbox(url) {
+    document.getElementById('lightbox-img').src = url;
+    document.getElementById('lightbox').classList.add('active');
+}
+function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('active');
+    setTimeout(() => { document.getElementById('lightbox-img').src = ""; }, 200);
+}
+
 // --- 新增功能：通用的照片渲染器 (含刪除按鈕) ---
 // containerId: 容器ID, existingArr: 舊照片陣列, newArr: 新照片陣列, type: 'cust' 或 'record'
 function renderPhotoEditor(containerId, existingArr, newArr, type) {
@@ -397,7 +443,7 @@ function renderPhotoEditor(containerId, existingArr, newArr, type) {
     const wrap = document.createElement("div");
     wrap.className = "photo-wrapper";
     wrap.innerHTML = `
-      <img src="${url}" class="photo-thumb-edit">
+      <img src="${url}" class="photo-thumb-edit" onclick="openLightbox('${url}')">
       <div class="btn-remove-photo" onclick="removeExistingPhoto('${type}', ${index})">×</div>
     `;
     container.appendChild(wrap);
@@ -408,7 +454,7 @@ function renderPhotoEditor(containerId, existingArr, newArr, type) {
     const wrap = document.createElement("div");
     wrap.className = "photo-wrapper";
     wrap.innerHTML = `
-      <img src="${base64}" class="photo-thumb-edit">
+      <img src="${base64}" class="photo-thumb-edit" onclick="openLightbox('${base64}')">
       <div class="btn-remove-photo" onclick="removeNewPhoto('${type}', ${index})">×</div>
     `;
     container.appendChild(wrap);
@@ -480,12 +526,11 @@ async function fetchCustomers(){
     return;
   }
   customers = data;
-  updateDashboard(customers); // ✨ 載入後計算儀表板
+  updateDashboard(customers); 
   renderFilterBar();
   renderList(customers);
 }
 
-// ✨✨✨ 新增：更新儀表板數字 ✨✨✨
 function updateDashboard(list) {
   let overdueCount = 0;
   let thisMonthCount = 0;
@@ -496,7 +541,6 @@ function updateDashboard(list) {
     if (status.type === 'overdue') {
       overdueCount++;
     } else {
-      // 檢查正常或即將到期的，下次保養日是否在「這個月」
       const nextD = new Date(status.nextDate);
       if (nextD.getMonth() === currentMonth) {
         thisMonthCount++;
@@ -508,19 +552,15 @@ function updateDashboard(list) {
   document.getElementById("stat-month-val").innerText = thisMonthCount;
 }
 
-// ✨✨✨ 新增：點擊儀表板篩選 ✨✨✨
 function toggleDashboardFilter(type) {
     const overdueCard = document.getElementById("card-overdue");
     const monthCard = document.getElementById("card-month");
 
-    // 切換選取狀態
     if (dashboardFilter === type) {
-        // 取消篩選
         dashboardFilter = null;
         overdueCard.classList.remove("active-filter");
         monthCard.classList.remove("active-filter");
     } else {
-        // 套用篩選
         dashboardFilter = type;
         overdueCard.classList.remove("active-filter");
         monthCard.classList.remove("active-filter");
@@ -541,7 +581,6 @@ function renderFilterBar() {
 
 function filterByTag(tag) {
     currentFilter = tag;
-    // 重置儀表板篩選
     dashboardFilter = null;
     document.getElementById("card-overdue").classList.remove("active-filter");
     document.getElementById("card-month").classList.remove("active-filter");
@@ -557,6 +596,14 @@ function renderItemChips(containerId, inputId) {
     ).join('');
 }
 
+// ✨✨✨ 新增：備註按鈕渲染 ✨✨✨
+function renderNoteChips(containerId, inputId) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = NOTE_OPTIONS.map(item => 
+        `<div class="item-chip" onclick="addItemToInput('${inputId}', '${item}')">${item}</div>`
+    ).join('');
+}
+
 function addItemToInput(inputId, itemText) {
     const input = document.getElementById(inputId);
     if (input.value) {
@@ -566,22 +613,19 @@ function addItemToInput(inputId, itemText) {
     }
 }
 
-// --- LINE 訊息產生器 (修正版：使用 location.href 避免被 iPhone 擋住) ---
+// --- LINE 訊息產生器 ---
 
-// 1. 產生保養提醒文字
 function sendLineReminder(e, name, nextDate) {
-  if(e) e.stopPropagation(); // 阻止點擊卡片觸發開啟詳情
+  if(e) e.stopPropagation(); 
   
   const text = `親愛的 ${name} 您好：%0D%0A` +
                `您的過濾器設備預計於 ${nextDate} 需要進行保養更換。%0D%0A` +
                `為了確保飲水品質，建議您近期安排時間。%0D%0A` +
                `若需預約請直接回覆此訊息，謝謝！`;
                
-  // 使用 location.href 確保 iPhone 能順利跳轉
   window.location.href = `https://line.me/R/msg/text/?${text}`;
 }
 
-// 2. 產生完工結案文字
 function sendLineReport(name, date, items, amount, nextDate) {
   const text = `【保養完工通知】%0D%0A` +
                `親愛的 ${name} 您好，感謝您的支持！%0D%0A` +
@@ -593,33 +637,29 @@ function sendLineReport(name, date, items, amount, nextDate) {
                `下次保養預計：${nextDate}%0D%0A` +
                `附上本次保養照片供您留存。`;
 
-  // 使用 location.href 確保 iPhone 能順利跳轉
   window.location.href = `https://line.me/R/msg/text/?${text}`;
 }
 
-/* ------------------------ 列表渲染 (修正排版 + 新增地址搜尋) ------------------------ */
+/* ------------------------ 列表渲染 ------------------------ */
 function renderList(list){
   const container = document.getElementById("customer-list");
   container.innerHTML = "";
 
-  // 1. 執行 TAG 篩選
   let filtered = list;
   if (currentFilter !== "全部") {
       filtered = filtered.filter(c => c.tags && c.tags.includes(currentFilter));
   }
    
-  // 2. 搜尋過濾 (✨✨✨ 修改處：新增地址搜尋 ✨✨✨)
   const searchTerm = document.getElementById("search-input").value.toLowerCase();
   if (searchTerm) {
       filtered = filtered.filter(c => 
         c.name.toLowerCase().includes(searchTerm) || 
         c.phone.includes(searchTerm) || 
-        (c.address && c.address.includes(searchTerm)) || // 👉 新增這行：搜尋地址
+        (c.address && c.address.includes(searchTerm)) || 
         (c.note && c.note.toLowerCase().includes(searchTerm))
       );
   }
 
-  // 3. 儀表板過濾邏輯
   if (dashboardFilter === 'overdue') {
       filtered = filtered.filter(c => getServiceStatus(c.lastRecordDate, c.cycle).type === 'overdue');
   } else if (dashboardFilter === 'month') {
@@ -631,7 +671,6 @@ function renderList(list){
       });
   }
 
-  // 排序功能
   filtered.sort((a, b) => {
       const statusA = getServiceStatus(a.lastRecordDate, a.cycle).score;
       const statusB = getServiceStatus(b.lastRecordDate, b.cycle).score;
@@ -655,13 +694,11 @@ function renderList(list){
     let statusHtml = "";
     let btnHtml = ""; 
     
-    // --- 狀態樣式設定 ---
     if (status.type === 'overdue') {
         cardClass += " border-l-red-500 bg-red-50/30"; 
         statusHtml = `<div class="text-red-600 font-bold text-sm bg-red-100 px-2 py-1 rounded-md flex items-center">
                         <span class="material-icons text-sm mr-1">warning</span>過期 ${status.days} 天
                       </div>`;
-        // 加入 LINE 提醒按鈕 (✨ 加上 flex-shrink-0 防止被擠壓)
         btnHtml = `<button class="btn-line ml-2 flex-shrink-0" onclick="sendLineReminder(event, '${c.name}', '${status.nextDate}')">
                      <span class="material-icons text-sm">chat</span> 提醒
                    </button>`;
@@ -685,9 +722,10 @@ function renderList(list){
     card.className = cardClass;
     card.onclick = ()=> openDetail(c);
 
-    // ✨✨✨ 修改處：優化卡片標題排版，防止名稱太長跑版 ✨✨✨
     card.innerHTML = `
-      <div class="grow min-w-0"> <div class="flex justify-between items-center mb-1 gap-2">
+      <div class="grow min-w-0">
+        
+        <div class="flex justify-between items-center mb-1 gap-2">
              <div class="flex items-center gap-2 min-w-0 flex-1">
                 <div class="dashboard-name truncate text-navy-900 leading-tight">${c.name}</div>
                 ${btnHtml} 
@@ -729,9 +767,7 @@ function renderList(list){
   container.appendChild(wrap);
 }
 
-// ✨✨✨ 幫手函式：計算保養狀態 ✨✨✨
 function getServiceStatus(lastDateStr, cycleMonths) {
-    // 沒有上次紀錄或沒有設定週期，就當作正常
     if (!lastDateStr || !cycleMonths) return { type: 'normal', score: 1 };
     
     const lastDate = new Date(lastDateStr);
@@ -741,17 +777,16 @@ function getServiceStatus(lastDateStr, cycleMonths) {
     const today = new Date();
     today.setHours(0,0,0,0);
     
-    // 計算差距天數
     const diffTime = nextDate - today;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     const nextDateStr = `${nextDate.getFullYear()}-${String(nextDate.getMonth()+1).padStart(2,'0')}-${String(nextDate.getDate()).padStart(2,'0')}`;
 
     if (diffDays < 0) {
-        return { type: 'overdue', days: Math.abs(diffDays), nextDate: nextDateStr, score: 3 }; // 過期 (分數最高排最前)
+        return { type: 'overdue', days: Math.abs(diffDays), nextDate: nextDateStr, score: 3 }; 
     } else if (diffDays <= 14) {
-        return { type: 'soon', days: diffDays, nextDate: nextDateStr, score: 2 }; // 即將到期 (14天內)
+        return { type: 'soon', days: diffDays, nextDate: nextDateStr, score: 2 }; 
     } else {
-        return { type: 'normal', days: diffDays, nextDate: nextDateStr, score: 1 }; // 正常
+        return { type: 'normal', days: diffDays, nextDate: nextDateStr, score: 1 }; 
     }
 }
 async function openDetail(c){
@@ -765,7 +800,6 @@ async function openDetail(c){
   document.getElementById("detail-phone-link").href = `tel:${c.phone}`;
   document.getElementById("detail-install-date").innerText = c.installDate ? normalizeDateStr(c.installDate) : "無紀錄";
    
-  // 顯示週期
   const cycleText = c.cycle ? `${c.cycle} 個月` : "未設定";
   document.getElementById("detail-cycle").innerText = cycleText;
 
@@ -801,7 +835,8 @@ async function openDetail(c){
   if (photos.length){
     photos.forEach(url=>{
       const img = document.createElement("img"); img.src = url; img.className = "photo-thumb cursor-pointer";
-      img.onclick = ()=>window.open(url); photoDiv.appendChild(img);
+      img.onclick = ()=>openLightbox(url); // 改成燈箱
+      photoDiv.appendChild(img);
     });
   } else { photoDiv.innerHTML = `<div class="text-secondary text-sm">無照片</div>`; }
 
@@ -834,7 +869,7 @@ async function fetchRecords(id){
         </div>
         <div class="font-medium mb-1">${r.items}</div>
         ${r.note ? `<div class="text-secondary text-sm mb-2">備註：${r.note}</div>` : ""}
-        ${photos.length ? `<div class="flex gap-2 overflow-x-auto mb-2">${photos.map(p=>`<img class="photo-thumb cursor-pointer" src="${p}" onclick="window.open('${p}')">`).join("")}</div>` : ""}
+        ${photos.length ? `<div class="flex gap-2 overflow-x-auto mb-2">${photos.map(p=>`<img class="photo-thumb cursor-pointer" src="${p}" onclick="openLightbox('${p}')">`).join("")}</div>` : ""}
         <div class="flex justify-end gap-3 text-primary mt-2 text-sm">
           <span class="cursor-pointer" onclick="openEditRecordModal('${r.id}')">編輯</span>
           <span class="text-red-600 cursor-pointer" onclick="deleteRecord('${r.id}')">刪除</span>
@@ -869,14 +904,12 @@ async function saveEditedRecord(){
   const date = document.getElementById("edit-record-date").value;
   if (!items){ alert("請輸入項目"); return; }
    
-  // --- 修改開始 ---
-  let photoUrls = [...existingRecordPhotos]; // 使用編輯後剩下的舊照片
+  let photoUrls = [...existingRecordPhotos]; 
 
   for (let base64 of selectedEditRecordPhotos){
     const res = await apiCall("uploadImage", {base64, type:"image/jpeg"});
     if (res?.status==="success") photoUrls.push(res.url);
   }
-  // --- 修改結束 ---
 
   const payload = {
     id, date, items,
@@ -910,39 +943,35 @@ async function saveRecord(){
   const res = await apiCall("addRecord", payload);
 
   if (res?.status==="success"){
-    // 1. 清空表單與照片 (保持原本邏輯)
     selectedRecordPhotos = [];
     document.getElementById("new-record-photos").innerHTML = "";
     document.getElementById("record-items").value=""; 
     document.getElementById("record-amount").value=""; 
     document.getElementById("record-note").value="";
-    document.getElementById("record-photo-count").innerText = "0 張"; // 記得歸零計數
+    document.getElementById("record-photo-count").innerText = "0 張";
 
-    // 2. 重新讀取紀錄 (保持原本邏輯)
     await fetchRecords(currentCustomer.id);
-    // 順便更新列表，讓首頁的下次保養日更新
     await fetchCustomers(); 
 
-    // 3. ✨ 計算下次保養日 (為了寫在 LINE 裡)
     let nextDateStr = "未設定";
     if (currentCustomer.cycle) {
         const status = getServiceStatus(payload.date, currentCustomer.cycle);
         nextDateStr = status.nextDate;
     }
     
-    // 4. ✨ 跳出確認視窗 (使用瀏覽器內建 confirm 最簡單，或是你要做漂亮彈窗也可以)
-    // 這裡用 confirm 比較快，若要漂亮可以再寫 HTML Modal
-    if(confirm("✅ 紀錄已儲存！\n\n要傳送「完工結案報告」給客戶嗎？\n(將開啟 LINE 自動貼上文字)")) {
-        sendLineReport(
-            currentCustomer.name, 
-            payload.date, 
-            payload.items, 
-            payload.amount,
-            nextDateStr // 傳入下次日期
-        );
-    } else {
-        showToast("儲存成功");
-    }
+    setTimeout(() => {
+        if(confirm("✅ 紀錄已儲存！\n\n要傳送「完工結案報告」給客戶嗎？\n(將開啟 LINE 自動貼上文字)")) {
+            sendLineReport(
+                currentCustomer.name, 
+                payload.date, 
+                payload.items, 
+                payload.amount,
+                nextDateStr 
+            );
+        } else {
+            showToast("儲存成功");
+        }
+    }, 100);
   }
 }
 
@@ -962,20 +991,15 @@ async function saveCustomer(){
       return; 
   }
 
-  // --- 處理照片邏輯 ---
-  // 防呆：確保 existingCustPhotos 是陣列，避免報錯
   let safeExisting = Array.isArray(existingCustPhotos) ? existingCustPhotos : [];
   let photoUrls = [...safeExisting]; 
 
-  // 上傳新選擇的照片 (Base64)
   for (let base64 of selectedCustPhotos){
-    // 這裡若是多張照片，建議顯示 loading，避免使用者以為沒反應
     const res = await apiCall("uploadImage", {base64, type:"image/jpeg"});
     if (res?.status === "success") {
         photoUrls.push(res.url);
     }
   }
-  // ------------------
 
   const tags = getSelectedTags("cust-tag-selector");
    
@@ -995,14 +1019,12 @@ async function saveCustomer(){
 
   const act = id ? "updateCustomer" : "addCustomer";
    
-  // 呼叫 API
   const res = await apiCall(act, payload);
    
   if (res?.status === "success"){
     showToast("儲存成功");
     closeModal("customer-modal"); 
     await fetchCustomers();
-    // 如果是在編輯模式，順便更新背後的詳細頁面資訊
     if(id && currentCustomer) {
         openDetail({...currentCustomer, ...payload, photos: photoUrls});
     }
@@ -1025,11 +1047,9 @@ function showAddCustomerModal(){
   const d = new Date();
   document.getElementById("cust-install-date").value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
    
-  // --- 修正重點：重置照片變數 ---
   selectedCustPhotos = []; 
-  existingCustPhotos = []; // 新增時，舊照片一定是空的
+  existingCustPhotos = []; 
   renderPhotoEditor("cust-photo-preview", existingCustPhotos, selectedCustPhotos, 'cust');
-  // ---------------------------
 
   renderTagSelector("cust-tag-selector", []);
   document.getElementById("btn-delete-customer").classList.add("hidden");
@@ -1049,14 +1069,12 @@ function showEditCustomerModal(){
   document.getElementById("cust-cycle").value = c.cycle || "";
   document.getElementById("cust-install-date").value = c.installDate ? normalizeDateStr(c.installDate) : "";
    
-  // 解析舊照片
   existingCustPhotos = [];
   if (c.photos) {
       if (Array.isArray(c.photos)) existingCustPhotos = [...c.photos];
       else try { existingCustPhotos = JSON.parse(c.photos); } catch { existingCustPhotos = []; }
   }
-  selectedCustPhotos = []; // 清空新照片暫存
-  // 使用新的渲染器
+  selectedCustPhotos = []; 
   renderPhotoEditor("cust-photo-preview", existingCustPhotos, selectedCustPhotos, 'cust');
 
   renderTagSelector("cust-tag-selector", c.tags ? c.tags.split(",") : []);
@@ -1080,7 +1098,6 @@ function renderTagSelector(containerId, selected=[]){
 }
 function getSelectedTags(containerId){ return [...document.querySelectorAll(`#${containerId} .tag.active`)].map(x=>x.dataset.tag).join(","); }
 
-// 1. 處理客戶照片選擇
 function handleCustPhotoSelect(input){ 
     handlePhotoSelect(input, selectedCustPhotos, null, null, () => {
         renderPhotoEditor("cust-photo-preview", existingCustPhotos, selectedCustPhotos, 'cust');
@@ -1089,21 +1106,18 @@ function handleCustPhotoSelect(input){
    
 function handleRecordPhotoSelect(input){ handlePhotoSelect(input, selectedRecordPhotos, "new-record-photos", "record-photo-count"); }
    
-// 2. 處理紀錄照片選擇
 function handleEditRecordPhotoSelect(input){ 
     handlePhotoSelect(input, selectedEditRecordPhotos, null, null, () => {
         renderPhotoEditor("edit-record-photo-preview", existingRecordPhotos, selectedEditRecordPhotos, 'record');
     }); 
 }
 
-// 3. 通用的照片處理核心函式
 function handlePhotoSelect(input, arr, previewId, countId, callback){
   [...input.files].forEach(file=>{
     const reader = new FileReader();
     reader.onload = e => resizeImage(e.target.result, 900, out=>{
       arr.push(out); 
        
-      // 判斷是用舊邏輯(預覽ID) 還是新邏輯(回呼函式)
       if (previewId) {
           renderPreview(previewId, arr);
       } else if (callback) {
@@ -1117,7 +1131,12 @@ function handlePhotoSelect(input, arr, previewId, countId, callback){
   input.value = ""; 
 }
    
-function renderPreview(id, arr){ document.getElementById(id).innerHTML = arr.map(src => `<img class="photo-thumb" src="${src}">`).join(""); }
+function renderPreview(id, arr){ 
+    document.getElementById(id).innerHTML = arr.map(src => 
+        `<img class="photo-thumb" src="${src}" onclick="openLightbox('${src}')">`
+    ).join(""); 
+}
+
 function resizeImage(base64, maxW, cb){
   const img = new Image(); img.src = base64;
   img.onload = ()=>{
@@ -1141,10 +1160,11 @@ window.onload = () => {
   const rd = document.getElementById("record-date");
   if (rd){ const d = new Date(); rd.value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; }
   renderItemChips("new-record-item-chips", "record-items");
+  renderNoteChips("new-record-note-chips", "record-note"); // ✨
   renderItemChips("edit-record-item-chips", "edit-record-items");
+  renderNoteChips("edit-record-note-chips", "edit-record-note"); // ✨
 };
 </script>
 
 </body>
 </html>
-
