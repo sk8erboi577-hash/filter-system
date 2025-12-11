@@ -99,6 +99,8 @@
         padding: 12px 4px; margin: 0; display: flex; align-items: center;
         position: sticky; top: -1px; background: var(--milk-bg); z-index: 20;
         transition: background 0.3s;
+        /* ✨ 動畫：標題也要有進場效果 */
+        animation: slideUpFade 0.4s ease-out forwards;
     }
     .section-header::after {
         content: ""; flex: 1; height: 1px; background: var(--milk-border); margin-left: 10px;
@@ -120,7 +122,20 @@
       display:flex; flex-direction: column; 
       box-shadow:0 6px 16px rgba(0,0,0,0.06); cursor:pointer; transition:.12s;
       position: relative; overflow: hidden; 
+      /* ✨ 動畫：預設隱藏，等待動畫觸發 */
+      opacity: 0; 
+      transform: translateY(20px);
     }
+    /* ✨ 定義動畫關鍵影格 */
+    @keyframes slideUpFade {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    /* ✨ 套用動畫的 class */
+    .animate-enter {
+        animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
     .dashboard-card:active { transform:scale(.97); }
     .card-content-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
     
@@ -225,19 +240,18 @@
         display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid var(--milk-border);
     }
 
-    /* ✨✨✨ 統一浮動按鈕樣式 (FAB) ✨✨✨ */
     .fab-btn {
         position: fixed;
         right: 24px;
-        width: 56px;  /* 統一大小 56px */
+        width: 56px; 
         height: 56px;
         border-radius: 50%;
-        background: var(--primary); /* 統用主色藍 */
-        color: white; /* 統一白字 */
+        background: var(--primary); 
+        color: white;
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3); /* 統一陰影 */
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         cursor: pointer;
         z-index: 40;
         transition: transform 0.2s, opacity 0.3s;
@@ -245,12 +259,11 @@
     }
     .fab-btn:active { transform: scale(0.95); }
 
-    /* 分別定位 */
     #btn-add-customer { 
         bottom: 30px; 
     }
     #scroll-to-top {
-        bottom: 100px; /* 30px(底部) + 56px(按鈕高) + 14px(間距) */
+        bottom: 100px; 
         opacity: 0;
         pointer-events: none;
         transform: translateY(10px);
@@ -851,12 +864,13 @@ function renderSection(container, title, items) {
     const wrap = document.createElement("div");
     wrap.className = "space-y-3";
 
-    items.forEach(c => {
+    // ✨✨✨ 這裡加入卡片生成邏輯 ✨✨✨
+    items.forEach((c, index) => {
         const status = getServiceStatus(c.lastRecordDate, c.cycle);
         const last = c.lastRecordDate ? normalizeDateStr(c.lastRecordDate) : "尚無紀錄";
         const machine = c.machine || "未填寫機型";
 
-        let cardClass = "dashboard-card border-l-4";
+        let cardClass = "dashboard-card border-l-4 animate-enter"; // ✨ 加上動畫 class
         let statusHtml = "";
         let btnHtml = ""; 
         let progressHtml = ""; 
@@ -908,6 +922,7 @@ function renderSection(container, title, items) {
 
         const card = document.createElement("div");
         card.className = cardClass;
+        card.style.animationDelay = `${index * 0.05}s`; // ✨ 加上動畫延遲
         card.onclick = ()=> openDetail(c);
 
         card.innerHTML = `
