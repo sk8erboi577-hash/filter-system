@@ -93,10 +93,18 @@
     .text-red-alert { color: #ff453a !important; }
     .text-orange-alert { color: #ff9f0a !important; }
 
-    /* 列表分組標題 (新增) */
+    /* ✨✨✨ 修改：黏性標題 (Sticky Header) ✨✨✨ */
     .section-header {
         font-size: 14px; font-weight: 700; color: var(--text-secondary);
-        margin: 16px 4px 8px; display: flex; align-items: center;
+        padding: 12px 4px;
+        margin: 0;
+        display: flex; align-items: center;
+        /* 關鍵屬性：吸附效果 */
+        position: sticky;
+        top: -1px; /* 稍微調整讓它不會漏縫 */
+        background: var(--milk-bg); /* 必須要有背景色遮擋 */
+        z-index: 20;
+        transition: background 0.3s;
     }
     .section-header::after {
         content: ""; flex: 1; height: 1px; background: var(--milk-border); margin-left: 10px;
@@ -292,6 +300,9 @@
         <div><div class="text-secondary text-sm mb-1">日期</div><input type="date" id="record-date" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2"></div>
         <div><div class="text-secondary text-sm mb-1">金額</div><input type="number" id="record-amount" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2" placeholder="0"></div>
       </div>
+      
+      <div id="new-record-price-chips" class="chip-container mb-3"></div>
+      
       <div class="mb-3">
         <div class="text-secondary text-sm mb-1">更換項目</div>
         <input id="record-items" type="text" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2" placeholder="例如：PP、活性碳">
@@ -399,6 +410,8 @@
         </div>
         <div><label>金額</label><input id="edit-record-amount" type="number" class="w-full p-2 border rounded text-green-600 font-bold"></div>
         
+        <div id="edit-record-price-chips" class="chip-container mb-3"></div>
+
         <div>
           <label>備註</label>
           <textarea id="edit-record-note" rows="2" class="w-full p-2 border rounded"></textarea>
@@ -437,9 +450,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbyOzg78yqgVwWkKkQM2V67G
 const TAG_OPTIONS = ["全部", "廚下型", "飲水機", "全戶式", "工業商業", "售服", "其他"];
 // 常用維修項目
 const ITEM_OPTIONS = ["PP", "UDFC","CTO","UDFR", "RO膜","大T", "小T", "保養","代更換", "維修"];
-
 // 常用備註選項
 const NOTE_OPTIONS = ["水壓正常", "管線更新", "更換接頭", "漏水處理", "無人在家", "客戶指定時間"];
+// ✨✨✨ 新增：常用金額選項 ✨✨✨
+const PRICE_OPTIONS = ["500", "1000", "1800", "2000", "3500"];
 
 let currentFilter = "全部";
 let dashboardFilter = null; 
@@ -655,6 +669,19 @@ function renderNoteChips(containerId, inputId) {
     ).join('');
 }
 
+// ✨✨✨ 新增：金額按鈕渲染 ✨✨✨
+function renderPriceChips(containerId, inputId) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = PRICE_OPTIONS.map(price => 
+        `<div class="item-chip" onclick="setPriceInput('${inputId}', '${price}')">$${price}</div>`
+    ).join('');
+}
+
+// 金額是「取代」而不是「累加」
+function setPriceInput(inputId, price) {
+    document.getElementById(inputId).value = price;
+}
+
 function addItemToInput(inputId, itemText) {
     const input = document.getElementById(inputId);
     if (input.value) {
@@ -689,20 +716,16 @@ function sendLineReport(name, date, items, amount, nextDate) {
   window.location.href = `https://line.me/R/msg/text/?${text}`;
 }
 
-/* ✨✨✨ 重寫的 renderList (含分組功能) ✨✨✨ */
 function renderList(list){
   const container = document.getElementById("customer-list");
   container.innerHTML = "";
 
-  // 1. 篩選資料
   let filtered = list;
   
-  // Tag 篩選
   if (currentFilter !== "全部") {
       filtered = filtered.filter(c => c.tags && c.tags.includes(currentFilter));
   }
    
-  // 關鍵字搜尋
   const searchTerm = document.getElementById("search-input").value.toLowerCase();
   if (searchTerm) {
       filtered = filtered.filter(c => 
@@ -713,7 +736,6 @@ function renderList(list){
       );
   }
 
-  // 儀表板篩選
   if (dashboardFilter === 'overdue') {
       filtered = filtered.filter(c => getServiceStatus(c.lastRecordDate, c.cycle).type === 'overdue');
   } else if (dashboardFilter === 'month') {
@@ -725,7 +747,6 @@ function renderList(list){
       });
   }
 
-  // 2. 先排序 (過期 -> 即將 -> 正常)
   filtered.sort((a, b) => {
       const statusA = getServiceStatus(a.lastRecordDate, a.cycle).score;
       const statusB = getServiceStatus(b.lastRecordDate, b.cycle).score;
@@ -737,13 +758,11 @@ function renderList(list){
     return;
   }
 
-  // 3. 分組 (如果正在搜尋或篩選，就不顯示分組標題，避免畫面太亂)
   const isSearching = searchTerm || dashboardFilter;
   
   const groups = { overdue: [], soon: [], normal: [] };
   
   if (!isSearching) {
-      // 只有在完整列表時才分組
       filtered.forEach(c => {
           const type = getServiceStatus(c.lastRecordDate, c.cycle).type;
           if (type === 'overdue') groups.overdue.push(c);
@@ -751,20 +770,18 @@ function renderList(list){
           else groups.normal.push(c);
       });
       
+      // ✨✨✨ 套用分組渲染 ✨✨✨
       renderSection(container, "🔴 逾期未保養", groups.overdue);
       renderSection(container, "🟡 即將到期 (14天內)", groups.soon);
       renderSection(container, "🟢 正常", groups.normal);
   } else {
-      // 搜尋模式下，直接顯示全部 (不分組)
       renderSection(container, "", filtered);
   }
 }
 
-// 輔助函式：渲染一組清單
 function renderSection(container, title, items) {
     if (items.length === 0) return;
 
-    // 如果有標題，顯示分組標題
     if (title) {
         const header = document.createElement("div");
         header.className = "section-header";
@@ -1282,10 +1299,14 @@ window.onload = () => {
   fetchCustomers();
   const rd = document.getElementById("record-date");
   if (rd){ const d = new Date(); rd.value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; }
+  
   renderItemChips("new-record-item-chips", "record-items");
   renderNoteChips("new-record-note-chips", "record-note"); 
+  renderPriceChips("new-record-price-chips", "record-amount"); // ✨ 金額快選
+
   renderItemChips("edit-record-item-chips", "edit-record-items");
   renderNoteChips("edit-record-note-chips", "edit-record-note"); 
+  renderPriceChips("edit-record-price-chips", "edit-record-amount"); // ✨ 金額快選
 };
 </script>
 
