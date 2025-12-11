@@ -18,149 +18,152 @@
     :root {
       --primary: #007AFF;
       --primary-light: #64A8FF;
-      --milk-bg: #F2F1F6; /* 改用更像 iOS 的淺灰背景 */
+      --milk-bg: #F5EFE7;
       --milk-card: #FFFFFF;
-      --milk-border: #E5E5EA;
-      --text-main: #1C1C1E;
-      --text-secondary: #8E8E93;
+      --milk-border: #E6E2DA;
+      --milk-input: #F9F7F2;
+      --text-main: #3A342E;
+      --text-secondary: #6E655C;
       --nav-bg: rgba(255,255,255,0.92);
+      --chip-bg: #EFEDE7;
     }
 
     body.dark-mode {
       --primary: #0A84FF;
       --primary-light: #64A8FF;
-      --milk-bg: #000000;
+      --milk-bg: #121212;
       --milk-card: #1C1C1E;
-      --milk-border: #38383A;
-      --text-main: #FFFFFF;
-      --text-secondary: #98989D;
+      --milk-border: #2C2C2E;
+      --milk-input: #2C2C2E;
+      --text-main: #F2F2F7;
+      --text-secondary: #8E8E93;
       --nav-bg: rgba(28,28,30,0.92);
+      --chip-bg: #2C2C2E;
     }
 
     /* 強制覆蓋 Tailwind */
     body.dark-mode .bg-white { background-color: var(--milk-card) !important; color: var(--text-main); }
-    body.dark-mode .bg-gray-50 { background-color: #2C2C2E !important; } /* 深色模式下的地址區塊 */
+    body.dark-mode .bg-gray-50 { background-color: #000000 !important; }
     body.dark-mode .text-navy-900 { color: var(--text-main) !important; }
-    body.dark-mode .text-gray-500, body.dark-mode .text-gray-400 { color: var(--text-secondary) !important; }
+    body.dark-mode .text-gray-700 { color: #D1D1D6 !important; }
+    body.dark-mode .text-gray-800 { color: #E5E5EA !important; }
     body.dark-mode input, body.dark-mode textarea, body.dark-mode select {
-        background-color: #2C2C2E !important;
+        background-color: var(--milk-input) !important;
         border-color: var(--milk-border) !important;
         color: var(--text-main) !important;
     }
 
-    html { font-size: 16px; } /* 微調字體基準 */
+    html { font-size: 18px; }
     body {
       background: var(--milk-bg);
       margin: 0;
       padding-bottom: 100px;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang TC", Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang TC",
+        Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       color: var(--text-main);
       transition: background 0.3s, color 0.3s;
-      -webkit-tap-highlight-color: transparent;
     }
 
-    /* 搜尋列 */
+    .ios-nav-bar {
+      position: sticky; top: 0; padding: 12px 16px; padding-top: env(safe-area-inset-top, 16px);
+      background: var(--nav-bg); backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--milk-border); z-index: 50;
+      display:flex; justify-content:space-between; align-items:center;
+      transition: background 0.3s;
+    }
+    .ios-nav-left, .ios-nav-right { display:flex; align-items:center; color:var(--primary); font-size:16px; gap:4px; cursor:pointer; }
+    .ios-nav-title { font-size:18px; font-weight:600; color:var(--text-main); }
+
     .search-bar {
-      background: var(--milk-card); border-radius: 12px; padding: 10px 14px; 
-      display:flex; align-items:center; gap:10px; 
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      background: var(--milk-card); border-radius: 14px; padding: 10px; display:flex; align-items:center; gap:8px; border:1px solid var(--milk-border);
     }
     .search-bar input { width:100%; border:none; background:transparent; font-size:16px; outline:none; color: var(--text-main); }
 
-    /* 儀表板卡片 */
-    .stats-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+    /* 儀表板 */
+    .stats-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
     .stat-card {
-      background: var(--milk-card); padding: 14px; border-radius: 16px; 
+      background: var(--milk-card); padding: 12px; border-radius: 16px; border: 1px solid var(--milk-border);
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04); cursor: pointer; transition: 0.2s;
-      border: 1px solid transparent;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.03); cursor: pointer; transition: 0.2s;
     }
-    .stat-card.active-filter { border-color: var(--primary); background: rgba(0, 122, 255, 0.05); }
-    .stat-value { font-size: 26px; font-weight: 700; line-height: 1.1; margin-bottom: 2px; }
-    .stat-label { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
-    .text-red-alert { color: #FF3B30 !important; }
-    .text-orange-alert { color: #FF9500 !important; }
+    .stat-card:active { transform: scale(0.97); opacity: 0.8; }
+    .stat-card.active-filter { border: 2px solid var(--primary); background: var(--milk-input); }
+    .stat-value { font-size: 24px; font-weight: 800; line-height: 1.2; color: var(--text-main); }
+    .stat-label { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+    .text-red-alert { color: #ff453a !important; }
+    .text-orange-alert { color: #ff9f0a !important; }
 
     /* 黏性標題 */
     .section-header {
-        font-size: 15px; font-weight: 600; color: var(--text-secondary);
-        padding: 12px 4px 8px; margin: 0; display: flex; align-items: center;
-        position: sticky; top: 0; background: var(--milk-bg); z-index: 20;
+        font-size: 14px; font-weight: 700; color: var(--text-secondary);
+        padding: 12px 4px; margin: 0; display: flex; align-items: center;
+        position: sticky; top: -1px; background: var(--milk-bg); z-index: 20;
         transition: background 0.3s;
-        backdrop-filter: blur(8px); /* 增加模糊效果 */
+        /* ✨ 動畫：標題也要有進場效果 */
+        animation: slideUpFade 0.4s ease-out forwards;
+    }
+    .section-header::after {
+        content: ""; flex: 1; height: 1px; background: var(--milk-border); margin-left: 10px;
     }
 
-    /* 篩選器 */
     .filter-scroll { display: flex; gap: 8px; overflow-x: auto; padding: 4px 0; margin-top: 12px; -webkit-overflow-scrolling: touch; }
     .filter-scroll::-webkit-scrollbar { display: none; }
     .filter-chip {
-      padding: 6px 14px; background: var(--milk-card); 
+      padding: 6px 14px; background: var(--chip-bg); border: 1px solid var(--milk-border);
       border-radius: 20px; font-size: 14px; color: var(--text-secondary);
       white-space: nowrap; cursor: pointer; transition: all 0.2s;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
-    .filter-chip.active { background: var(--primary); color: white; font-weight: 600; box-shadow: 0 2px 6px rgba(0,122,255,0.3); }
+    .filter-chip.active { background: var(--primary); color: white; border-color: var(--primary); font-weight: 600; }
 
-    /* ✨✨✨ 新版卡片樣式 (重點修改) ✨✨✨ */
+    /* 卡片與進度條樣式 */
     .dashboard-card {
-      background: var(--milk-card); border-radius: 16px; 
-      padding: 0; /* 內部用 padding 控制 */
+      background: var(--milk-card); border-radius: 18px; border:1px solid var(--milk-border);
+      padding: 16px 14px 12px 14px; 
       display:flex; flex-direction: column; 
-      box-shadow: 0 2px 10px rgba(0,0,0,0.03); 
-      cursor:pointer; transition:.12s;
-      position: relative; overflow: hidden; margin-bottom: 2px;
-      opacity: 0; transform: translateY(20px);
+      box-shadow:0 6px 16px rgba(0,0,0,0.06); cursor:pointer; transition:.12s;
+      position: relative; overflow: hidden; 
+      /* ✨ 動畫：預設隱藏，等待動畫觸發 */
+      opacity: 0; 
+      transform: translateY(20px);
     }
-    .dashboard-card:active { transform:scale(0.98); background: #fafafa; }
-    body.dark-mode .dashboard-card:active { background: #2C2C2E; }
-
-    /* 卡片上層 */
-    .card-top { padding: 16px 16px 12px 16px; }
-    /* 卡片下層 (地址區) */
-    .card-bottom { 
-        padding: 10px 16px; background: #F9F9F9; 
-        border-top: 1px solid var(--milk-border);
-        display: flex; justify-content: space-between; align-items: center;
+    /* ✨ 定義動畫關鍵影格 */
+    @keyframes slideUpFade {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
     }
-    body.dark-mode .card-bottom { background: #252527; }
+    /* ✨ 套用動畫的 class */
+    .animate-enter {
+        animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
 
-    .card-row { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-main); margin-bottom: 6px; }
-    .card-icon { font-size: 18px; color: var(--text-secondary); width: 24px; text-align: center; }
+    .dashboard-card:active { transform:scale(.97); }
+    .card-content-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
     
-    .status-badge { 
-        font-size: 12px; padding: 2px 8px; border-radius: 6px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;
+    .dashboard-name { font-size:20px; font-weight:700; color: var(--text-main); }
+    .dashboard-tag {
+      display:inline-flex; padding:3px 10px; background:var(--chip-bg); border:1px solid var(--milk-border);
+      border-radius:999px; font-size:12px; color:var(--text-secondary); margin:4px 0;
     }
-    .status-badge.overdue { background: #FFECEC; color: #FF3B30; }
-    .status-badge.soon { background: #FFF4E5; color: #FF9500; }
-    body.dark-mode .status-badge.overdue { background: rgba(255, 59, 48, 0.2); }
-    body.dark-mode .status-badge.soon { background: rgba(255, 149, 0, 0.2); }
+    .dashboard-chevron { width:32px; height:32px; background:var(--milk-input); border-radius:50%; display:flex; align-items:center; justify-content:center; color: var(--text-secondary); }
 
-    /* LINE 按鈕微調 */
-    .btn-line-icon {
-        width: 32px; height: 32px; border-radius: 50%;
-        background: #06C755; color: white; display: flex; align-items: center; justify-content: center;
-        box-shadow: 0 2px 5px rgba(6,199,85,0.2); margin-left: auto;
-    }
-    
-    /* 導航按鈕微調 */
-    .btn-nav-icon {
-        width: 32px; height: 32px; border-radius: 50%;
-        background: var(--milk-card); border: 1px solid var(--milk-border);
-        color: var(--primary); display: flex; align-items: center; justify-content: center;
-    }
-
-    /* 進度條 */
+    /* 進度條樣式 */
     .progress-track {
-        height: 3px; width: 100%; background: transparent;
-        position: absolute; bottom: 0; left: 0; right: 0;
+        height: 4px; width: 100%; background: #F2F2F7; border-radius: 2px; margin-top: 12px;
+        overflow: hidden; display: flex;
     }
-    .progress-bar { height: 100%; }
-    
-    /* 動畫 */
-    @keyframes slideUpFade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    .animate-enter { animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    body.dark-mode .progress-track { background: #3a3a3c; }
+    .progress-bar { height: 100%; border-radius: 2px; transition: width 0.5s ease; }
+    .bar-green { background-color: #30D158; }
+    .bar-yellow { background-color: #FF9F0A; }
+    .bar-red { background-color: #FF453A; }
 
-    /* 其他通用樣式保留... */
+    .timeline-item { position:relative; margin-bottom:18px; padding-left:20px; }
+    .timeline-item::before { content:""; position:absolute; left:9px; top:0; bottom:-8px; width:2px; background:var(--milk-border); }
+    .timeline-dot { position:absolute; left:4px; top:8px; width:12px; height:12px; background:var(--milk-card); border:3px solid var(--primary); border-radius:50%; }
+    .record-card { background:var(--milk-card); border:1px solid var(--milk-border); padding:14px; border-radius:16px; box-shadow:0 4px 12px rgba(0,0,0,0.05); }
+    .record-date { font-weight:600; color: var(--text-main); }
+    .record-amount { color:#30D158; font-weight:700; }
+
     .tag-selector, .chip-container { display:flex; flex-wrap:wrap; gap:8px; }
     .tag, .item-chip {
       padding:6px 12px; background:var(--chip-bg); border:1px solid var(--milk-border);
@@ -179,9 +182,10 @@
     .sheet-backdrop { background: rgba(0,0,0,0.4); backdrop-filter:blur(2px); }
     .sheet { background: var(--milk-card); max-height: 90vh; display: flex; flex-direction: column; color: var(--text-main); }
     .sheet-grabber { width: 40px; height: 5px; background: #E0E0E0; border-radius: 99px; margin: 10px auto 0; }
-    .sheet-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--milk-border); }
+    body.dark-mode .sheet-grabber { background: #48484A; }
+    .sheet-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--milk-border); }
     .sheet-title { font-weight: 700; font-size: 18px; color: var(--text-main); }
-    .sheet-btn-text { color: var(--primary); font-size: 16px; font-weight: 600; }
+    .sheet-btn-text { color: var(--primary); font-size: 16px; }
     .sheet-body { padding: 16px; overflow-y: auto; background-color: var(--milk-bg); }
      
     input, textarea, select { -webkit-appearance: none; appearance: none; }
@@ -204,6 +208,14 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 10;
     }
     
+    .btn-line {
+      background-color: #30D158; color: white;
+      border: none; padding: 6px 12px; border-radius: 99px;
+      font-size: 13px; font-weight: 600; display: inline-flex; align-items: center;
+      gap: 4px; cursor: pointer; text-decoration: none;
+    }
+    .btn-line:active { background-color: #24a544; }
+    
     .finish-modal-overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000;
       display: flex; align-items: center; justify-content: center;
@@ -224,28 +236,43 @@
     }
     
     .theme-toggle {
-        width: 40px; height: 40px; border-radius: 50%; background: var(--milk-card); color: var(--text-main);
-        display: flex; align-items: center; justify-content: center; cursor: pointer; 
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        padding: 8px; border-radius: 50%; background: var(--milk-input); color: var(--text-secondary);
+        display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid var(--milk-border);
     }
 
     .fab-btn {
-        position: fixed; right: 24px; width: 56px; height: 56px;
-        border-radius: 50%; background: var(--primary); color: white;
-        display: flex; align-items: center; justify-content: center;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3); cursor: pointer;
-        z-index: 40; transition: transform 0.2s, opacity 0.3s; border: none;
+        position: fixed;
+        right: 24px;
+        width: 56px; 
+        height: 56px;
+        border-radius: 50%;
+        background: var(--primary); 
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        cursor: pointer;
+        z-index: 40;
+        transition: transform 0.2s, opacity 0.3s;
+        border: none;
     }
     .fab-btn:active { transform: scale(0.95); }
 
-    #btn-add-customer { bottom: 30px; }
-    #scroll-to-top {
-        bottom: 100px; opacity: 0; pointer-events: none; transform: translateY(10px);
+    #btn-add-customer { 
+        bottom: 30px; 
     }
-    #scroll-to-top.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
-    
-    /* 詳情頁卡片微調 */
-    .record-card { border-radius: 16px; margin-bottom: 16px; }
+    #scroll-to-top {
+        bottom: 100px; 
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(10px);
+    }
+    #scroll-to-top.show {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+    }
   </style>
 </head>
 
@@ -253,8 +280,8 @@
 
 <div id="page-list" class="min-h-screen transition-colors duration-300">
   <div class="pt-10 pb-4 px-4 max-w-md mx-auto">
-    <div class="flex justify-between items-center mb-4">
-        <div class="text-3xl font-bold tracking-tight">濾芯保養系統</div>
+    <div class="flex justify-between items-center mb-3">
+        <div class="text-3xl font-semibold">濾芯保養系統</div>
         <button class="theme-toggle" onclick="toggleDarkMode()">
             <span id="theme-icon" class="material-icons">dark_mode</span>
         </button>
@@ -278,7 +305,7 @@
     <div id="filter-container" class="filter-scroll"></div>
   </div>
 
-  <div id="customer-list" class="max-w-md mx-auto px-4 pt-2 pb-32">
+  <div id="customer-list" class="max-w-md mx-auto px-4 pt-2 pb-20">
     <div class="text-center text-gray-400 mt-20">載入中…</div>
   </div>
 
@@ -306,19 +333,21 @@
     </div>
 
     <div class="record-card mb-4">
-      <div class="font-bold mb-2 text-gray-500 text-xs tracking-widest uppercase">基本資料</div>
-      <div class="flex py-1"><span class="w-24 text-secondary">姓名</span><span id="detail-name" class="font-medium"></span></div>
-      <div class="flex py-1"><span class="w-24 text-secondary">電話</span><span><a id="detail-phone-link" class="text-blue-600 font-medium flex items-center"><span class="material-icons mr-1 text-base">phone</span><span id="detail-phone"></span></a></span></div>
-      <div class="flex py-1"><span class="w-24 text-secondary">安裝日期</span><span id="detail-install-date" class="text-gray-400 italic">無紀錄</span></div>
-      <div class="flex py-1"><span class="w-24 text-secondary">累積消費</span><span id="detail-total-spend" class="font-bold text-primary">計算中...</span></div>
-      <div class="flex py-1 items-start"><span class="w-24 text-secondary pt-1">標籤</span><div id="detail-tags" class="flex flex-wrap gap-2 flex-1"></div></div>
-      <div class="flex py-1"><span class="w-24 text-secondary">保養週期</span><span id="detail-cycle" class="text-gray-800"></span></div>
+      <div class="font-bold mb-2 text-gray-500 text-xs tracking-widest">基本資料</div>
+      <div class="flex py-1"><span class="w-20 text-secondary">姓名</span><span id="detail-name"></span></div>
+      <div class="flex py-1"><span class="w-20 text-secondary">電話</span><span><a id="detail-phone-link" class="text-blue-600 font-medium flex items-center"><span class="material-icons mr-1 text-base">phone</span><span id="detail-phone"></span></a></span></div>
+      <div class="flex py-1"><span class="w-20 text-secondary">安裝日期</span><span id="detail-install-date" class="text-gray-400 italic">無紀錄</span></div>
+      
+      <div class="flex py-1"><span class="w-20 text-secondary">累積消費</span><span id="detail-total-spend" class="font-bold text-primary">計算中...</span></div>
+      
+      <div class="flex py-1 items-start"><span class="w-20 text-secondary pt-1">標籤</span><div id="detail-tags" class="flex flex-wrap gap-2 flex-1"></div></div>
+      <div class="flex py-1"><span class="w-20 text-secondary">保養週期</span><span id="detail-cycle" class="text-gray-800"></span></div>
     </div>
 
     <div class="record-card mb-4">
-      <div class="font-bold mb-2 text-gray-500 text-xs tracking-widest uppercase">設備資訊</div>
+      <div class="font-bold mb-2 text-gray-500 text-xs tracking-widest">設備資訊</div>
       <div class="flex py-1 items-center">
-        <span class="w-24 text-secondary flex-shrink-0">地址</span>
+        <span class="w-20 text-secondary flex-shrink-0">地址</span>
         <div class="flex-1 flex items-center justify-between">
            <span id="detail-address"></span>
            <a id="detail-map-link" target="_blank" class="bg-blue-100 text-blue-600 px-3 py-1 rounded-lg text-sm font-bold flex items-center ml-2 hidden no-underline">
@@ -326,17 +355,18 @@
            </a>
         </div>
       </div>
-      <div class="flex py-1"><span class="w-24 text-secondary">機器</span><span id="detail-machine"></span></div>
-      <div class="flex py-1"><span class="w-24 text-secondary">濾芯</span><span id="detail-filter"></span></div>
-      <div id="note-container" class="flex py-1 hidden"><span class="w-24 text-secondary">備註</span><span id="detail-note"></span></div>
+      <div class="flex py-1"><span class="w-20 text-secondary">機器</span><span id="detail-machine"></span></div>
+      <div class="flex py-1"><span class="w-20 text-secondary">濾芯</span><span id="detail-filter"></span></div>
+      <div id="note-container" class="flex py-1 hidden"><span class="w-20 text-secondary">備註</span><span id="detail-note"></span></div>
     </div>
 
     <div class="record-card mb-4">
-      <div class="font-bold mb-3 text-gray-500 text-xs tracking-widest uppercase">新增保養紀錄</div>
+      <div class="font-bold mb-3 text-gray-500 text-xs tracking-widest">新增保養紀錄</div>
       <div class="grid grid-cols-2 gap-3 mb-3">
         <div><div class="text-secondary text-sm mb-1">日期</div><input type="date" id="record-date" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2"></div>
         <div><div class="text-secondary text-sm mb-1">金額</div><input type="number" id="record-amount" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2" placeholder="0"></div>
       </div>
+      
       <div id="new-record-price-chips" class="chip-container mb-3"></div>
       
       <div class="mb-3">
@@ -363,7 +393,7 @@
     </div>
 
     <div>
-      <div class="font-bold text-gray-500 text-xs tracking-widest mb-2 uppercase">歷史紀錄</div>
+      <div class="font-bold text-gray-500 text-xs tracking-widest mb-2">歷史紀錄</div>
       <div id="record-list" class="mt-3"></div>
     </div>
   </div>
@@ -379,11 +409,13 @@
     </div>
     <div class="sheet-body space-y-4 bg-gray-50">
       <input type="hidden" id="cust-id">
+       
       <div class="space-y-3 bg-white rounded-xl p-4 shadow-sm">
         <div><label>姓名 <span class="text-red-500">*</span></label><input id="cust-name" type="text" class="w-full p-2 border rounded"></div>
         <div><label>電話 <span class="text-red-500">*</span></label><input id="cust-phone" type="tel" class="w-full p-2 border rounded"></div>
         <div><label>安裝日期</label><input id="cust-install-date" type="date" class="w-full p-2 border rounded"></div>
       </div>
+
       <div class="space-y-3 bg-white rounded-xl p-4 shadow-sm">
         <div>
             <label>保養週期</label>
@@ -400,14 +432,17 @@
         <div><label>機器型號</label><input id="cust-machine" type="text" class="w-full p-2 border rounded"></div>
         <div><label>濾芯規格</label><input id="cust-filter" type="text" class="w-full p-2 border rounded"></div>
       </div>
+
       <div class="space-y-2 bg-white rounded-xl p-4 shadow-sm">
         <label>標籤（可多選）</label>
         <div id="cust-tag-selector" class="tag-selector"></div>
       </div>
+
       <div class="bg-white rounded-xl p-4 shadow-sm">
         <label>備註</label>
         <textarea id="cust-note" rows="2" class="w-full p-2 border rounded"></textarea>
       </div>
+
       <div class="bg-white rounded-xl p-4 shadow-sm text-center">
         <label class="text-blue-600 font-medium flex items-center justify-center cursor-pointer p-2 border-2 border-dashed border-blue-200 rounded-lg">
           <span class="material-icons mr-2">add_photo_alternate</span> 選擇機器照片
@@ -415,6 +450,7 @@
         </label>
         <div id="cust-photo-preview" class="flex gap-2 overflow-x-auto mt-2 justify-center"></div>
       </div>
+
       <button id="btn-delete-customer" onclick="deleteCustomer()" class="danger-btn hidden">刪除此客戶</button>
       <div class="h-10"></div>
     </div>
@@ -439,12 +475,15 @@
           <div id="edit-record-item-chips" class="chip-container"></div>
         </div>
         <div><label>金額</label><input id="edit-record-amount" type="number" class="w-full p-2 border rounded text-green-600 font-bold"></div>
+        
         <div id="edit-record-price-chips" class="chip-container mb-3"></div>
+
         <div>
           <label>備註</label>
           <textarea id="edit-record-note" rows="2" class="w-full p-2 border rounded"></textarea>
           <div id="edit-record-note-chips" class="chip-container mt-2"></div>
         </div>
+
       </div>
       <div class="bg-white rounded-xl p-4 shadow-sm">
         <label class="text-blue-600 font-medium flex items-center justify-center cursor-pointer p-2 border-2 border-dashed border-blue-200 rounded-lg">
@@ -470,22 +509,32 @@
 <div id="toast" class="toast"></div>
 
 <script>
+// ⚠️⚠️⚠️ 請務必確認這裡是你最新的 Google Apps Script 網址 ⚠️⚠️⚠️
 const API_URL = "https://script.google.com/macros/s/AKfycbyOzg78yqgVwWkKkQM2V67Gmaicrh-ilnZ5SZ1FXq449cO4iO1nU46i5tO1xiyVZ9s/exec";
 
+// 標籤選項
 const TAG_OPTIONS = ["全部", "廚下型", "飲水機", "全戶式", "工業商業", "售服", "其他"];
+// 常用維修項目
 const ITEM_OPTIONS = ["PP", "UDFC","CTO","UDFR", "RO膜","大T", "小T", "保養","代更換", "維修"];
+// 常用備註選項
 const NOTE_OPTIONS = ["水壓正常", "管線更新", "更換接頭", "漏水處理", "無人在家", "客戶指定時間"];
-const PRICE_OPTIONS = ["500", "1200", "1500", "2500", "3500"];
+// 常用金額選項
+const PRICE_OPTIONS = ["500", "1000", "1800", "2500", "3500"];
 
 let currentFilter = "全部";
 let dashboardFilter = null; 
+
 let customers = [];
 let currentCustomer = null;
+
 let selectedCustPhotos = [];
 let selectedRecordPhotos = [];
 let selectedEditRecordPhotos = [];
+
 window.currentRecords = [];
+
 let lastScrollY = 0;
+
 let existingCustPhotos = [];
 let existingRecordPhotos = [];
 
@@ -525,6 +574,7 @@ function closeLightbox() {
 function renderPhotoEditor(containerId, existingArr, newArr, type) {
   const container = document.getElementById(containerId);
   container.innerHTML = "";
+
   existingArr.forEach((url, index) => {
     const wrap = document.createElement("div");
     wrap.className = "photo-wrapper";
@@ -534,6 +584,7 @@ function renderPhotoEditor(containerId, existingArr, newArr, type) {
     `;
     container.appendChild(wrap);
   });
+
   newArr.forEach((base64, index) => {
     const wrap = document.createElement("div");
     wrap.className = "photo-wrapper";
@@ -625,6 +676,7 @@ function updateDashboard(list) {
   let overdueCount = 0;
   let thisMonthCount = 0;
   const currentMonth = new Date().getMonth();
+
   list.forEach(c => {
     const status = getServiceStatus(c.lastRecordDate, c.cycle);
     if (status.type === 'overdue') {
@@ -636,6 +688,7 @@ function updateDashboard(list) {
       }
     }
   });
+
   document.getElementById("stat-overdue-val").innerText = overdueCount;
   document.getElementById("stat-month-val").innerText = thisMonthCount;
 }
@@ -643,6 +696,7 @@ function updateDashboard(list) {
 function toggleDashboardFilter(type) {
     const overdueCard = document.getElementById("card-overdue");
     const monthCard = document.getElementById("card-month");
+
     if (dashboardFilter === type) {
         dashboardFilter = null;
         overdueCard.classList.remove("active-filter");
@@ -651,11 +705,13 @@ function toggleDashboardFilter(type) {
         dashboardFilter = type;
         overdueCard.classList.remove("active-filter");
         monthCard.classList.remove("active-filter");
+        
         if (type === 'overdue') overdueCard.classList.add("active-filter");
         if (type === 'month') monthCard.classList.add("active-filter");
     }
     renderList(customers);
 }
+
 
 function renderFilterBar() {
     const container = document.getElementById("filter-container");
@@ -669,6 +725,7 @@ function filterByTag(tag) {
     dashboardFilter = null;
     document.getElementById("card-overdue").classList.remove("active-filter");
     document.getElementById("card-month").classList.remove("active-filter");
+
     renderFilterBar(); 
     renderList(customers);
 }
@@ -709,10 +766,12 @@ function addItemToInput(inputId, itemText) {
 
 function sendLineReminder(e, name, nextDate) {
   if(e) e.stopPropagation(); 
+  
   const text = `親愛的 ${name} 您好：%0D%0A` +
                `您的過濾器設備預計於 ${nextDate} 需要進行保養更換。%0D%0A` +
                `為了確保飲水品質，建議您近期安排時間。%0D%0A` +
                `若需預約請直接回覆此訊息，謝謝！`;
+               
   window.location.href = `https://line.me/R/msg/text/?${text}`;
 }
 
@@ -726,18 +785,20 @@ function sendLineReport(name, date, items, amount, nextDate) {
                `------------------%0D%0A` +
                `下次保養預計：${nextDate}%0D%0A` +
                `附上本次保養照片供您留存。`;
+
   window.location.href = `https://line.me/R/msg/text/?${text}`;
 }
 
-// ✨✨✨ 新版卡片渲染邏輯 ✨✨✨
 function renderList(list){
   const container = document.getElementById("customer-list");
   container.innerHTML = "";
 
   let filtered = list;
+  
   if (currentFilter !== "全部") {
       filtered = filtered.filter(c => c.tags && c.tags.includes(currentFilter));
   }
+   
   const searchTerm = document.getElementById("search-input").value.toLowerCase();
   if (searchTerm) {
       filtered = filtered.filter(c => 
@@ -747,6 +808,7 @@ function renderList(list){
         (c.note && c.note.toLowerCase().includes(searchTerm))
       );
   }
+
   if (dashboardFilter === 'overdue') {
       filtered = filtered.filter(c => getServiceStatus(c.lastRecordDate, c.cycle).type === 'overdue');
   } else if (dashboardFilter === 'month') {
@@ -770,6 +832,7 @@ function renderList(list){
   }
 
   const isSearching = searchTerm || dashboardFilter;
+  
   const groups = { overdue: [], soon: [], normal: [] };
   
   if (!isSearching) {
@@ -779,6 +842,7 @@ function renderList(list){
           else if (type === 'soon') groups.soon.push(c);
           else groups.normal.push(c);
       });
+      
       renderSection(container, "🔴 逾期未保養", groups.overdue);
       renderSection(container, "🟡 即將到期 (14天內)", groups.soon);
       renderSection(container, "🟢 正常", groups.normal);
@@ -789,24 +853,26 @@ function renderList(list){
 
 function renderSection(container, title, items) {
     if (items.length === 0) return;
+
     if (title) {
         const header = document.createElement("div");
         header.className = "section-header";
         header.innerText = `${title} (${items.length})`;
         container.appendChild(header);
     }
+
     const wrap = document.createElement("div");
     wrap.className = "space-y-3";
 
+    // ✨✨✨ 這裡加入卡片生成邏輯 ✨✨✨
     items.forEach((c, index) => {
         const status = getServiceStatus(c.lastRecordDate, c.cycle);
         const last = c.lastRecordDate ? normalizeDateStr(c.lastRecordDate) : "尚無紀錄";
         const machine = c.machine || "未填寫機型";
-        const address = c.address ? c.address : "未填寫地址";
 
-        let cardClass = "dashboard-card animate-enter";
-        let statusBadge = "";
-        let lineBtn = "";
+        let cardClass = "dashboard-card border-l-4 animate-enter"; // ✨ 加上動畫 class
+        let statusHtml = "";
+        let btnHtml = ""; 
         let progressHtml = ""; 
 
         let progressWidth = 0;
@@ -817,87 +883,104 @@ function renderSection(container, title, items) {
             const lastDate = new Date(c.lastRecordDate);
             const cycleDays = c.cycle * 30; 
             const daysPassed = (today - lastDate) / (1000 * 60 * 60 * 24);
+            
             progressWidth = Math.min((daysPassed / cycleDays) * 100, 100);
             
             if (status.type === 'overdue') {
                 progressColor = "bar-red";
                 progressWidth = 100; 
-                statusBadge = `<div class="status-badge overdue"><span class="material-icons" style="font-size:14px">warning</span>過期 ${status.days} 天</div>`;
-                lineBtn = `<div class="btn-line-icon" onclick="sendLineReminder(event, '${c.name}', '${status.nextDate}')"><span class="material-icons" style="font-size:18px">chat</span></div>`;
             } else if (status.type === 'soon') {
                 progressColor = "bar-yellow";
-                statusBadge = `<div class="status-badge soon"><span class="material-icons" style="font-size:14px">schedule</span>剩 ${status.days} 天</div>`;
-                lineBtn = `<div class="btn-line-icon" onclick="sendLineReminder(event, '${c.name}', '${status.nextDate}')"><span class="material-icons" style="font-size:18px">chat</span></div>`;
             }
+            
             progressHtml = `<div class="progress-track"><div class="progress-bar ${progressColor}" style="width: ${progressWidth}%"></div></div>`;
+        }
+
+        if (status.type === 'overdue') {
+            cardClass += " border-l-red-500 bg-red-50/30"; 
+            statusHtml = `<div class="text-red-600 font-bold text-sm bg-red-100 px-2 py-1 rounded-md flex items-center">
+                            <span class="material-icons text-sm mr-1">warning</span>過期 ${status.days} 天
+                          </div>`;
+            btnHtml = `<button class="btn-line ml-2 flex-shrink-0" onclick="sendLineReminder(event, '${c.name}', '${status.nextDate}')">
+                         <span class="material-icons text-sm">chat</span> 提醒
+                       </button>`;
+
+        } else if (status.type === 'soon') {
+            cardClass += " border-l-yellow-500 bg-yellow-50/30";
+            statusHtml = `<div class="text-yellow-700 font-bold text-sm bg-yellow-100 px-2 py-1 rounded-md flex items-center">
+                            <span class="material-icons text-sm mr-1">schedule</span>剩 ${status.days} 天
+                          </div>`;
+             btnHtml = `<button class="btn-line ml-2 flex-shrink-0" onclick="sendLineReminder(event, '${c.name}', '${status.nextDate}')">
+                         <span class="material-icons text-sm">chat</span> 提醒
+                       </button>`;
+        } else {
+            cardClass += " border-l-transparent hover:border-l-primary";
+            if (c.cycle) {
+                 statusHtml = `<div class="text-gray-400 text-xs">下次: ${status.nextDate}</div>`;
+            }
         }
 
         const card = document.createElement("div");
         card.className = cardClass;
-        card.style.animationDelay = `${index * 0.05}s`;
+        card.style.animationDelay = `${index * 0.05}s`; // ✨ 加上動畫延遲
         card.onclick = ()=> openDetail(c);
 
         card.innerHTML = `
-          <div class="card-top">
-            <div class="flex justify-between items-start mb-2">
-                <div class="flex-1">
-                    <div class="flex items-center gap-2 mb-1">
-                        <div class="text-lg font-bold text-gray-900 leading-tight">${c.name}</div>
-                        ${statusBadge}
-                    </div>
-                    <div class="flex flex-wrap gap-1">
-                      ${c.tags ? c.tags.split(",").map(t=>`<span class="dashboard-tag">${t}</span>`).join("") : ""}
-                    </div>
-                </div>
-                ${lineBtn}
+          <div class="card-content-row grow min-w-0 mb-1">
+            <div class="flex items-center gap-2 min-w-0 flex-1">
+                <div class="dashboard-name truncate text-navy-900 leading-tight">${c.name}</div>
+                ${btnHtml} 
             </div>
-            
-            <div class="card-row">
-                <div class="flex items-center gap-1 flex-1">
-                    <span class="card-icon material-icons">settings</span>
-                    <span class="truncate font-medium">${machine}</span>
-                </div>
-            </div>
-            <div class="card-row">
-                <div class="flex items-center gap-1 flex-1 text-gray-500">
-                    <span class="card-icon material-icons">phone_iphone</span>
-                    <a href="tel:${c.phone}" class="truncate" onclick="event.stopPropagation()">${c.phone}</a>
-                </div>
-                <div class="text-xs text-gray-400 whitespace-nowrap">上次: ${last}</div>
+            <div class="flex-shrink-0 ml-2">
+                ${statusHtml} 
             </div>
           </div>
 
-          <div class="card-bottom">
-             <div class="flex items-center gap-2 overflow-hidden">
-                <span class="material-icons text-gray-400" style="font-size:18px">place</span>
-                <span class="text-sm text-gray-600 truncate">${address}</span>
-             </div>
-             <button class="btn-nav-icon flex-shrink-0 ml-2" onclick="openMap(event, '${address}')">
-                <span class="material-icons" style="font-size:18px">near_me</span>
-             </button>
+          <div class="flex gap-2 flex-wrap my-1 text-sm text-secondary">
+            ${c.tags ? c.tags.split(",").map(t=>`<div class="dashboard-tag">${t}</div>`).join("") : ""}
           </div>
-          ${progressHtml}
+
+          <div class="card-content-row mt-1">
+             <div class="text-sm text-secondary font-medium flex items-center gap-1 min-w-0">
+                <span class="material-icons text-base text-gray-400">settings</span>
+                <span class="truncate">${machine}</span>
+             </div>
+             <div class="text-right flex-shrink-0">
+                 <div class="text-xs text-gray-400">上次保養</div>
+                 <div class="font-medium ${status.type === 'overdue' ? 'text-red-500' : 'text-gray-700'}">${last}</div>
+             </div>
+          </div>
+          
+          <div class="card-content-row text-sm text-secondary mt-1">
+             <a href="tel:${c.phone}" class="flex items-center gap-1 min-w-0 text-blue-600 no-underline" onclick="event.stopPropagation()">
+                <span class="material-icons text-base flex-shrink-0">phone_iphone</span>
+                <span class="truncate font-medium">${c.phone}</span>
+             </a>
+             <div class="dashboard-chevron"><span class="material-icons">arrow_forward_ios</span></div>
+          </div>
+
+          ${progressHtml} 
         `;
         wrap.appendChild(card);
     });
-    container.appendChild(wrap);
-}
 
-function openMap(e, address) {
-    e.stopPropagation();
-    window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`, '_blank');
+    container.appendChild(wrap);
 }
 
 function getServiceStatus(lastDateStr, cycleMonths) {
     if (!lastDateStr || !cycleMonths) return { type: 'normal', score: 1 };
+    
     const lastDate = new Date(lastDateStr);
     const nextDate = new Date(lastDate);
     nextDate.setMonth(nextDate.getMonth() + parseInt(cycleMonths));
+    
     const today = new Date();
     today.setHours(0,0,0,0);
+    
     const diffTime = nextDate - today;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     const nextDateStr = `${nextDate.getFullYear()}-${String(nextDate.getMonth()+1).padStart(2,'0')}-${String(nextDate.getDate()).padStart(2,'0')}`;
+
     if (diffDays < 0) {
         return { type: 'overdue', days: Math.abs(diffDays), nextDate: nextDateStr, score: 3 }; 
     } else if (diffDays <= 14) {
@@ -909,17 +992,23 @@ function getServiceStatus(lastDateStr, cycleMonths) {
 
 async function openDetail(c){
   lastScrollY = window.scrollY; 
+  
   currentCustomer = c;
   document.getElementById("page-list").classList.add("hidden");
   document.getElementById("page-detail").classList.remove("hidden");
   window.scrollTo(0,0);
+
   document.getElementById("detail-name").innerText = c.name;
   document.getElementById("detail-phone").innerText = c.phone;
   document.getElementById("detail-phone-link").href = `tel:${c.phone}`;
   document.getElementById("detail-install-date").innerText = c.installDate ? normalizeDateStr(c.installDate) : "無紀錄";
+  
+  // 重置金額統計
   document.getElementById("detail-total-spend").innerText = "計算中...";
+
   const cycleText = c.cycle ? `${c.cycle} 個月` : "未設定";
   document.getElementById("detail-cycle").innerText = cycleText;
+
   const addr = c.address || "";
   document.getElementById("detail-address").innerText = addr || "未填寫";
   const mapLink = document.getElementById("detail-map-link");
@@ -929,21 +1018,26 @@ async function openDetail(c){
   } else {
       mapLink.classList.add("hidden");
   }
+
   document.getElementById("detail-machine").innerText = c.machine || "未填寫";
   document.getElementById("detail-filter").innerText = c.filter || "未填寫";
+
   const tagBox = document.getElementById("detail-tags");
   tagBox.innerHTML = c.tags ? c.tags.split(",").map(t=>`<div class="dashboard-tag">${t}</div>`).join("") : `<span class="text-secondary">未設定</span>`;
+
   if (c.note){
     document.getElementById("detail-note").innerText = c.note;
     document.getElementById("note-container").classList.remove("hidden");
   } else {
     document.getElementById("note-container").classList.add("hidden");
   }
+
   const photoDiv = document.getElementById("customer-photos-container");
   photoDiv.innerHTML = "";
   let photos = [];
   if (Array.isArray(c.photos)) photos = c.photos;
   else if (typeof c.photos==="string" && c.photos.startsWith("[")) { try { photos = JSON.parse(c.photos); } catch {} }
+   
   if (photos.length){
     photos.forEach(url=>{
       const img = document.createElement("img"); img.src = url; img.className = "photo-thumb cursor-pointer";
@@ -951,6 +1045,7 @@ async function openDetail(c){
       photoDiv.appendChild(img);
     });
   } else { photoDiv.innerHTML = `<div class="text-secondary text-sm">無照片</div>`; }
+
   await fetchRecords(c.id);
 }
 
@@ -972,11 +1067,14 @@ async function fetchRecords(id){
   window.currentRecords = records;
   box.innerHTML = "";
   records.sort((a,b)=>new Date(b.date)-new Date(a.date));
+  
+  // VIP 統計
   let total = 0;
   records.forEach(r => {
       total += parseInt(r.amount) || 0;
   });
   document.getElementById("detail-total-spend").innerText = `NT$${total.toLocaleString()} (共 ${records.length} 次)`;
+   
   records.forEach(r=>{
     const photos = Array.isArray(r.photos) ? r.photos : [];
     const item = document.createElement("div"); item.className = "timeline-item";
@@ -1007,12 +1105,14 @@ function openEditRecordModal(id){
   document.getElementById("edit-record-items").value = r.items;
   document.getElementById("edit-record-amount").value = r.amount || "";
   document.getElementById("edit-record-note").value = r.note || "";
+   
   existingRecordPhotos = [];
   if (r.photos && Array.isArray(r.photos)) {
       existingRecordPhotos = [...r.photos];
   }
   selectedEditRecordPhotos = [];
   renderPhotoEditor("edit-record-photo-preview", existingRecordPhotos, selectedEditRecordPhotos, 'record');
+
   document.getElementById("record-modal").classList.remove("hidden");
 }
 
@@ -1021,16 +1121,20 @@ async function saveEditedRecord(){
   const items = document.getElementById("edit-record-items").value.trim();
   const date = document.getElementById("edit-record-date").value;
   if (!items){ alert("請輸入項目"); return; }
+   
   let photoUrls = [...existingRecordPhotos]; 
+
   let uploadedCount = 0;
   const totalUpload = selectedEditRecordPhotos.length;
   if(totalUpload > 0) showLoading(true, `準備上傳 ${totalUpload} 張照片...`);
+
   for (let base64 of selectedEditRecordPhotos){
     uploadedCount++;
     showLoading(true, `正在上傳照片 (${uploadedCount}/${totalUpload})...`);
     const res = await apiCall("uploadImage", {base64, type:"image/jpeg"});
     if (res?.status==="success") photoUrls.push(res.url);
   }
+
   showLoading(true, "儲存資料中...");
   const payload = {
     id, date, items,
@@ -1040,6 +1144,7 @@ async function saveEditedRecord(){
   };
   const res = await apiCall("updateRecord", payload);
   showLoading(false);
+
   if (res?.status==="success"){
     closeModal("record-modal"); await fetchRecords(currentCustomer.id); renderList(customers);
   }
@@ -1049,16 +1154,20 @@ async function saveRecord(){
   if (!currentCustomer) return;
   const items = document.getElementById("record-items").value.trim();
   if (!items){ alert("請輸入項目"); return; }
+  
   let photoUrls = [];
+
   let uploadedCount = 0;
   const totalUpload = selectedRecordPhotos.length;
   if(totalUpload > 0) showLoading(true, `準備上傳 ${totalUpload} 張照片...`);
+
   for (let base64 of selectedRecordPhotos){
     uploadedCount++;
     showLoading(true, `正在上傳照片 (${uploadedCount}/${totalUpload})...`);
     const res = await apiCall("uploadImage", {base64, type:"image/jpeg"});
     if (res?.status==="success") photoUrls.push(res.url);
   }
+
   showLoading(true, "儲存資料中...");
   const payload = {
     customerId: currentCustomer.id,
@@ -1070,6 +1179,7 @@ async function saveRecord(){
   };
   const res = await apiCall("addRecord", payload);
   showLoading(false);
+
   if (res?.status==="success"){
     selectedRecordPhotos = [];
     document.getElementById("new-record-photos").innerHTML = "";
@@ -1077,13 +1187,16 @@ async function saveRecord(){
     document.getElementById("record-amount").value=""; 
     document.getElementById("record-note").value="";
     document.getElementById("record-photo-count").innerText = "0 張";
+
     await fetchRecords(currentCustomer.id);
     await fetchCustomers(); 
+
     let nextDateStr = "未設定";
     if (currentCustomer.cycle) {
         const status = getServiceStatus(payload.date, currentCustomer.cycle);
         nextDateStr = status.nextDate;
     }
+    
     setTimeout(() => {
         if(confirm("✅ 紀錄已儲存！\n\n要傳送「完工結案報告」給客戶嗎？\n(將開啟 LINE 自動貼上文字)")) {
             sendLineReport(
@@ -1110,15 +1223,19 @@ async function saveCustomer(){
   const id = document.getElementById("cust-id").value;
   const name = document.getElementById("cust-name").value.trim();
   const phone = document.getElementById("cust-phone").value.trim();
+   
   if (!name || !phone){ 
       alert("姓名、電話必填"); 
       return; 
   }
+
   let safeExisting = Array.isArray(existingCustPhotos) ? existingCustPhotos : [];
   let photoUrls = [...safeExisting]; 
+
   let uploadedCount = 0;
   const totalUpload = selectedCustPhotos.length;
   if(totalUpload > 0) showLoading(true, `準備上傳 ${totalUpload} 張照片...`);
+
   for (let base64 of selectedCustPhotos){
     uploadedCount++;
     showLoading(true, `正在上傳照片 (${uploadedCount}/${totalUpload})...`);
@@ -1127,8 +1244,10 @@ async function saveCustomer(){
         photoUrls.push(res.url);
     }
   }
+
   showLoading(true, "儲存資料中...");
   const tags = getSelectedTags("cust-tag-selector");
+   
   const payload = {
     id, 
     name, 
@@ -1142,9 +1261,12 @@ async function saveCustomer(){
     photos: photoUrls, 
     tags
   };
+
   const act = id ? "updateCustomer" : "addCustomer";
+   
   const res = await apiCall(act, payload);
   showLoading(false);
+   
   if (res?.status === "success"){
     showToast("儲存成功");
     closeModal("customer-modal"); 
@@ -1167,11 +1289,14 @@ function showAddCustomerModal(){
   document.getElementById("cust-machine").value = "";
   document.getElementById("cust-filter").value = "";
   document.getElementById("cust-cycle").value = ""; 
+
   const d = new Date();
   document.getElementById("cust-install-date").value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+   
   selectedCustPhotos = []; 
   existingCustPhotos = []; 
   renderPhotoEditor("cust-photo-preview", existingCustPhotos, selectedCustPhotos, 'cust');
+
   renderTagSelector("cust-tag-selector", []);
   document.getElementById("btn-delete-customer").classList.add("hidden");
   document.getElementById("customer-modal").classList.remove("hidden");
@@ -1189,6 +1314,7 @@ function showEditCustomerModal(){
   document.getElementById("cust-filter").value = c.filter || "";
   document.getElementById("cust-cycle").value = c.cycle || "";
   document.getElementById("cust-install-date").value = c.installDate ? normalizeDateStr(c.installDate) : "";
+   
   existingCustPhotos = [];
   if (c.photos) {
       if (Array.isArray(c.photos)) existingCustPhotos = [...c.photos];
@@ -1196,6 +1322,7 @@ function showEditCustomerModal(){
   }
   selectedCustPhotos = []; 
   renderPhotoEditor("cust-photo-preview", existingCustPhotos, selectedCustPhotos, 'cust');
+
   renderTagSelector("cust-tag-selector", c.tags ? c.tags.split(",") : []);
   document.getElementById("btn-delete-customer").classList.remove("hidden");
   document.getElementById("customer-modal").classList.remove("hidden");
@@ -1222,7 +1349,9 @@ function handleCustPhotoSelect(input){
         renderPhotoEditor("cust-photo-preview", existingCustPhotos, selectedCustPhotos, 'cust');
     }); 
 }
+   
 function handleRecordPhotoSelect(input){ handlePhotoSelect(input, selectedRecordPhotos, "new-record-photos", "record-photo-count"); }
+   
 function handleEditRecordPhotoSelect(input){ 
     handlePhotoSelect(input, selectedEditRecordPhotos, null, null, () => {
         renderPhotoEditor("edit-record-photo-preview", existingRecordPhotos, selectedEditRecordPhotos, 'record');
@@ -1234,11 +1363,13 @@ function handlePhotoSelect(input, arr, previewId, countId, callback){
     const reader = new FileReader();
     reader.onload = e => resizeImage(e.target.result, 900, out=>{
       arr.push(out); 
+       
       if (previewId) {
           renderPreview(previewId, arr);
       } else if (callback) {
           callback();
       }
+       
       if(countId) document.getElementById(countId).innerText = `${arr.length} 張`;
     });
     reader.readAsDataURL(file);
@@ -1265,6 +1396,7 @@ function closeModal(id){ document.getElementById(id).classList.add("hidden"); }
 document.getElementById("customer-modal").addEventListener("click", e=>{ if (e.target.id==="customer-modal") closeModal("customer-modal"); });
 document.getElementById("record-modal").addEventListener("click", e=>{ if (e.target.id==="record-modal") closeModal("record-modal"); });
 
+// ✨✨✨ 修改：支援顯示文字 ✨✨✨
 function showLoading(show, text="處理中…"){ 
     const loader = document.getElementById("loading");
     document.getElementById("loading-text").innerText = text;
@@ -1277,6 +1409,7 @@ function showToast(message) {
 }
 
 window.onload = () => {
+  // ✨ 載入時檢查主題
   checkTheme();
   fetchCustomers();
   const rd = document.getElementById("record-date");
