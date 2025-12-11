@@ -50,7 +50,7 @@
     .search-bar {
       background: #FFF; border-radius: 14px; padding: 10px; display:flex; align-items:center; gap:8px; border:1px solid var(--milk-border);
     }
-    .search-bar input { width:100%; border:none; background:transparent; font-size:16px; outline:none; }
+    .search-bar input { width:100%; border:none; background:transparent; font-size:16px; out:none; }
 
     /* 儀表板樣式 (新增) */
     .stats-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
@@ -61,7 +61,7 @@
     }
     .stat-card:active { transform: scale(0.97); background: #fafafa; }
     .stat-card.active-filter { border: 2px solid var(--primary); background: #f0f7ff; }
-    .stat-value { font-size: 24px; font-weight: 800; line-height: 1.2; }
+    .stat-value { font-size: 24px; font-weight: 800; -height: 1.2; }
     .stat-label { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
     .text-red-alert { color: #ff3b30; }
     .text-orange-alert { color: #ff9500; }
@@ -85,7 +85,7 @@
     .dashboard-card:active { transform:scale(.97); }
     .dashboard-name { font-size:20px; font-weight:700; }
     .dashboard-tag {
-      display:inline-flex; padding:3px 10px; background:#EFEDE7; border:1px solid var(--milk-border);
+      display:in-flex; padding:3px 10px; background:#EFEDE7; border:1px solid var(--milk-border);
       border-radius:999px; font-size:12px; color:var(--text-secondary); margin:4px 0;
     }
     .dashboard-chevron { width:32px; height:32px; background:#F2F0EB; border-radius:50%; display:flex; align-items:center; justify-content:center; }
@@ -597,7 +597,7 @@ function sendLineReport(name, date, items, amount, nextDate) {
   window.location.href = `https://line.me/R/msg/text/?${text}`;
 }
 
-/* ------------------------ 列表渲染 (含保養提醒功能) ------------------------ */
+/* ------------------------ 列表渲染 (修正排版 + 新增地址搜尋) ------------------------ */
 function renderList(list){
   const container = document.getElementById("customer-list");
   container.innerHTML = "";
@@ -608,34 +608,34 @@ function renderList(list){
       filtered = filtered.filter(c => c.tags && c.tags.includes(currentFilter));
   }
    
-  // 2. 搜尋過濾
+  // 2. 搜尋過濾 (✨✨✨ 修改處：新增地址搜尋 ✨✨✨)
   const searchTerm = document.getElementById("search-input").value.toLowerCase();
   if (searchTerm) {
       filtered = filtered.filter(c => 
         c.name.toLowerCase().includes(searchTerm) || 
         c.phone.includes(searchTerm) || 
+        (c.address && c.address.includes(searchTerm)) || // 👉 新增這行：搜尋地址
         (c.note && c.note.toLowerCase().includes(searchTerm))
       );
   }
 
-  // ✨✨✨ 3. 儀表板過濾邏輯 ✨✨✨
+  // 3. 儀表板過濾邏輯
   if (dashboardFilter === 'overdue') {
       filtered = filtered.filter(c => getServiceStatus(c.lastRecordDate, c.cycle).type === 'overdue');
   } else if (dashboardFilter === 'month') {
       const currentMonth = new Date().getMonth();
       filtered = filtered.filter(c => {
           const status = getServiceStatus(c.lastRecordDate, c.cycle);
-          if (status.type === 'overdue') return false; // 排除已過期的
+          if (status.type === 'overdue') return false; 
           return new Date(status.nextDate).getMonth() === currentMonth;
       });
   }
 
-  // 排序功能 (把該保養的排在最上面)
+  // 排序功能
   filtered.sort((a, b) => {
-      // 算出兩者的狀態分數 (過期=3, 即將=2, 正常=1)
       const statusA = getServiceStatus(a.lastRecordDate, a.cycle).score;
       const statusB = getServiceStatus(b.lastRecordDate, b.cycle).score;
-      return statusB - statusA; // 分數高的排前面
+      return statusB - statusA; 
   });
 
   if (!filtered.length){
@@ -647,41 +647,36 @@ function renderList(list){
   wrap.className = "space-y-3";
 
   filtered.forEach(c=>{
-    // 計算保養狀態
     const status = getServiceStatus(c.lastRecordDate, c.cycle);
     const last = c.lastRecordDate ? normalizeDateStr(c.lastRecordDate) : "尚無紀錄";
     const machine = c.machine || "未填寫機型";
 
-    // 根據狀態改變卡片樣式
     let cardClass = "dashboard-card border-l-4";
     let statusHtml = "";
     let btnHtml = ""; 
     
+    // --- 狀態樣式設定 ---
     if (status.type === 'overdue') {
-        // 🔴 過期：紅框 + 紅色警告
         cardClass += " border-l-red-500 bg-red-50/30"; 
         statusHtml = `<div class="text-red-600 font-bold text-sm bg-red-100 px-2 py-1 rounded-md flex items-center">
                         <span class="material-icons text-sm mr-1">warning</span>過期 ${status.days} 天
                       </div>`;
-        // 加入 LINE 提醒按鈕
-        btnHtml = `<button class="btn-line ml-2" onclick="sendLineReminder(event, '${c.name}', '${status.nextDate}')">
+        // 加入 LINE 提醒按鈕 (✨ 加上 flex-shrink-0 防止被擠壓)
+        btnHtml = `<button class="btn-line ml-2 flex-shrink-0" onclick="sendLineReminder(event, '${c.name}', '${status.nextDate}')">
                      <span class="material-icons text-sm">chat</span> 提醒
                    </button>`;
+
     } else if (status.type === 'soon') {
-        // 🟡 即將到期 (14天內)：黃框 + 黃色提醒
         cardClass += " border-l-yellow-500 bg-yellow-50/30";
         statusHtml = `<div class="text-yellow-700 font-bold text-sm bg-yellow-100 px-2 py-1 rounded-md flex items-center">
                         <span class="material-icons text-sm mr-1">schedule</span>剩 ${status.days} 天
                       </div>`;
-         // 加入 LINE 提醒按鈕
-        btnHtml = `<button class="btn-line ml-2" onclick="sendLineReminder(event, '${c.name}', '${status.nextDate}')">
+         btnHtml = `<button class="btn-line ml-2 flex-shrink-0" onclick="sendLineReminder(event, '${c.name}', '${status.nextDate}')">
                      <span class="material-icons text-sm">chat</span> 提醒
                    </button>`;
     } else {
-        // 🔵 正常：原本的藍色或灰色
         cardClass += " border-l-transparent hover:border-l-primary";
         if (c.cycle) {
-             // 顯示下次日期
              statusHtml = `<div class="text-gray-400 text-xs">下次: ${status.nextDate}</div>`;
         }
     }
@@ -690,15 +685,17 @@ function renderList(list){
     card.className = cardClass;
     card.onclick = ()=> openDetail(c);
 
-    // 👇 修改這裡的 innerHTML，把 ${btnHtml} 加在第一行的 flex 裡面
+    // ✨✨✨ 修改處：優化卡片標題排版，防止名稱太長跑版 ✨✨✨
     card.innerHTML = `
-      <div class="grow">
-        <div class="flex justify-between items-start mb-1">
-             <div class="flex items-center gap-2">
-                <div class="dashboard-name truncate text-navy-900">${c.name}</div>
+      <div class="grow min-w-0"> <div class="flex justify-between items-center mb-1 gap-2">
+             <div class="flex items-center gap-2 min-w-0 flex-1">
+                <div class="dashboard-name truncate text-navy-900 leading-tight">${c.name}</div>
                 ${btnHtml} 
              </div>
-             ${statusHtml} 
+             
+             <div class="flex-shrink-0">
+                ${statusHtml} 
+             </div>
         </div>
 
         <div class="flex gap-2 flex-wrap my-1 text-sm text-secondary">
@@ -707,13 +704,16 @@ function renderList(list){
 
         <div class="text-sm text-secondary mt-1 font-medium flex items-center gap-1">
            <span class="material-icons text-base text-gray-400">settings</span>
-           ${machine}
+           <span class="truncate">${machine}</span>
         </div>
 
         <div class="text-sm text-secondary flex gap-4 mt-2 justify-between items-center pr-2">
-          <span class="flex items-center gap-1"><span class="material-icons text-base text-gray-400">phone_iphone</span>${c.phone}</span>
+          <span class="flex items-center gap-1 min-w-0">
+            <span class="material-icons text-base text-gray-400 flex-shrink-0">phone_iphone</span>
+            <span class="truncate">${c.phone}</span>
+          </span>
            
-          <div class="text-right">
+          <div class="text-right flex-shrink-0">
              <div class="text-xs text-gray-400">上次保養</div>
              <div class="font-medium ${status.type === 'overdue' ? 'text-red-500' : 'text-gray-700'}">${last}</div>
           </div>
@@ -1147,3 +1147,4 @@ window.onload = () => {
 
 </body>
 </html>
+
