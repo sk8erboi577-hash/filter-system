@@ -16,7 +16,6 @@
 
   <style>
     :root {
-      /* 預設淺色模式變數 */
       --primary: #007AFF;
       --primary-light: #64A8FF;
       --milk-bg: #F5EFE7;
@@ -29,21 +28,20 @@
       --chip-bg: #EFEDE7;
     }
 
-    /* ✨✨✨ 深色模式變數覆蓋 ✨✨✨ */
     body.dark-mode {
-      --primary: #0A84FF; /* 調整為適合深色的亮藍 */
+      --primary: #0A84FF;
       --primary-light: #64A8FF;
-      --milk-bg: #121212; /* 深黑背景 */
-      --milk-card: #1C1C1E; /* 深灰卡片 */
-      --milk-border: #2C2C2E; /* 深色邊框 */
-      --milk-input: #2C2C2E; /* 輸入框背景 */
-      --text-main: #F2F2F7; /* 淺白文字 */
-      --text-secondary: #8E8E93; /* 灰色副標 */
-      --nav-bg: rgba(28,28,30,0.92); /* 導航列深色 */
+      --milk-bg: #121212;
+      --milk-card: #1C1C1E;
+      --milk-border: #2C2C2E;
+      --milk-input: #2C2C2E;
+      --text-main: #F2F2F7;
+      --text-secondary: #8E8E93;
+      --nav-bg: rgba(28,28,30,0.92);
       --chip-bg: #2C2C2E;
     }
 
-    /* 強制覆蓋 Tailwind 的白色背景，讓深色模式生效 */
+    /* 強制覆蓋 Tailwind */
     body.dark-mode .bg-white { background-color: var(--milk-card) !important; color: var(--text-main); }
     body.dark-mode .bg-gray-50 { background-color: #000000 !important; }
     body.dark-mode .text-navy-900 { color: var(--text-main) !important; }
@@ -63,10 +61,9 @@
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang TC",
         Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       color: var(--text-main);
-      transition: background 0.3s, color 0.3s; /* 平滑切換效果 */
+      transition: background 0.3s, color 0.3s;
     }
 
-    /* iOS Navigation Bar */
     .ios-nav-bar {
       position: sticky; top: 0; padding: 12px 16px; padding-top: env(safe-area-inset-top, 16px);
       background: var(--nav-bg); backdrop-filter: blur(14px);
@@ -77,13 +74,12 @@
     .ios-nav-left, .ios-nav-right { display:flex; align-items:center; color:var(--primary); font-size:16px; gap:4px; cursor:pointer; }
     .ios-nav-title { font-size:18px; font-weight:600; color:var(--text-main); }
 
-    /* 搜尋列 */
     .search-bar {
       background: var(--milk-card); border-radius: 14px; padding: 10px; display:flex; align-items:center; gap:8px; border:1px solid var(--milk-border);
     }
     .search-bar input { width:100%; border:none; background:transparent; font-size:16px; outline:none; color: var(--text-main); }
 
-    /* 儀表板樣式 */
+    /* 儀表板 */
     .stats-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
     .stat-card {
       background: var(--milk-card); padding: 12px; border-radius: 16px; border: 1px solid var(--milk-border);
@@ -94,10 +90,18 @@
     .stat-card.active-filter { border: 2px solid var(--primary); background: var(--milk-input); }
     .stat-value { font-size: 24px; font-weight: 800; line-height: 1.2; color: var(--text-main); }
     .stat-label { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
-    .text-red-alert { color: #ff453a !important; } /* 深色模式下亮一點的紅 */
-    .text-orange-alert { color: #ff9f0a !important; } /* 深色模式下亮一點的橘 */
+    .text-red-alert { color: #ff453a !important; }
+    .text-orange-alert { color: #ff9f0a !important; }
 
-    /* 篩選器樣式 */
+    /* 列表分組標題 (新增) */
+    .section-header {
+        font-size: 14px; font-weight: 700; color: var(--text-secondary);
+        margin: 16px 4px 8px; display: flex; align-items: center;
+    }
+    .section-header::after {
+        content: ""; flex: 1; height: 1px; background: var(--milk-border); margin-left: 10px;
+    }
+
     .filter-scroll { display: flex; gap: 8px; overflow-x: auto; padding: 4px 0; margin-top: 12px; -webkit-overflow-scrolling: touch; }
     .filter-scroll::-webkit-scrollbar { display: none; }
     .filter-chip {
@@ -107,7 +111,6 @@
     }
     .filter-chip.active { background: var(--primary); color: white; border-color: var(--primary); font-weight: 600; }
 
-    /* 列表卡片 */
     .dashboard-card {
       background: var(--milk-card); border-radius: 18px; border:1px solid var(--milk-border);
       padding:16px 14px; display:flex; justify-content:space-between; align-items:center;
@@ -121,15 +124,13 @@
     }
     .dashboard-chevron { width:32px; height:32px; background:var(--milk-input); border-radius:50%; display:flex; align-items:center; justify-content:center; color: var(--text-secondary); }
 
-    /* Timeline（保養紀錄） */
     .timeline-item { position:relative; margin-bottom:18px; padding-left:20px; }
     .timeline-item::before { content:""; position:absolute; left:9px; top:0; bottom:-8px; width:2px; background:var(--milk-border); }
     .timeline-dot { position:absolute; left:4px; top:8px; width:12px; height:12px; background:var(--milk-card); border:3px solid var(--primary); border-radius:50%; }
     .record-card { background:var(--milk-card); border:1px solid var(--milk-border); padding:14px; border-radius:16px; box-shadow:0 4px 12px rgba(0,0,0,0.05); }
     .record-date { font-weight:600; color: var(--text-main); }
-    .record-amount { color:#30D158; font-weight:700; } /* iOS Dark Mode Green */
+    .record-amount { color:#30D158; font-weight:700; }
 
-    /* 標籤與按鈕樣式 */
     .tag-selector, .chip-container { display:flex; flex-wrap:wrap; gap:8px; }
     .tag, .item-chip {
       padding:6px 12px; background:var(--chip-bg); border:1px solid var(--milk-border);
@@ -140,14 +141,11 @@
     .item-chip { background-color: rgba(10, 132, 255, 0.15); color: var(--primary); border-color: var(--primary-light); font-weight: 600; margin-top: 4px; }
     .item-chip:active { background-color: var(--primary); color: white; }
 
-    /* 照片 */
     .photo-thumb { width:90px; height:90px; object-fit:cover; border-radius:12px; border:1px solid var(--milk-border); background:#E5E2DC; }
 
-    /* Loading */
     .loading-overlay { position:fixed; inset:0; background:rgba(255,255,255,0.65); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; flex-direction:column; z-index:999; }
     body.dark-mode .loading-overlay { background:rgba(0,0,0,0.65); }
 
-    /* Sheet / Modal */
     .sheet-backdrop { background: rgba(0,0,0,0.4); backdrop-filter:blur(2px); }
     .sheet { background: var(--milk-card); max-height: 90vh; display: flex; flex-direction: column; color: var(--text-main); }
     .sheet-grabber { width: 40px; height: 5px; background: #E0E0E0; border-radius: 99px; margin: 10px auto 0; }
@@ -157,18 +155,15 @@
     .sheet-btn-text { color: var(--primary); font-size: 16px; }
     .sheet-body { padding: 16px; overflow-y: auto; background-color: var(--milk-bg); }
      
-    /* 隱藏原生樣式 */
     input, textarea, select { -webkit-appearance: none; appearance: none; }
     .hidden { display: none !important; }
     .danger-btn { width: 100%; color: #ff453a; background: rgba(255, 69, 58, 0.15); padding: 12px; border-radius: 12px; font-weight: 600; margin-top: 10px; }
 
-    /* Toast */
     .toast {
       visibility: hidden; min-width: 250px; margin-left: -125px; background-color: #333; color: #fff; text-align: center; border-radius: 50px; padding: 16px; position: fixed; z-index: 1000; left: 50%; bottom: 30px; font-size: 17px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); opacity: 0; transition: opacity 0.3s, bottom 0.3s;
     }
     .toast.show { visibility: visible; opacity: 1; bottom: 50px; }
     
-    /* 照片編輯區域樣式 */
     .photo-wrapper { position: relative; display: inline-block; margin-right: 8px; flex-shrink: 0; }
     .photo-thumb-edit { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid var(--milk-border); }
     .btn-remove-photo {
@@ -180,7 +175,6 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 10;
     }
     
-    /* LINE 按鈕樣式 */
     .btn-line {
       background-color: #30D158; color: white;
       border: none; padding: 6px 12px; border-radius: 99px;
@@ -189,13 +183,11 @@
     }
     .btn-line:active { background-color: #24a544; }
     
-    /* 完工結案彈窗 */
     .finish-modal-overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000;
       display: flex; align-items: center; justify-content: center;
     }
 
-    /* 燈箱樣式 */
     .lightbox-overlay {
         position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 3000;
         display: flex; align-items: center; justify-content: center;
@@ -210,7 +202,6 @@
         font-size: 24px; cursor: pointer; z-index: 3001;
     }
     
-    /* 主題切換按鈕 */
     .theme-toggle {
         padding: 8px; border-radius: 50%; background: var(--milk-input); color: var(--text-secondary);
         display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid var(--milk-border);
@@ -462,13 +453,11 @@ let selectedEditRecordPhotos = [];
 
 window.currentRecords = [];
 
-// 紀錄列表捲動位置
 let lastScrollY = 0;
 
 let existingCustPhotos = [];
 let existingRecordPhotos = [];
 
-// ✨✨✨ 深色模式邏輯 ✨✨✨
 function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
     const isDark = document.body.classList.contains('dark-mode');
@@ -476,7 +465,6 @@ function toggleDarkMode() {
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
 }
 
-// 檢查儲存的主題設定
 function checkTheme() {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
@@ -485,7 +473,6 @@ function checkTheme() {
     }
 }
 
-// --- 燈箱功能 ---
 function openLightbox(url) {
     document.getElementById('lightbox-img').src = url;
     document.getElementById('lightbox').classList.add('active');
@@ -495,7 +482,6 @@ function closeLightbox() {
     setTimeout(() => { document.getElementById('lightbox-img').src = ""; }, 200);
 }
 
-// --- 通用照片編輯器 ---
 function renderPhotoEditor(containerId, existingArr, newArr, type) {
   const container = document.getElementById(containerId);
   container.innerHTML = "";
@@ -678,7 +664,6 @@ function addItemToInput(inputId, itemText) {
     }
 }
 
-// --- LINE 訊息 ---
 function sendLineReminder(e, name, nextDate) {
   if(e) e.stopPropagation(); 
   
@@ -704,16 +689,20 @@ function sendLineReport(name, date, items, amount, nextDate) {
   window.location.href = `https://line.me/R/msg/text/?${text}`;
 }
 
-/* ------------------------ 列表渲染 ------------------------ */
+/* ✨✨✨ 重寫的 renderList (含分組功能) ✨✨✨ */
 function renderList(list){
   const container = document.getElementById("customer-list");
   container.innerHTML = "";
 
+  // 1. 篩選資料
   let filtered = list;
+  
+  // Tag 篩選
   if (currentFilter !== "全部") {
       filtered = filtered.filter(c => c.tags && c.tags.includes(currentFilter));
   }
    
+  // 關鍵字搜尋
   const searchTerm = document.getElementById("search-input").value.toLowerCase();
   if (searchTerm) {
       filtered = filtered.filter(c => 
@@ -724,6 +713,7 @@ function renderList(list){
       );
   }
 
+  // 儀表板篩選
   if (dashboardFilter === 'overdue') {
       filtered = filtered.filter(c => getServiceStatus(c.lastRecordDate, c.cycle).type === 'overdue');
   } else if (dashboardFilter === 'month') {
@@ -735,6 +725,7 @@ function renderList(list){
       });
   }
 
+  // 2. 先排序 (過期 -> 即將 -> 正常)
   filtered.sort((a, b) => {
       const statusA = getServiceStatus(a.lastRecordDate, a.cycle).score;
       const statusB = getServiceStatus(b.lastRecordDate, b.cycle).score;
@@ -746,89 +737,116 @@ function renderList(list){
     return;
   }
 
-  const wrap = document.createElement("div");
-  wrap.className = "space-y-3";
+  // 3. 分組 (如果正在搜尋或篩選，就不顯示分組標題，避免畫面太亂)
+  const isSearching = searchTerm || dashboardFilter;
+  
+  const groups = { overdue: [], soon: [], normal: [] };
+  
+  if (!isSearching) {
+      // 只有在完整列表時才分組
+      filtered.forEach(c => {
+          const type = getServiceStatus(c.lastRecordDate, c.cycle).type;
+          if (type === 'overdue') groups.overdue.push(c);
+          else if (type === 'soon') groups.soon.push(c);
+          else groups.normal.push(c);
+      });
+      
+      renderSection(container, "🔴 逾期未保養", groups.overdue);
+      renderSection(container, "🟡 即將到期 (14天內)", groups.soon);
+      renderSection(container, "🟢 正常", groups.normal);
+  } else {
+      // 搜尋模式下，直接顯示全部 (不分組)
+      renderSection(container, "", filtered);
+  }
+}
 
-  filtered.forEach(c=>{
-    const status = getServiceStatus(c.lastRecordDate, c.cycle);
-    const last = c.lastRecordDate ? normalizeDateStr(c.lastRecordDate) : "尚無紀錄";
-    const machine = c.machine || "未填寫機型";
+// 輔助函式：渲染一組清單
+function renderSection(container, title, items) {
+    if (items.length === 0) return;
 
-    let cardClass = "dashboard-card border-l-4";
-    let statusHtml = "";
-    let btnHtml = ""; 
-    
-    if (status.type === 'overdue') {
-        cardClass += " border-l-red-500 bg-red-50/30"; 
-        statusHtml = `<div class="text-red-600 font-bold text-sm bg-red-100 px-2 py-1 rounded-md flex items-center">
-                        <span class="material-icons text-sm mr-1">warning</span>過期 ${status.days} 天
-                      </div>`;
-        btnHtml = `<button class="btn-line ml-2 flex-shrink-0" onclick="sendLineReminder(event, '${c.name}', '${status.nextDate}')">
-                     <span class="material-icons text-sm">chat</span> 提醒
-                   </button>`;
-
-    } else if (status.type === 'soon') {
-        cardClass += " border-l-yellow-500 bg-yellow-50/30";
-        statusHtml = `<div class="text-yellow-700 font-bold text-sm bg-yellow-100 px-2 py-1 rounded-md flex items-center">
-                        <span class="material-icons text-sm mr-1">schedule</span>剩 ${status.days} 天
-                      </div>`;
-         btnHtml = `<button class="btn-line ml-2 flex-shrink-0" onclick="sendLineReminder(event, '${c.name}', '${status.nextDate}')">
-                     <span class="material-icons text-sm">chat</span> 提醒
-                   </button>`;
-    } else {
-        cardClass += " border-l-transparent hover:border-l-primary";
-        if (c.cycle) {
-             statusHtml = `<div class="text-gray-400 text-xs">下次: ${status.nextDate}</div>`;
-        }
+    // 如果有標題，顯示分組標題
+    if (title) {
+        const header = document.createElement("div");
+        header.className = "section-header";
+        header.innerText = `${title} (${items.length})`;
+        container.appendChild(header);
     }
 
-    const card = document.createElement("div");
-    card.className = cardClass;
-    card.onclick = ()=> openDetail(c);
+    const wrap = document.createElement("div");
+    wrap.className = "space-y-3";
 
-    card.innerHTML = `
-      <div class="grow min-w-0">
+    items.forEach(c => {
+        const status = getServiceStatus(c.lastRecordDate, c.cycle);
+        const last = c.lastRecordDate ? normalizeDateStr(c.lastRecordDate) : "尚無紀錄";
+        const machine = c.machine || "未填寫機型";
+
+        let cardClass = "dashboard-card border-l-4";
+        let statusHtml = "";
+        let btnHtml = ""; 
         
-        <div class="flex justify-between items-center mb-1 gap-2">
-             <div class="flex items-center gap-2 min-w-0 flex-1">
-                <div class="dashboard-name truncate text-navy-900 leading-tight">${c.name}</div>
-                ${btnHtml} 
-             </div>
-             
-             <div class="flex-shrink-0">
-                ${statusHtml} 
-             </div>
-        </div>
+        if (status.type === 'overdue') {
+            cardClass += " border-l-red-500 bg-red-50/30"; 
+            statusHtml = `<div class="text-red-600 font-bold text-sm bg-red-100 px-2 py-1 rounded-md flex items-center">
+                            <span class="material-icons text-sm mr-1">warning</span>過期 ${status.days} 天
+                          </div>`;
+            btnHtml = `<button class="btn-line ml-2 flex-shrink-0" onclick="sendLineReminder(event, '${c.name}', '${status.nextDate}')">
+                         <span class="material-icons text-sm">chat</span> 提醒
+                       </button>`;
 
-        <div class="flex gap-2 flex-wrap my-1 text-sm text-secondary">
-          ${c.tags ? c.tags.split(",").map(t=>`<div class="dashboard-tag">${t}</div>`).join("") : ""}
-        </div>
+        } else if (status.type === 'soon') {
+            cardClass += " border-l-yellow-500 bg-yellow-50/30";
+            statusHtml = `<div class="text-yellow-700 font-bold text-sm bg-yellow-100 px-2 py-1 rounded-md flex items-center">
+                            <span class="material-icons text-sm mr-1">schedule</span>剩 ${status.days} 天
+                          </div>`;
+             btnHtml = `<button class="btn-line ml-2 flex-shrink-0" onclick="sendLineReminder(event, '${c.name}', '${status.nextDate}')">
+                         <span class="material-icons text-sm">chat</span> 提醒
+                       </button>`;
+        } else {
+            cardClass += " border-l-transparent hover:border-l-primary";
+            if (c.cycle) {
+                 statusHtml = `<div class="text-gray-400 text-xs">下次: ${status.nextDate}</div>`;
+            }
+        }
 
-        <div class="text-sm text-secondary mt-1 font-medium flex items-center gap-1">
-           <span class="material-icons text-base text-gray-400">settings</span>
-           <span class="truncate">${machine}</span>
-        </div>
+        const card = document.createElement("div");
+        card.className = cardClass;
+        card.onclick = ()=> openDetail(c);
 
-        <div class="text-sm text-secondary flex gap-4 mt-2 justify-between items-center pr-2">
-          <span class="flex items-center gap-1 min-w-0">
-            <span class="material-icons text-base text-gray-400 flex-shrink-0">phone_iphone</span>
-            <span class="truncate">${c.phone}</span>
-          </span>
-           
-          <div class="text-right flex-shrink-0">
-             <div class="text-xs text-gray-400">上次保養</div>
-             <div class="font-medium ${status.type === 'overdue' ? 'text-red-500' : 'text-gray-700'}">${last}</div>
+        card.innerHTML = `
+          <div class="grow min-w-0">
+            <div class="flex justify-between items-center mb-1 gap-2">
+                 <div class="flex items-center gap-2 min-w-0 flex-1">
+                    <div class="dashboard-name truncate text-navy-900 leading-tight">${c.name}</div>
+                    ${btnHtml} 
+                 </div>
+                 <div class="flex-shrink-0">
+                    ${statusHtml} 
+                 </div>
+            </div>
+            <div class="flex gap-2 flex-wrap my-1 text-sm text-secondary">
+              ${c.tags ? c.tags.split(",").map(t=>`<div class="dashboard-tag">${t}</div>`).join("") : ""}
+            </div>
+            <div class="text-sm text-secondary mt-1 font-medium flex items-center gap-1">
+               <span class="material-icons text-base text-gray-400">settings</span>
+               <span class="truncate">${machine}</span>
+            </div>
+            <div class="text-sm text-secondary flex gap-4 mt-2 justify-between items-center pr-2">
+              <span class="flex items-center gap-1 min-w-0">
+                <span class="material-icons text-base text-gray-400 flex-shrink-0">phone_iphone</span>
+                <span class="truncate">${c.phone}</span>
+              </span>
+              <div class="text-right flex-shrink-0">
+                 <div class="text-xs text-gray-400">上次保養</div>
+                 <div class="font-medium ${status.type === 'overdue' ? 'text-red-500' : 'text-gray-700'}">${last}</div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+          <div class="dashboard-chevron ml-2"><span class="material-icons">arrow_forward_ios</span></div>
+        `;
+        wrap.appendChild(card);
+    });
 
-      <div class="dashboard-chevron ml-2"><span class="material-icons">arrow_forward_ios</span></div>
-    `;
-
-    wrap.appendChild(card);
-  });
-
-  container.appendChild(wrap);
+    container.appendChild(wrap);
 }
 
 function getServiceStatus(lastDateStr, cycleMonths) {
@@ -855,7 +873,7 @@ function getServiceStatus(lastDateStr, cycleMonths) {
 }
 
 async function openDetail(c){
-  lastScrollY = window.scrollY; // 記住位置
+  lastScrollY = window.scrollY; 
   
   currentCustomer = c;
   document.getElementById("page-list").classList.add("hidden");
