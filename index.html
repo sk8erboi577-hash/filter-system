@@ -116,10 +116,10 @@
     /* 卡片與進度條樣式 */
     .dashboard-card {
       background: var(--milk-card); border-radius: 18px; border:1px solid var(--milk-border);
-      padding: 16px 14px 12px 14px; /* 底部留空間給進度條 */
-      display:flex; flex-direction: column; /* 改為直向佈局以容納進度條 */
+      padding: 16px 14px 12px 14px; 
+      display:flex; flex-direction: column; 
       box-shadow:0 6px 16px rgba(0,0,0,0.06); cursor:pointer; transition:.12s;
-      position: relative; overflow: hidden; /* 確保進度條不溢出 */
+      position: relative; overflow: hidden; 
     }
     .dashboard-card:active { transform:scale(.97); }
     .card-content-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
@@ -131,7 +131,7 @@
     }
     .dashboard-chevron { width:32px; height:32px; background:var(--milk-input); border-radius:50%; display:flex; align-items:center; justify-content:center; color: var(--text-secondary); }
 
-    /* ✨✨✨ 新增：進度條樣式 ✨✨✨ */
+    /* 進度條樣式 */
     .progress-track {
         height: 4px; width: 100%; background: #F2F2F7; border-radius: 2px; margin-top: 12px;
         overflow: hidden; display: flex;
@@ -225,18 +225,41 @@
         display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid var(--milk-border);
     }
 
-    /* ✨✨✨ 新增：回到頂端按鈕 ✨✨✨ */
-    .scroll-to-top {
-        position: fixed; bottom: 100px; right: 24px; 
-        width: 48px; height: 48px; border-radius: 50%;
-        background: var(--milk-card); border: 1px solid var(--milk-border);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        display: flex; align-items: center; justify-content: center;
-        cursor: pointer; z-index: 40;
-        opacity: 0; transform: translateY(10px); transition: all 0.3s;
-        pointer-events: none; color: var(--primary);
+    /* ✨✨✨ 統一浮動按鈕樣式 (FAB) ✨✨✨ */
+    .fab-btn {
+        position: fixed;
+        right: 24px;
+        width: 56px;  /* 統一大小 56px */
+        height: 56px;
+        border-radius: 50%;
+        background: var(--primary); /* 統用主色藍 */
+        color: white; /* 統一白字 */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3); /* 統一陰影 */
+        cursor: pointer;
+        z-index: 40;
+        transition: transform 0.2s, opacity 0.3s;
+        border: none;
     }
-    .scroll-to-top.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .fab-btn:active { transform: scale(0.95); }
+
+    /* 分別定位 */
+    #btn-add-customer { 
+        bottom: 30px; 
+    }
+    #scroll-to-top {
+        bottom: 100px; /* 30px(底部) + 56px(按鈕高) + 14px(間距) */
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(10px);
+    }
+    #scroll-to-top.show {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+    }
   </style>
 </head>
 
@@ -273,13 +296,13 @@
     <div class="text-center text-gray-400 mt-20">載入中…</div>
   </div>
 
-  <div id="scroll-to-top" class="scroll-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+  <button id="scroll-to-top" class="fab-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
       <span class="material-icons">arrow_upward</span>
-  </div>
+  </button>
 
-  <div class="fixed right-6 bottom-8 bg-blue-600 text-white w-16 h-16 rounded-full flex items-center justify-center shadow-xl text-3xl cursor-pointer z-40" onclick="showAddCustomerModal()">
+  <button id="btn-add-customer" class="fab-btn" onclick="showAddCustomerModal()">
     <span class="material-icons">add</span>
-  </div>
+  </button>
 </div>
 
 <div id="page-detail" class="hidden min-h-screen">
@@ -301,6 +324,9 @@
       <div class="flex py-1"><span class="w-20 text-secondary">姓名</span><span id="detail-name"></span></div>
       <div class="flex py-1"><span class="w-20 text-secondary">電話</span><span><a id="detail-phone-link" class="text-blue-600 font-medium flex items-center"><span class="material-icons mr-1 text-base">phone</span><span id="detail-phone"></span></a></span></div>
       <div class="flex py-1"><span class="w-20 text-secondary">安裝日期</span><span id="detail-install-date" class="text-gray-400 italic">無紀錄</span></div>
+      
+      <div class="flex py-1"><span class="w-20 text-secondary">累積消費</span><span id="detail-total-spend" class="font-bold text-primary">計算中...</span></div>
+      
       <div class="flex py-1 items-start"><span class="w-20 text-secondary pt-1">標籤</span><div id="detail-tags" class="flex flex-wrap gap-2 flex-1"></div></div>
       <div class="flex py-1"><span class="w-20 text-secondary">保養週期</span><span id="detail-cycle" class="text-gray-800"></span></div>
     </div>
@@ -499,7 +525,6 @@ let lastScrollY = 0;
 let existingCustPhotos = [];
 let existingRecordPhotos = [];
 
-// 滾動監聽：顯示回到頂端按鈕
 window.onscroll = function() {
     const btn = document.getElementById("scroll-to-top");
     if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
@@ -834,24 +859,22 @@ function renderSection(container, title, items) {
         let cardClass = "dashboard-card border-l-4";
         let statusHtml = "";
         let btnHtml = ""; 
-        let progressHtml = ""; // ✨✨✨ 新增：進度條 HTML ✨✨✨
+        let progressHtml = ""; 
 
-        // 計算進度條寬度與顏色
         let progressWidth = 0;
         let progressColor = "bar-green";
         
         if (c.cycle && c.lastRecordDate) {
             const today = new Date();
             const lastDate = new Date(c.lastRecordDate);
-            const cycleDays = c.cycle * 30; // 概算天數
+            const cycleDays = c.cycle * 30; 
             const daysPassed = (today - lastDate) / (1000 * 60 * 60 * 24);
             
-            // 計算百分比 (最高 100%)
             progressWidth = Math.min((daysPassed / cycleDays) * 100, 100);
             
             if (status.type === 'overdue') {
                 progressColor = "bar-red";
-                progressWidth = 100; // 過期就全滿紅色
+                progressWidth = 100; 
             } else if (status.type === 'soon') {
                 progressColor = "bar-yellow";
             }
@@ -914,14 +937,15 @@ function renderSection(container, title, items) {
           </div>
           
           <div class="card-content-row text-sm text-secondary mt-1">
-             <span class="flex items-center gap-1 min-w-0">
-                <span class="material-icons text-base text-gray-400 flex-shrink-0">phone_iphone</span>
-                <span class="truncate">${c.phone}</span>
-             </span>
+             <a href="tel:${c.phone}" class="flex items-center gap-1 min-w-0 text-blue-600 no-underline" onclick="event.stopPropagation()">
+                <span class="material-icons text-base flex-shrink-0">phone_iphone</span>
+                <span class="truncate font-medium">${c.phone}</span>
+             </a>
              <div class="dashboard-chevron"><span class="material-icons">arrow_forward_ios</span></div>
           </div>
 
-          ${progressHtml} `;
+          ${progressHtml} 
+        `;
         wrap.appendChild(card);
     });
 
@@ -963,7 +987,10 @@ async function openDetail(c){
   document.getElementById("detail-phone").innerText = c.phone;
   document.getElementById("detail-phone-link").href = `tel:${c.phone}`;
   document.getElementById("detail-install-date").innerText = c.installDate ? normalizeDateStr(c.installDate) : "無紀錄";
-   
+  
+  // 重置金額統計
+  document.getElementById("detail-total-spend").innerText = "計算中...";
+
   const cycleText = c.cycle ? `${c.cycle} 個月` : "未設定";
   document.getElementById("detail-cycle").innerText = cycleText;
 
@@ -1017,10 +1044,21 @@ async function fetchRecords(id){
   const box = document.getElementById("record-list");
   box.innerHTML = `<div class="text-center text-secondary py-4">讀取中…</div>`;
   const records = await apiCall("getRecords", {customerId:id}, "GET");
-  if (!records.length){ box.innerHTML = `<div class="text-secondary">尚無紀錄</div>`; return; }
+  if (!records.length){ 
+      box.innerHTML = `<div class="text-secondary">尚無紀錄</div>`; 
+      document.getElementById("detail-total-spend").innerText = "NT$0 (0次)"; 
+      return; 
+  }
   window.currentRecords = records;
   box.innerHTML = "";
   records.sort((a,b)=>new Date(b.date)-new Date(a.date));
+  
+  // VIP 統計
+  let total = 0;
+  records.forEach(r => {
+      total += parseInt(r.amount) || 0;
+  });
+  document.getElementById("detail-total-spend").innerText = `NT$${total.toLocaleString()} (共 ${records.length} 次)`;
    
   records.forEach(r=>{
     const photos = Array.isArray(r.photos) ? r.photos : [];
