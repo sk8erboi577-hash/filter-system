@@ -99,7 +99,6 @@
         padding: 12px 4px; margin: 0; display: flex; align-items: center;
         position: sticky; top: -1px; background: var(--milk-bg); z-index: 20;
         transition: background 0.3s;
-        /* ✨ 動畫：標題也要有進場效果 */
         animation: slideUpFade 0.4s ease-out forwards;
     }
     .section-header::after {
@@ -118,37 +117,42 @@
     /* 卡片與進度條樣式 */
     .dashboard-card {
       background: var(--milk-card); border-radius: 18px; border:1px solid var(--milk-border);
-      padding: 16px 14px 12px 14px; 
+      /* 修改 padding，給底部進度條空間 */
+      padding: 14px 14px 10px 14px; 
       display:flex; flex-direction: column; 
       box-shadow:0 6px 16px rgba(0,0,0,0.06); cursor:pointer; transition:.12s;
       position: relative; overflow: hidden; 
-      /* ✨ 動畫：預設隱藏，等待動畫觸發 */
-      opacity: 0; 
-      transform: translateY(20px);
+      opacity: 0; transform: translateY(20px);
     }
-    /* ✨ 定義動畫關鍵影格 */
     @keyframes slideUpFade {
         from { opacity: 0; transform: translateY(20px); }
         to { opacity: 1; transform: translateY(0); }
     }
-    /* ✨ 套用動畫的 class */
-    .animate-enter {
-        animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
+    .animate-enter { animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
     .dashboard-card:active { transform:scale(.97); }
-    .card-content-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
     
-    .dashboard-name { font-size:20px; font-weight:700; color: var(--text-main); }
+    /* 通用列樣式 */
+    .card-row { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 6px; }
+    .card-divider { height: 1px; background: var(--milk-border); margin: 8px 0; width: 100%; }
+
+    .dashboard-name { font-size:18px; font-weight:700; color: var(--text-main); }
     .dashboard-tag {
-      display:inline-flex; padding:3px 10px; background:var(--chip-bg); border:1px solid var(--milk-border);
-      border-radius:999px; font-size:12px; color:var(--text-secondary); margin:4px 0;
+      display:inline-flex; padding:2px 8px; background:var(--chip-bg); border:1px solid var(--milk-border);
+      border-radius:6px; font-size:11px; color:var(--text-secondary); margin-right: 4px;
     }
-    .dashboard-chevron { width:32px; height:32px; background:var(--milk-input); border-radius:50%; display:flex; align-items:center; justify-content:center; color: var(--text-secondary); }
+    
+    /* 導航按鈕樣式 */
+    .nav-btn {
+        background: rgba(10, 132, 255, 0.1); color: var(--primary);
+        padding: 4px 10px; border-radius: 8px; font-size: 13px; font-weight: 600;
+        display: flex; align-items: center; gap: 4px; border: 1px solid transparent;
+    }
+    .nav-btn:active { background: rgba(10, 132, 255, 0.2); }
 
     /* 進度條樣式 */
     .progress-track {
-        height: 4px; width: 100%; background: #F2F2F7; border-radius: 2px; margin-top: 12px;
+        height: 4px; width: 100%; background: #F2F2F7; border-radius: 2px; margin-top: 8px;
         overflow: hidden; display: flex;
     }
     body.dark-mode .progress-track { background: #3a3a3c; }
@@ -210,8 +214,8 @@
     
     .btn-line {
       background-color: #30D158; color: white;
-      border: none; padding: 6px 12px; border-radius: 99px;
-      font-size: 13px; font-weight: 600; display: inline-flex; align-items: center;
+      border: none; padding: 4px 10px; border-radius: 99px;
+      font-size: 12px; font-weight: 600; display: inline-flex; align-items: center;
       gap: 4px; cursor: pointer; text-decoration: none;
     }
     .btn-line:active { background-color: #24a544; }
@@ -789,6 +793,7 @@ function sendLineReport(name, date, items, amount, nextDate) {
   window.location.href = `https://line.me/R/msg/text/?${text}`;
 }
 
+/* ✨✨✨ 列表渲染 (含分組與新佈局) ✨✨✨ */
 function renderList(list){
   const container = document.getElementById("customer-list");
   container.innerHTML = "";
@@ -864,13 +869,16 @@ function renderSection(container, title, items) {
     const wrap = document.createElement("div");
     wrap.className = "space-y-3";
 
-    // ✨✨✨ 這裡加入卡片生成邏輯 ✨✨✨
     items.forEach((c, index) => {
         const status = getServiceStatus(c.lastRecordDate, c.cycle);
         const last = c.lastRecordDate ? normalizeDateStr(c.lastRecordDate) : "尚無紀錄";
         const machine = c.machine || "未填寫機型";
+        
+        // ✨✨✨ 修改：地址與電話處理 ✨✨✨
+        const address = c.address ? c.address : "未填寫地址";
+        const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
 
-        let cardClass = "dashboard-card border-l-4 animate-enter"; // ✨ 加上動畫 class
+        let cardClass = "dashboard-card border-l-4 animate-enter";
         let statusHtml = "";
         let btnHtml = ""; 
         let progressHtml = ""; 
@@ -922,9 +930,10 @@ function renderSection(container, title, items) {
 
         const card = document.createElement("div");
         card.className = cardClass;
-        card.style.animationDelay = `${index * 0.05}s`; // ✨ 加上動畫延遲
+        card.style.animationDelay = `${index * 0.05}s`;
         card.onclick = ()=> openDetail(c);
 
+        // ✨✨✨ 修改：卡片內容結構 (加入地址與分隔線) ✨✨✨
         card.innerHTML = `
           <div class="card-content-row grow min-w-0 mb-1">
             <div class="flex items-center gap-2 min-w-0 flex-1">
@@ -951,12 +960,23 @@ function renderSection(container, title, items) {
              </div>
           </div>
           
-          <div class="card-content-row text-sm text-secondary mt-1">
-             <a href="tel:${c.phone}" class="flex items-center gap-1 min-w-0 text-blue-600 no-underline" onclick="event.stopPropagation()">
+          <div class="card-divider"></div>
+
+          <div class="flex flex-col gap-2">
+             <a href="tel:${c.phone}" class="flex items-center gap-2 min-w-0 text-blue-600 no-underline" onclick="event.stopPropagation()">
                 <span class="material-icons text-base flex-shrink-0">phone_iphone</span>
                 <span class="truncate font-medium">${c.phone}</span>
              </a>
-             <div class="dashboard-chevron"><span class="material-icons">arrow_forward_ios</span></div>
+             
+             <div class="flex justify-between items-center">
+                 <div class="flex items-center gap-2 min-w-0 text-secondary text-sm">
+                    <span class="material-icons text-base flex-shrink-0 text-gray-400">place</span>
+                    <span class="truncate">${address}</span>
+                 </div>
+                 <button class="nav-btn flex-shrink-0" onclick="openMap(event, '${address}')">
+                    <span class="material-icons text-sm">near_me</span> 導航
+                 </button>
+             </div>
           </div>
 
           ${progressHtml} 
@@ -965,6 +985,12 @@ function renderSection(container, title, items) {
     });
 
     container.appendChild(wrap);
+}
+
+// ✨✨✨ 新增：開啟地圖函式 ✨✨✨
+function openMap(e, address) {
+    e.stopPropagation();
+    window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`, '_blank');
 }
 
 function getServiceStatus(lastDateStr, cycleMonths) {
@@ -1003,7 +1029,6 @@ async function openDetail(c){
   document.getElementById("detail-phone-link").href = `tel:${c.phone}`;
   document.getElementById("detail-install-date").innerText = c.installDate ? normalizeDateStr(c.installDate) : "無紀錄";
   
-  // 重置金額統計
   document.getElementById("detail-total-spend").innerText = "計算中...";
 
   const cycleText = c.cycle ? `${c.cycle} 個月` : "未設定";
@@ -1068,7 +1093,6 @@ async function fetchRecords(id){
   box.innerHTML = "";
   records.sort((a,b)=>new Date(b.date)-new Date(a.date));
   
-  // VIP 統計
   let total = 0;
   records.forEach(r => {
       total += parseInt(r.amount) || 0;
