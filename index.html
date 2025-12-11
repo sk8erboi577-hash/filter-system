@@ -162,7 +162,7 @@
       display: flex; align-items: center; justify-content: center;
     }
 
-    /* ✨✨✨ 新增：燈箱樣式 ✨✨✨ */
+    /* 燈箱樣式 */
     .lightbox-overlay {
         position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 3000;
         display: flex; align-items: center; justify-content: center;
@@ -390,7 +390,7 @@
 
 <div id="loading" class="loading-overlay hidden">
   <div class="animate-spin rounded-full h-10 w-10 border-4 border-gray-300 border-t-blue-600"></div>
-  <p class="mt-3 text-secondary">處理中…</p>
+  <p id="loading-text" class="mt-3 text-secondary font-medium">處理中…</p>
 </div>
 <div id="toast" class="toast"></div>
 
@@ -418,7 +418,9 @@ let selectedEditRecordPhotos = [];
 
 window.currentRecords = [];
 
-// --- 新增變數：用來暫存編輯時「原本已存在」的照片 (網址) ---
+// ✨✨✨ 新增：紀錄列表捲動位置 ✨✨✨
+let lastScrollY = 0;
+
 let existingCustPhotos = [];
 let existingRecordPhotos = [];
 
@@ -432,13 +434,11 @@ function closeLightbox() {
     setTimeout(() => { document.getElementById('lightbox-img').src = ""; }, 200);
 }
 
-// --- 新增功能：通用的照片渲染器 (含刪除按鈕) ---
-// containerId: 容器ID, existingArr: 舊照片陣列, newArr: 新照片陣列, type: 'cust' 或 'record'
+// --- 通用照片編輯器 ---
 function renderPhotoEditor(containerId, existingArr, newArr, type) {
   const container = document.getElementById(containerId);
   container.innerHTML = "";
 
-  // 1. 渲染舊照片 (顯示網址圖片)
   existingArr.forEach((url, index) => {
     const wrap = document.createElement("div");
     wrap.className = "photo-wrapper";
@@ -449,7 +449,6 @@ function renderPhotoEditor(containerId, existingArr, newArr, type) {
     container.appendChild(wrap);
   });
 
-  // 2. 渲染新選擇的照片 (顯示 Base64 預覽)
   newArr.forEach((base64, index) => {
     const wrap = document.createElement("div");
     wrap.className = "photo-wrapper";
@@ -461,7 +460,6 @@ function renderPhotoEditor(containerId, existingArr, newArr, type) {
   });
 }
 
-// 移除舊照片 (僅從陣列移除，按儲存時才會生效)
 function removeExistingPhoto(type, index) {
   if (type === 'cust') {
     existingCustPhotos.splice(index, 1);
@@ -472,7 +470,6 @@ function removeExistingPhoto(type, index) {
   }
 }
 
-// 移除新選擇的照片 (尚未上傳)
 function removeNewPhoto(type, index) {
   if (type === 'cust') {
     selectedCustPhotos.splice(index, 1);
@@ -481,7 +478,6 @@ function removeNewPhoto(type, index) {
     selectedEditRecordPhotos.splice(index, 1);
     renderPhotoEditor("edit-record-photo-preview", existingRecordPhotos, selectedEditRecordPhotos, 'record');
   } else if (type === 'newRecord') {
-     // 這是給「新增紀錄」用的特殊處理
      selectedRecordPhotos.splice(index, 1);
      renderPreview("new-record-photos", selectedRecordPhotos); 
      document.getElementById("record-photo-count").innerText = `${selectedRecordPhotos.length} 張`;
@@ -502,19 +498,29 @@ function normalizeDateStr(v){
 }
 
 async function apiCall(action, payload={}, method="POST"){
-  showLoading(true);
+  // 注意：這裡只顯示通用Loading，上傳時我們會手動控制 showLoading
+  if(!document.getElementById("loading").classList.contains("hidden") && document.getElementById("loading-text").innerText.includes("上傳")) {
+      // 如果正在上傳，不要覆蓋文字
+  } else {
+      showLoading(true, "處理中…");
+  }
+  
   try {
     const url = method==="GET" ? `${API_URL}?${new URLSearchParams({action, ...payload})}` : API_URL;
     const res = await fetch(url, {
       method,
       body: method==="POST" ? JSON.stringify({action, ...payload}) : null
     });
-    return await res.json();
+    const json = await res.json();
+    return json;
   } catch(e){
     alert("連線錯誤");
     return null;
   } finally {
-    showLoading(false);
+    // 只有非上傳流程才自動關閉，上傳流程我們會自己關
+    if(!payload.photos && action !== "uploadImage") { 
+        showLoading(false); 
+    }
   }
 }
 
@@ -523,12 +529,14 @@ async function fetchCustomers(){
   if (!Array.isArray(data)){
     document.getElementById("customer-list").innerHTML =
       `<div class="text-center text-gray-400 mt-20">讀取失敗</div>`;
+    showLoading(false); // 強制關閉
     return;
   }
   customers = data;
   updateDashboard(customers); 
   renderFilterBar();
   renderList(customers);
+  showLoading(false);
 }
 
 function updateDashboard(list) {
@@ -596,7 +604,6 @@ function renderItemChips(containerId, inputId) {
     ).join('');
 }
 
-// ✨✨✨ 新增：備註按鈕渲染 ✨✨✨
 function renderNoteChips(containerId, inputId) {
     const container = document.getElementById(containerId);
     container.innerHTML = NOTE_OPTIONS.map(item => 
@@ -613,8 +620,7 @@ function addItemToInput(inputId, itemText) {
     }
 }
 
-// --- LINE 訊息產生器 ---
-
+// --- LINE 訊息 ---
 function sendLineReminder(e, name, nextDate) {
   if(e) e.stopPropagation(); 
   
@@ -789,7 +795,11 @@ function getServiceStatus(lastDateStr, cycleMonths) {
         return { type: 'normal', days: diffDays, nextDate: nextDateStr, score: 1 }; 
     }
 }
+
+// ✨✨✨ 修改：打開詳情頁時紀錄捲軸位置 ✨✨✨
 async function openDetail(c){
+  lastScrollY = window.scrollY; // 記住位置
+  
   currentCustomer = c;
   document.getElementById("page-list").classList.add("hidden");
   document.getElementById("page-detail").classList.remove("hidden");
@@ -835,7 +845,7 @@ async function openDetail(c){
   if (photos.length){
     photos.forEach(url=>{
       const img = document.createElement("img"); img.src = url; img.className = "photo-thumb cursor-pointer";
-      img.onclick = ()=>openLightbox(url); // 改成燈箱
+      img.onclick = ()=>openLightbox(url); 
       photoDiv.appendChild(img);
     });
   } else { photoDiv.innerHTML = `<div class="text-secondary text-sm">無照片</div>`; }
@@ -843,9 +853,12 @@ async function openDetail(c){
   await fetchRecords(c.id);
 }
 
+// ✨✨✨ 修改：返回時還原捲軸位置 ✨✨✨
 function goBack(){
   document.getElementById("page-detail").classList.add("hidden");
   document.getElementById("page-list").classList.remove("hidden");
+  // 還原位置
+  window.scrollTo(0, lastScrollY);
 }
 
 async function fetchRecords(id){
@@ -906,11 +919,20 @@ async function saveEditedRecord(){
    
   let photoUrls = [...existingRecordPhotos]; 
 
+  // ✨✨✨ 修改：上傳進度提示 ✨✨✨
+  let uploadedCount = 0;
+  const totalUpload = selectedEditRecordPhotos.length;
+  if(totalUpload > 0) showLoading(true, `準備上傳 ${totalUpload} 張照片...`);
+
   for (let base64 of selectedEditRecordPhotos){
+    uploadedCount++;
+    showLoading(true, `正在上傳照片 (${uploadedCount}/${totalUpload})...`);
     const res = await apiCall("uploadImage", {base64, type:"image/jpeg"});
     if (res?.status==="success") photoUrls.push(res.url);
   }
+  // ✨✨✨
 
+  showLoading(true, "儲存資料中...");
   const payload = {
     id, date, items,
     amount: document.getElementById("edit-record-amount").value,
@@ -918,6 +940,8 @@ async function saveEditedRecord(){
     photos: photoUrls
   };
   const res = await apiCall("updateRecord", payload);
+  showLoading(false);
+
   if (res?.status==="success"){
     closeModal("record-modal"); await fetchRecords(currentCustomer.id); renderList(customers);
   }
@@ -927,11 +951,23 @@ async function saveRecord(){
   if (!currentCustomer) return;
   const items = document.getElementById("record-items").value.trim();
   if (!items){ alert("請輸入項目"); return; }
+  
   let photoUrls = [];
+
+  // ✨✨✨ 修改：上傳進度提示 ✨✨✨
+  let uploadedCount = 0;
+  const totalUpload = selectedRecordPhotos.length;
+  if(totalUpload > 0) showLoading(true, `準備上傳 ${totalUpload} 張照片...`);
+
   for (let base64 of selectedRecordPhotos){
+    uploadedCount++;
+    showLoading(true, `正在上傳照片 (${uploadedCount}/${totalUpload})...`);
     const res = await apiCall("uploadImage", {base64, type:"image/jpeg"});
     if (res?.status==="success") photoUrls.push(res.url);
   }
+  // ✨✨✨
+
+  showLoading(true, "儲存資料中...");
   const payload = {
     customerId: currentCustomer.id,
     date: document.getElementById("record-date").value,
@@ -941,6 +977,7 @@ async function saveRecord(){
     photos: photoUrls
   };
   const res = await apiCall("addRecord", payload);
+  showLoading(false);
 
   if (res?.status==="success"){
     selectedRecordPhotos = [];
@@ -994,13 +1031,22 @@ async function saveCustomer(){
   let safeExisting = Array.isArray(existingCustPhotos) ? existingCustPhotos : [];
   let photoUrls = [...safeExisting]; 
 
+  // ✨✨✨ 修改：上傳進度提示 ✨✨✨
+  let uploadedCount = 0;
+  const totalUpload = selectedCustPhotos.length;
+  if(totalUpload > 0) showLoading(true, `準備上傳 ${totalUpload} 張照片...`);
+
   for (let base64 of selectedCustPhotos){
+    uploadedCount++;
+    showLoading(true, `正在上傳照片 (${uploadedCount}/${totalUpload})...`);
     const res = await apiCall("uploadImage", {base64, type:"image/jpeg"});
     if (res?.status === "success") {
         photoUrls.push(res.url);
     }
   }
+  // ✨✨✨
 
+  showLoading(true, "儲存資料中...");
   const tags = getSelectedTags("cust-tag-selector");
    
   const payload = {
@@ -1020,6 +1066,7 @@ async function saveCustomer(){
   const act = id ? "updateCustomer" : "addCustomer";
    
   const res = await apiCall(act, payload);
+  showLoading(false);
    
   if (res?.status === "success"){
     showToast("儲存成功");
@@ -1149,7 +1196,14 @@ function resizeImage(base64, maxW, cb){
 function closeModal(id){ document.getElementById(id).classList.add("hidden"); }
 document.getElementById("customer-modal").addEventListener("click", e=>{ if (e.target.id==="customer-modal") closeModal("customer-modal"); });
 document.getElementById("record-modal").addEventListener("click", e=>{ if (e.target.id==="record-modal") closeModal("record-modal"); });
-function showLoading(show){ document.getElementById("loading").classList.toggle("hidden", !show); }
+
+// ✨✨✨ 修改：支援顯示文字 ✨✨✨
+function showLoading(show, text="處理中…"){ 
+    const loader = document.getElementById("loading");
+    document.getElementById("loading-text").innerText = text;
+    loader.classList.toggle("hidden", !show); 
+}
+
 function showToast(message) {
     const x = document.getElementById("toast"); x.innerText = message; x.className = "toast show";
     setTimeout(function(){ x.className = "toast"; }, 3000);
@@ -1160,9 +1214,9 @@ window.onload = () => {
   const rd = document.getElementById("record-date");
   if (rd){ const d = new Date(); rd.value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; }
   renderItemChips("new-record-item-chips", "record-items");
-  renderNoteChips("new-record-note-chips", "record-note"); // ✨
+  renderNoteChips("new-record-note-chips", "record-note"); 
   renderItemChips("edit-record-item-chips", "edit-record-items");
-  renderNoteChips("edit-record-note-chips", "edit-record-note"); // ✨
+  renderNoteChips("edit-record-note-chips", "edit-record-note"); 
 };
 </script>
 
