@@ -16,6 +16,7 @@
 
   <style>
     :root {
+      /* 預設淺色模式變數 */
       --primary: #007AFF;
       --primary-light: #64A8FF;
       --milk-bg: #F5EFE7;
@@ -24,6 +25,34 @@
       --milk-input: #F9F7F2;
       --text-main: #3A342E;
       --text-secondary: #6E655C;
+      --nav-bg: rgba(255,255,255,0.92);
+      --chip-bg: #EFEDE7;
+    }
+
+    /* ✨✨✨ 深色模式變數覆蓋 ✨✨✨ */
+    body.dark-mode {
+      --primary: #0A84FF; /* 調整為適合深色的亮藍 */
+      --primary-light: #64A8FF;
+      --milk-bg: #121212; /* 深黑背景 */
+      --milk-card: #1C1C1E; /* 深灰卡片 */
+      --milk-border: #2C2C2E; /* 深色邊框 */
+      --milk-input: #2C2C2E; /* 輸入框背景 */
+      --text-main: #F2F2F7; /* 淺白文字 */
+      --text-secondary: #8E8E93; /* 灰色副標 */
+      --nav-bg: rgba(28,28,30,0.92); /* 導航列深色 */
+      --chip-bg: #2C2C2E;
+    }
+
+    /* 強制覆蓋 Tailwind 的白色背景，讓深色模式生效 */
+    body.dark-mode .bg-white { background-color: var(--milk-card) !important; color: var(--text-main); }
+    body.dark-mode .bg-gray-50 { background-color: #000000 !important; }
+    body.dark-mode .text-navy-900 { color: var(--text-main) !important; }
+    body.dark-mode .text-gray-700 { color: #D1D1D6 !important; }
+    body.dark-mode .text-gray-800 { color: #E5E5EA !important; }
+    body.dark-mode input, body.dark-mode textarea, body.dark-mode select {
+        background-color: var(--milk-input) !important;
+        border-color: var(--milk-border) !important;
+        color: var(--text-main) !important;
     }
 
     html { font-size: 18px; }
@@ -34,43 +63,45 @@
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang TC",
         Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       color: var(--text-main);
+      transition: background 0.3s, color 0.3s; /* 平滑切換效果 */
     }
 
     /* iOS Navigation Bar */
     .ios-nav-bar {
       position: sticky; top: 0; padding: 12px 16px; padding-top: env(safe-area-inset-top, 16px);
-      background: rgba(255,255,255,0.92); backdrop-filter: blur(14px);
+      background: var(--nav-bg); backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--milk-border); z-index: 50;
       display:flex; justify-content:space-between; align-items:center;
+      transition: background 0.3s;
     }
     .ios-nav-left, .ios-nav-right { display:flex; align-items:center; color:var(--primary); font-size:16px; gap:4px; cursor:pointer; }
     .ios-nav-title { font-size:18px; font-weight:600; color:var(--text-main); }
 
     /* 搜尋列 */
     .search-bar {
-      background: #FFF; border-radius: 14px; padding: 10px; display:flex; align-items:center; gap:8px; border:1px solid var(--milk-border);
+      background: var(--milk-card); border-radius: 14px; padding: 10px; display:flex; align-items:center; gap:8px; border:1px solid var(--milk-border);
     }
-    .search-bar input { width:100%; border:none; background:transparent; font-size:16px; outline:none; }
+    .search-bar input { width:100%; border:none; background:transparent; font-size:16px; outline:none; color: var(--text-main); }
 
     /* 儀表板樣式 */
     .stats-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
     .stat-card {
-      background: #fff; padding: 12px; border-radius: 16px; border: 1px solid var(--milk-border);
+      background: var(--milk-card); padding: 12px; border-radius: 16px; border: 1px solid var(--milk-border);
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       box-shadow: 0 4px 10px rgba(0,0,0,0.03); cursor: pointer; transition: 0.2s;
     }
-    .stat-card:active { transform: scale(0.97); background: #fafafa; }
-    .stat-card.active-filter { border: 2px solid var(--primary); background: #f0f7ff; }
-    .stat-value { font-size: 24px; font-weight: 800; line-height: 1.2; }
+    .stat-card:active { transform: scale(0.97); opacity: 0.8; }
+    .stat-card.active-filter { border: 2px solid var(--primary); background: var(--milk-input); }
+    .stat-value { font-size: 24px; font-weight: 800; line-height: 1.2; color: var(--text-main); }
     .stat-label { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
-    .text-red-alert { color: #ff3b30; }
-    .text-orange-alert { color: #ff9500; }
+    .text-red-alert { color: #ff453a !important; } /* 深色模式下亮一點的紅 */
+    .text-orange-alert { color: #ff9f0a !important; } /* 深色模式下亮一點的橘 */
 
     /* 篩選器樣式 */
     .filter-scroll { display: flex; gap: 8px; overflow-x: auto; padding: 4px 0; margin-top: 12px; -webkit-overflow-scrolling: touch; }
     .filter-scroll::-webkit-scrollbar { display: none; }
     .filter-chip {
-      padding: 6px 14px; background: #EFEDE7; border: 1px solid var(--milk-border);
+      padding: 6px 14px; background: var(--chip-bg); border: 1px solid var(--milk-border);
       border-radius: 20px; font-size: 14px; color: var(--text-secondary);
       white-space: nowrap; cursor: pointer; transition: all 0.2s;
     }
@@ -83,51 +114,53 @@
       box-shadow:0 6px 16px rgba(0,0,0,0.06); cursor:pointer; transition:.12s;
     }
     .dashboard-card:active { transform:scale(.97); }
-    .dashboard-name { font-size:20px; font-weight:700; }
+    .dashboard-name { font-size:20px; font-weight:700; color: var(--text-main); }
     .dashboard-tag {
-      display:inline-flex; padding:3px 10px; background:#EFEDE7; border:1px solid var(--milk-border);
+      display:inline-flex; padding:3px 10px; background:var(--chip-bg); border:1px solid var(--milk-border);
       border-radius:999px; font-size:12px; color:var(--text-secondary); margin:4px 0;
     }
-    .dashboard-chevron { width:32px; height:32px; background:#F2F0EB; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+    .dashboard-chevron { width:32px; height:32px; background:var(--milk-input); border-radius:50%; display:flex; align-items:center; justify-content:center; color: var(--text-secondary); }
 
     /* Timeline（保養紀錄） */
     .timeline-item { position:relative; margin-bottom:18px; padding-left:20px; }
     .timeline-item::before { content:""; position:absolute; left:9px; top:0; bottom:-8px; width:2px; background:var(--milk-border); }
-    .timeline-dot { position:absolute; left:4px; top:8px; width:12px; height:12px; background:white; border:3px solid var(--primary); border-radius:50%; }
+    .timeline-dot { position:absolute; left:4px; top:8px; width:12px; height:12px; background:var(--milk-card); border:3px solid var(--primary); border-radius:50%; }
     .record-card { background:var(--milk-card); border:1px solid var(--milk-border); padding:14px; border-radius:16px; box-shadow:0 4px 12px rgba(0,0,0,0.05); }
-    .record-date { font-weight:600; }
-    .record-amount { color:#008A32; font-weight:700; }
+    .record-date { font-weight:600; color: var(--text-main); }
+    .record-amount { color:#30D158; font-weight:700; } /* iOS Dark Mode Green */
 
     /* 標籤與按鈕樣式 */
     .tag-selector, .chip-container { display:flex; flex-wrap:wrap; gap:8px; }
     .tag, .item-chip {
-      padding:6px 12px; background:#EFEDE7; border:1px solid var(--milk-border);
+      padding:6px 12px; background:var(--chip-bg); border:1px solid var(--milk-border);
       border-radius:999px; font-size:14px; cursor:pointer; transition:0.15s;
-      user-select:none; color:#5F564D;
+      user-select:none; color:var(--text-secondary);
     }
     .tag.active { background:var(--primary); border-color:var(--primary); color:white; }
-    .item-chip { background-color: #E3F2FD; color: #1565C0; border-color: #BBDEFB; font-weight: 600; margin-top: 4px; }
-    .item-chip:active { background-color: #2196F3; color: white; }
+    .item-chip { background-color: rgba(10, 132, 255, 0.15); color: var(--primary); border-color: var(--primary-light); font-weight: 600; margin-top: 4px; }
+    .item-chip:active { background-color: var(--primary); color: white; }
 
     /* 照片 */
     .photo-thumb { width:90px; height:90px; object-fit:cover; border-radius:12px; border:1px solid var(--milk-border); background:#E5E2DC; }
 
     /* Loading */
     .loading-overlay { position:fixed; inset:0; background:rgba(255,255,255,0.65); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; flex-direction:column; z-index:999; }
+    body.dark-mode .loading-overlay { background:rgba(0,0,0,0.65); }
 
     /* Sheet / Modal */
     .sheet-backdrop { background: rgba(0,0,0,0.4); backdrop-filter:blur(2px); }
-    .sheet { background: #fff; max-height: 90vh; display: flex; flex-direction: column; }
+    .sheet { background: var(--milk-card); max-height: 90vh; display: flex; flex-direction: column; color: var(--text-main); }
     .sheet-grabber { width: 40px; height: 5px; background: #E0E0E0; border-radius: 99px; margin: 10px auto 0; }
-    .sheet-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-bottom: 1px solid #eee; }
-    .sheet-title { font-weight: 700; font-size: 18px; }
+    body.dark-mode .sheet-grabber { background: #48484A; }
+    .sheet-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--milk-border); }
+    .sheet-title { font-weight: 700; font-size: 18px; color: var(--text-main); }
     .sheet-btn-text { color: var(--primary); font-size: 16px; }
-    .sheet-body { padding: 16px; overflow-y: auto; }
+    .sheet-body { padding: 16px; overflow-y: auto; background-color: var(--milk-bg); }
      
     /* 隱藏原生樣式 */
     input, textarea, select { -webkit-appearance: none; appearance: none; }
     .hidden { display: none !important; }
-    .danger-btn { width: 100%; color: #ff3b30; background: #fff0f0; padding: 12px; border-radius: 12px; font-weight: 600; margin-top: 10px; }
+    .danger-btn { width: 100%; color: #ff453a; background: rgba(255, 69, 58, 0.15); padding: 12px; border-radius: 12px; font-weight: 600; margin-top: 10px; }
 
     /* Toast */
     .toast {
@@ -137,10 +170,10 @@
     
     /* 照片編輯區域樣式 */
     .photo-wrapper { position: relative; display: inline-block; margin-right: 8px; flex-shrink: 0; }
-    .photo-thumb-edit { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; }
+    .photo-thumb-edit { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid var(--milk-border); }
     .btn-remove-photo {
       position: absolute; top: -6px; right: -6px;
-      background: #ff3b30; color: white;
+      background: #ff453a; color: white;
       border-radius: 50%; width: 22px; height: 22px;
       display: flex; align-items: center; justify-content: center;
       font-size: 14px; font-weight: bold; cursor: pointer;
@@ -149,12 +182,12 @@
     
     /* LINE 按鈕樣式 */
     .btn-line {
-      background-color: #06C755; color: white;
+      background-color: #30D158; color: white;
       border: none; padding: 6px 12px; border-radius: 99px;
       font-size: 13px; font-weight: 600; display: inline-flex; align-items: center;
       gap: 4px; cursor: pointer; text-decoration: none;
     }
-    .btn-line:active { background-color: #05b34c; }
+    .btn-line:active { background-color: #24a544; }
     
     /* 完工結案彈窗 */
     .finish-modal-overlay {
@@ -176,14 +209,25 @@
         width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
         font-size: 24px; cursor: pointer; z-index: 3001;
     }
+    
+    /* 主題切換按鈕 */
+    .theme-toggle {
+        padding: 8px; border-radius: 50%; background: var(--milk-input); color: var(--text-secondary);
+        display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid var(--milk-border);
+    }
   </style>
 </head>
 
 <body>
 
-<div id="page-list" class="min-h-screen">
+<div id="page-list" class="min-h-screen transition-colors duration-300">
   <div class="pt-10 pb-4 px-4 max-w-md mx-auto">
-    <div class="text-3xl font-semibold mb-3">濾芯保養系統</div>
+    <div class="flex justify-between items-center mb-3">
+        <div class="text-3xl font-semibold">濾芯保養系統</div>
+        <button class="theme-toggle" onclick="toggleDarkMode()">
+            <span id="theme-icon" class="material-icons">dark_mode</span>
+        </button>
+    </div>
 
     <div class="stats-container">
       <div id="card-overdue" class="stat-card" onclick="toggleDashboardFilter('overdue')">
@@ -418,11 +462,28 @@ let selectedEditRecordPhotos = [];
 
 window.currentRecords = [];
 
-// ✨✨✨ 新增：紀錄列表捲動位置 ✨✨✨
+// 紀錄列表捲動位置
 let lastScrollY = 0;
 
 let existingCustPhotos = [];
 let existingRecordPhotos = [];
+
+// ✨✨✨ 深色模式邏輯 ✨✨✨
+function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+    const isDark = document.body.classList.contains('dark-mode');
+    document.getElementById('theme-icon').innerText = isDark ? 'light_mode' : 'dark_mode';
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+}
+
+// 檢查儲存的主題設定
+function checkTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        document.getElementById('theme-icon').innerText = 'light_mode';
+    }
+}
 
 // --- 燈箱功能 ---
 function openLightbox(url) {
@@ -498,9 +559,7 @@ function normalizeDateStr(v){
 }
 
 async function apiCall(action, payload={}, method="POST"){
-  // 注意：這裡只顯示通用Loading，上傳時我們會手動控制 showLoading
   if(!document.getElementById("loading").classList.contains("hidden") && document.getElementById("loading-text").innerText.includes("上傳")) {
-      // 如果正在上傳，不要覆蓋文字
   } else {
       showLoading(true, "處理中…");
   }
@@ -517,7 +576,6 @@ async function apiCall(action, payload={}, method="POST"){
     alert("連線錯誤");
     return null;
   } finally {
-    // 只有非上傳流程才自動關閉，上傳流程我們會自己關
     if(!payload.photos && action !== "uploadImage") { 
         showLoading(false); 
     }
@@ -529,7 +587,7 @@ async function fetchCustomers(){
   if (!Array.isArray(data)){
     document.getElementById("customer-list").innerHTML =
       `<div class="text-center text-gray-400 mt-20">讀取失敗</div>`;
-    showLoading(false); // 強制關閉
+    showLoading(false); 
     return;
   }
   customers = data;
@@ -796,7 +854,6 @@ function getServiceStatus(lastDateStr, cycleMonths) {
     }
 }
 
-// ✨✨✨ 修改：打開詳情頁時紀錄捲軸位置 ✨✨✨
 async function openDetail(c){
   lastScrollY = window.scrollY; // 記住位置
   
@@ -853,11 +910,9 @@ async function openDetail(c){
   await fetchRecords(c.id);
 }
 
-// ✨✨✨ 修改：返回時還原捲軸位置 ✨✨✨
 function goBack(){
   document.getElementById("page-detail").classList.add("hidden");
   document.getElementById("page-list").classList.remove("hidden");
-  // 還原位置
   window.scrollTo(0, lastScrollY);
 }
 
@@ -919,7 +974,6 @@ async function saveEditedRecord(){
    
   let photoUrls = [...existingRecordPhotos]; 
 
-  // ✨✨✨ 修改：上傳進度提示 ✨✨✨
   let uploadedCount = 0;
   const totalUpload = selectedEditRecordPhotos.length;
   if(totalUpload > 0) showLoading(true, `準備上傳 ${totalUpload} 張照片...`);
@@ -930,7 +984,6 @@ async function saveEditedRecord(){
     const res = await apiCall("uploadImage", {base64, type:"image/jpeg"});
     if (res?.status==="success") photoUrls.push(res.url);
   }
-  // ✨✨✨
 
   showLoading(true, "儲存資料中...");
   const payload = {
@@ -954,7 +1007,6 @@ async function saveRecord(){
   
   let photoUrls = [];
 
-  // ✨✨✨ 修改：上傳進度提示 ✨✨✨
   let uploadedCount = 0;
   const totalUpload = selectedRecordPhotos.length;
   if(totalUpload > 0) showLoading(true, `準備上傳 ${totalUpload} 張照片...`);
@@ -965,7 +1017,6 @@ async function saveRecord(){
     const res = await apiCall("uploadImage", {base64, type:"image/jpeg"});
     if (res?.status==="success") photoUrls.push(res.url);
   }
-  // ✨✨✨
 
   showLoading(true, "儲存資料中...");
   const payload = {
@@ -1031,7 +1082,6 @@ async function saveCustomer(){
   let safeExisting = Array.isArray(existingCustPhotos) ? existingCustPhotos : [];
   let photoUrls = [...safeExisting]; 
 
-  // ✨✨✨ 修改：上傳進度提示 ✨✨✨
   let uploadedCount = 0;
   const totalUpload = selectedCustPhotos.length;
   if(totalUpload > 0) showLoading(true, `準備上傳 ${totalUpload} 張照片...`);
@@ -1044,7 +1094,6 @@ async function saveCustomer(){
         photoUrls.push(res.url);
     }
   }
-  // ✨✨✨
 
   showLoading(true, "儲存資料中...");
   const tags = getSelectedTags("cust-tag-selector");
@@ -1210,6 +1259,8 @@ function showToast(message) {
 }
 
 window.onload = () => {
+  // ✨ 載入時檢查主題
+  checkTheme();
   fetchCustomers();
   const rd = document.getElementById("record-date");
   if (rd){ const d = new Date(); rd.value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; }
