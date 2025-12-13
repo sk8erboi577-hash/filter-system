@@ -748,18 +748,22 @@ async function apiCall(action, payload={}, method="POST"){
 
 async function fetchCustomers(){
   const data = await apiCall("getCustomers", {}, "GET");
-  if (!Array.isArray(data)){
+
+  // ✅ 兼容：純陣列 或 {data:[...]} 兩種回傳
+  const list = Array.isArray(data) ? data : (Array.isArray(data?.data) ? data.data : null);
+
+  if (!list){
     document.getElementById("customer-list").innerHTML =
       `<div class="text-center text-gray-400 mt-20">讀取失敗</div>`;
-    showLoading(false); 
     return;
   }
-  customers = data;
-  updateDashboard(customers); 
+
+  customers = list;
+  updateDashboard(customers);
   renderFilterBar();
   renderList(customers);
-  showLoading(false);
 }
+
 
 function updateDashboard(list) {
   let overdueCount = 0;
@@ -1509,7 +1513,24 @@ function showToast(message) {
     const x = document.getElementById("toast"); x.innerText = message; x.className = "toast show";
     setTimeout(function(){ x.className = "toast"; }, 3000);
 }
+// ✅ 主題：避免 checkTheme 未定義導致初始化中斷
+function checkTheme() {
+  const theme = localStorage.getItem("theme") || "light";
+  document.body.classList.toggle("dark-mode", theme === "dark");
 
+  const icon = document.getElementById("theme-icon");
+  if (icon) icon.textContent = theme === "dark" ? "light_mode" : "dark_mode";
+}
+
+function toggleDarkMode() {
+  const isDark = document.body.classList.toggle("dark-mode");
+  localStorage.setItem("theme", isDark ? "dark" : "light");
+
+  const icon = document.getElementById("theme-icon");
+  if (icon) icon.textContent = isDark ? "light_mode" : "dark_mode";
+}
+
+  
 window.onload = () => {
   checkLogin(); // ✨ 啟動檢查：是否需要鎖定
   checkTheme();
@@ -1529,3 +1550,4 @@ window.onload = () => {
 
 </body>
 </html>
+
