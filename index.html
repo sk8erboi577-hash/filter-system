@@ -70,6 +70,7 @@
       border-bottom: 1px solid var(--milk-border); z-index: 50;
       display:flex; justify-content:space-between; align-items:center;
       transition: background 0.3s;
+      height: 60px; /* 固定高度，方便計算 */
     }
     .ios-nav-left, .ios-nav-right { display:flex; align-items:center; color:var(--primary); font-size:16px; gap:4px; cursor:pointer; }
     .ios-nav-title { font-size:18px; font-weight:600; color:var(--text-main); }
@@ -93,13 +94,14 @@
     .text-red-alert { color: #ff453a !important; }
     .text-orange-alert { color: #ff9f0a !important; }
 
-    /* 黏性標題 */
+    /* ✨✨✨ 修正：黏性標題位置 ✨✨✨ */
     .section-header {
         font-size: 14px; font-weight: 700; color: var(--text-secondary);
         padding: 12px 4px; margin: 0; display: flex; align-items: center;
-        position: sticky; top: -1px; background: var(--milk-bg); z-index: 20;
+        position: sticky; 
+        top: 60px; /* 修正這裡：往下推 60px，避開頂部導航列和時間 */
+        background: var(--milk-bg); z-index: 40;
         transition: background 0.3s;
-        /* ✨ 動畫：標題也要有進場效果 */
         animation: slideUpFade 0.4s ease-out forwards;
     }
     .section-header::after {
@@ -122,19 +124,13 @@
       display:flex; flex-direction: column; 
       box-shadow:0 6px 16px rgba(0,0,0,0.06); cursor:pointer; transition:.12s;
       position: relative; overflow: hidden; 
-      /* ✨ 動畫：預設隱藏，等待動畫觸發 */
-      opacity: 0; 
-      transform: translateY(20px);
+      opacity: 0; transform: translateY(20px);
     }
-    /* ✨ 定義動畫關鍵影格 */
     @keyframes slideUpFade {
         from { opacity: 0; transform: translateY(20px); }
         to { opacity: 1; transform: translateY(0); }
     }
-    /* ✨ 套用動畫的 class */
-    .animate-enter {
-        animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
+    .animate-enter { animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
     .dashboard-card:active { transform:scale(.97); }
     .card-content-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
@@ -146,18 +142,11 @@
     }
     .dashboard-chevron { width:32px; height:32px; background:var(--milk-input); border-radius:50%; display:flex; align-items:center; justify-content:center; color: var(--text-secondary); }
 
-    /* ✨✨✨ 膠囊狀按鈕 (圖案+文字) ✨✨✨ */
+    /* 膠囊狀按鈕 (圖案+文字) */
     .action-btn-pill {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 8px 16px;
-        border-radius: 99px;
-        font-size: 14px;
-        font-weight: 600;
-        gap: 6px;
-        text-decoration: none;
-        transition: transform 0.1s, background 0.2s;
+        display: inline-flex; align-items: center; justify-content: center;
+        padding: 8px 16px; border-radius: 99px; font-size: 14px; font-weight: 600;
+        gap: 6px; text-decoration: none; transition: transform 0.1s, background 0.2s;
         border: 1px solid rgba(0,0,0,0.05);
     }
     .action-btn-pill:active { transform: scale(0.95); }
@@ -258,38 +247,17 @@
     }
 
     .fab-btn {
-        position: fixed;
-        right: 24px;
-        width: 56px; 
-        height: 56px;
-        border-radius: 50%;
-        background: var(--primary); 
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        cursor: pointer;
-        z-index: 40;
-        transition: transform 0.2s, opacity 0.3s;
-        border: none;
+        position: fixed; right: 24px; width: 56px; height: 56px; border-radius: 50%;
+        background: var(--primary); color: white;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3); cursor: pointer; z-index: 40;
+        transition: transform 0.2s, opacity 0.3s; border: none;
     }
     .fab-btn:active { transform: scale(0.95); }
 
-    #btn-add-customer { 
-        bottom: 30px; 
-    }
-    #scroll-to-top {
-        bottom: 100px; 
-        opacity: 0;
-        pointer-events: none;
-        transform: translateY(10px);
-    }
-    #scroll-to-top.show {
-        opacity: 1;
-        pointer-events: auto;
-        transform: translateY(0);
-    }
+    #btn-add-customer { bottom: 30px; }
+    #scroll-to-top { bottom: 100px; opacity: 0; pointer-events: none; transform: translateY(10px); }
+    #scroll-to-top.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
 
     /* PIN 鎖定畫面 CSS */
     #pin-lock-overlay {
@@ -386,16 +354,24 @@
         <div>
             <div class="tool-section-title">單位換算</div>
             <div class="space-y-3 bg-white rounded-xl p-4 shadow-sm">
+                
                 <div class="tool-row mb-0">
                     <div class="tool-input-group"><div class="tool-input-label">壓力 (psi)</div><input type="number" id="conv-psi" class="tool-input" oninput="convertUnit('psi')"></div>
                     <div class="flex items-center text-gray-400">↔</div>
                     <div class="tool-input-group"><div class="tool-input-label">壓力 (kg/cm²)</div><input type="number" id="conv-kg" class="tool-input" oninput="convertUnit('kg')"></div>
                 </div>
-                <div class="tool-row mb-0">
-                    <div class="tool-input-group"><div class="tool-input-label">流量 (GPD)</div><input type="number" id="conv-gpd" class="tool-input" oninput="convertUnit('gpd')"></div>
-                    <div class="flex items-center text-gray-400">↔</div>
-                    <div class="tool-input-group"><div class="tool-input-label">每分鐘 (L)</div><input type="number" id="conv-lpm" class="tool-input" oninput="convertUnit('lpm')"></div>
+
+                <div>
+                    <div class="tool-input-label">流量換算 (輸入 GPD)</div>
+                    <div class="flex gap-2">
+                        <input type="number" id="conv-gpd" class="tool-input w-1/3" placeholder="GPD" oninput="convertUnit('gpd')">
+                        <div class="flex-1 space-y-1">
+                            <div class="bg-gray-100 p-2 rounded text-center text-sm"><span id="res-lpm" class="font-bold text-gray-800">-</span> L/min (公升/分)</div>
+                            <div class="bg-gray-100 p-2 rounded text-center text-sm"><span id="res-gpm" class="font-bold text-gray-800">-</span> GPM (加侖/分)</div>
+                        </div>
+                    </div>
                 </div>
+
                 <div class="tool-row mb-0">
                     <div class="tool-input-group"><div class="tool-input-label">長度 (英吋)</div><input type="number" id="conv-inch" class="tool-input" oninput="convertUnit('inch')"></div>
                     <div class="flex items-center text-gray-400">↔</div>
@@ -407,14 +383,6 @@
         <div>
             <div class="tool-section-title">其他輔助</div>
             <div class="space-y-3 bg-white rounded-xl p-4 shadow-sm">
-                <div>
-                    <div class="tool-input-label">RO 造水量檢查</div>
-                    <div class="flex gap-2">
-                        <input type="number" id="ro-gpd" class="tool-input flex-1" placeholder="輸入膜GPD (如:50)" oninput="calculateRO()">
-                        <div id="ro-result" class="flex-1 flex items-center justify-center font-bold text-gray-500">等待輸入...</div>
-                    </div>
-                </div>
-                <div class="h-[1px] bg-gray-100 my-2"></div>
                 <div>
                     <div class="tool-input-label">日期推算 (幾個月後)</div>
                     <div class="flex gap-2">
@@ -746,7 +714,7 @@ function verifyPin() {
     }
 }
 
-// ✨✨✨ 工具箱邏輯 ✨✨✨
+// ✨✨✨ 工具箱邏輯 (修正版：900格令/公升) ✨✨✨
 function calculateSoftWater() {
     const ppm = parseFloat(document.getElementById("soft-ppm").value);
     const people = parseFloat(document.getElementById("soft-people").value);
@@ -757,8 +725,8 @@ function calculateSoftWater() {
         return;
     }
 
-    // 1. 總能力 (格令) = 樹脂 * 3000
-    const totalGrains = resin * 3000;
+    // 1. 總能力 (格令) = 樹脂 * 900 (修正為家用安全值)
+    const totalGrains = resin * 900;
     // 2. 原水硬度 (GPG) = PPM / 17.1
     const hardnessGPG = ppm / 17.1;
     // 3. 總產水量 (加侖) -> 轉公升 -> 轉噸
@@ -766,28 +734,27 @@ function calculateSoftWater() {
     const waterLiters = waterGallons * 3.785;
     const waterTons = waterLiters / 1000;
 
-    // 4. 每日用水 (噸) = 人數 * 0.25
+    // 4. 每日用水 (噸) = 人數 * 0.25 (一人約250L)
     const dailyUsage = people * 0.25;
     
     // 5. 可用天數
     const days = waterTons / dailyUsage;
     
     // 6. 再生週期 = 可用天數 - 1 (安全預留)
-    const cycle = Math.floor(days - 1);
+    let cycle = Math.floor(days - 1);
+    if(cycle < 1) cycle = 1;
     
-    // 7. 耗鹽量 = 樹脂 * 0.15 kg
+    // 7. 耗鹽量 = 樹脂 * 0.15 kg (標準再生)
     const saltPerRegen = resin * 0.15;
     
     // 8. 10kg 鹽可用幾次 = 10 / 耗鹽量
     const regenPerBag = 10 / saltPerRegen;
     
-    // 9. 10kg 鹽可用天數
+    // 9. 10kg 鹽可用天數 = 可用次數 * 每次週期
     const daysPerBag = Math.floor(regenPerBag * cycle);
 
-    const safeCycle = cycle > 0 ? cycle : "水質太硬需每天";
-
     document.getElementById("soft-result").innerHTML = `
-        <div class="mb-1">🔄 建議再生週期：<span class="text-xl font-bold">${safeCycle}</span> 天</div>
+        <div class="mb-1">🔄 建議再生週期：<span class="text-xl font-bold">${cycle}</span> 天</div>
         <div class="text-sm opacity-80">每次再生耗鹽：${saltPerRegen.toFixed(2)} kg</div>
         <div class="mt-2 pt-2 border-t border-blue-200">
             🧂 <span class="font-bold">1包鹽(10kg)</span> 約可用 <span class="text-lg font-bold">${daysPerBag}</span> 天
@@ -804,29 +771,25 @@ function convertUnit(type) {
         const v = document.getElementById("conv-kg").value;
         document.getElementById("conv-psi").value = v ? (v * 14.22).toFixed(1) : "";
     } else if (type === 'gpd') {
-        const v = document.getElementById("conv-gpd").value;
-        // GPD -> L/min: GPD * 3.785 / 1440
-        document.getElementById("conv-lpm").value = v ? (v * 3.785 / 1440).toFixed(3) : "";
-    } else if (type === 'lpm') {
-        const v = document.getElementById("conv-lpm").value;
-        document.getElementById("conv-gpd").value = v ? (v * 1440 / 3.785).toFixed(0) : "";
+        // ✨ 修改：GPD 同時換算 L/min 和 GPM
+        const v = parseFloat(document.getElementById("conv-gpd").value);
+        if(v) {
+            // GPD -> L/min: GPD * 3.785 / 1440
+            const lpm = (v * 3.785 / 1440).toFixed(2);
+            // GPD -> GPM: GPD / 1440
+            const gpm = (v / 1440).toFixed(2);
+            document.getElementById("res-lpm").innerText = lpm;
+            document.getElementById("res-gpm").innerText = gpm;
+        } else {
+            document.getElementById("res-lpm").innerText = "-";
+            document.getElementById("res-gpm").innerText = "-";
+        }
     } else if (type === 'inch') {
         const v = document.getElementById("conv-inch").value;
         document.getElementById("conv-cm").value = v ? (v * 2.54).toFixed(2) : "";
     } else if (type === 'cm') {
         const v = document.getElementById("conv-cm").value;
         document.getElementById("conv-inch").value = v ? (v / 2.54).toFixed(2) : "";
-    }
-}
-
-function calculateRO() {
-    const gpd = document.getElementById("ro-gpd").value;
-    if(gpd) {
-        // GPD * 3785cc / 1440min
-        const cc = (gpd * 3785 / 1440).toFixed(0);
-        document.getElementById("ro-result").innerText = `約 ${cc} cc/分`;
-    } else {
-        document.getElementById("ro-result").innerText = "等待輸入...";
     }
 }
 
@@ -1233,6 +1196,7 @@ function renderSection(container, title, items) {
         const mapUrl = c.address ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.address)}` : null;
         
         // 如果有地址，顯示藍色導航鈕；沒有地址就不顯示
+        // 改成膠囊狀按鈕，加入 "導航" 文字
         const mapBtn = mapUrl 
             ? `<a href="${mapUrl}" target="_blank" onclick="event.stopPropagation()" class="action-btn-pill text-blue-600 bg-blue-50 ml-3">
                  <span class="material-icons text-lg">near_me</span> 導航
@@ -1240,6 +1204,7 @@ function renderSection(container, title, items) {
             : "";
         
         // 電話按鈕 (永遠顯示，因為電話是必填)
+        // 改成膠囊狀按鈕，加入 "電話" 文字
         const phoneBtn = `<a href="tel:${c.phone}" onclick="event.stopPropagation()" class="action-btn-pill text-green-600 bg-green-50">
                             <span class="material-icons text-lg">phone</span> 電話
                           </a>`;
