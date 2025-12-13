@@ -252,7 +252,7 @@
         font-size: 24px; cursor: pointer; z-index: 3001;
     }
     
-    .theme-toggle {
+    .theme-toggle, .tool-toggle {
         padding: 8px; border-radius: 50%; background: var(--milk-input); color: var(--text-secondary);
         display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid var(--milk-border);
     }
@@ -291,7 +291,7 @@
         transform: translateY(0);
     }
 
-    /* ✨✨✨ PIN 鎖定畫面 CSS ✨✨✨ */
+    /* PIN 鎖定畫面 CSS */
     #pin-lock-overlay {
         position: fixed; inset: 0; z-index: 9999;
         background: rgba(255, 255, 255, 0.85);
@@ -302,27 +302,22 @@
     body.dark-mode #pin-lock-overlay { background: rgba(0, 0, 0, 0.85); }
     
     .pin-title { font-size: 20px; font-weight: 600; margin-bottom: 24px; color: var(--text-main); }
-    
     .pin-dots { display: flex; gap: 16px; margin-bottom: 40px; }
     .pin-dot {
         width: 14px; height: 14px; border-radius: 50%;
-        border: 1px solid var(--text-secondary);
-        transition: all 0.2s;
+        border: 1px solid var(--text-secondary); transition: all 0.2s;
     }
     .pin-dot.filled { background: var(--text-main); border-color: var(--text-main); }
-    
     .pin-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px 32px; }
     .pin-btn {
         width: 72px; height: 72px; border-radius: 50%;
         background: var(--milk-card); border: 1px solid var(--milk-border);
         font-size: 28px; font-weight: 500; color: var(--text-main);
         display: flex; align-items: center; justify-content: center;
-        cursor: pointer; transition: background 0.1s;
-        user-select: none;
+        cursor: pointer; transition: background 0.1s; user-select: none;
     }
     .pin-btn:active { background: var(--milk-input); }
     .pin-btn.transparent { background: transparent; border: none; font-size: 16px; }
-
     .shake-anim { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
     @keyframes shake {
         10%, 90% { transform: translate3d(-1px, 0, 0); }
@@ -330,8 +325,16 @@
         30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
         40%, 60% { transform: translate3d(4px, 0, 0); }
     }
-    /* 隱藏鎖定畫面用 */
     .unlocked { opacity: 0; visibility: hidden; pointer-events: none; }
+
+    /* ✨✨✨ 工具箱 CSS ✨✨✨ */
+    .tool-section-title { font-size: 14px; font-weight: 700; color: var(--text-secondary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .tool-row { display: flex; gap: 12px; margin-bottom: 16px; }
+    .tool-input-group { flex: 1; }
+    .tool-input-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; }
+    .tool-input { width: 100%; padding: 10px; border-radius: 12px; border: 1px solid var(--milk-border); background: var(--milk-input); font-size: 16px; color: var(--text-main); font-weight: 600; text-align: center; }
+    .result-box { background: rgba(0, 122, 255, 0.1); border: 1px solid var(--primary); padding: 12px; border-radius: 12px; color: var(--primary); font-weight: 600; text-align: center; margin-top: 8px; font-size: 15px; line-height: 1.5; }
+    body.dark-mode .result-box { background: rgba(10, 132, 255, 0.2); color: var(--primary-light); }
 
   </style>
 </head>
@@ -359,14 +362,88 @@
     </div>
 </div>
 
+<div id="tools-modal" class="fixed inset-0 sheet-backdrop hidden z-50 flex items-end sm:items-center justify-center">
+  <div class="sheet w-full max-w-md max-h-[90vh] overflow-hidden flex flex-col rounded-t-2xl sm:rounded-2xl">
+    <div class="sheet-grabber"></div>
+    <div class="sheet-header">
+      <h2 class="sheet-title flex items-center"><span class="material-icons mr-2">construction</span>工程師工具箱</h2>
+      <button onclick="document.getElementById('tools-modal').classList.add('hidden')" class="sheet-btn-text">關閉</button>
+    </div>
+    <div class="sheet-body space-y-6 bg-gray-50 pb-10">
+        
+        <div>
+            <div class="tool-section-title">軟水用鹽/週期計算</div>
+            <div class="space-y-3 bg-white rounded-xl p-4 shadow-sm">
+                <div class="tool-row mb-0">
+                    <div class="tool-input-group"><div class="tool-input-label">原水硬度 (PPM)</div><input type="number" id="soft-ppm" class="tool-input" placeholder="150" oninput="calculateSoftWater()"></div>
+                    <div class="tool-input-group"><div class="tool-input-label">用水人數</div><input type="number" id="soft-people" class="tool-input" placeholder="4" oninput="calculateSoftWater()"></div>
+                </div>
+                <div class="tool-input-group"><div class="tool-input-label">樹脂公升數 (L)</div><input type="number" id="soft-resin" class="tool-input" placeholder="25" oninput="calculateSoftWater()"></div>
+                <div id="soft-result" class="result-box hidden"></div>
+            </div>
+        </div>
+
+        <div>
+            <div class="tool-section-title">單位換算</div>
+            <div class="space-y-3 bg-white rounded-xl p-4 shadow-sm">
+                <div class="tool-row mb-0">
+                    <div class="tool-input-group"><div class="tool-input-label">壓力 (psi)</div><input type="number" id="conv-psi" class="tool-input" oninput="convertUnit('psi')"></div>
+                    <div class="flex items-center text-gray-400">↔</div>
+                    <div class="tool-input-group"><div class="tool-input-label">壓力 (kg/cm²)</div><input type="number" id="conv-kg" class="tool-input" oninput="convertUnit('kg')"></div>
+                </div>
+                <div class="tool-row mb-0">
+                    <div class="tool-input-group"><div class="tool-input-label">流量 (GPD)</div><input type="number" id="conv-gpd" class="tool-input" oninput="convertUnit('gpd')"></div>
+                    <div class="flex items-center text-gray-400">↔</div>
+                    <div class="tool-input-group"><div class="tool-input-label">每分鐘 (L)</div><input type="number" id="conv-lpm" class="tool-input" oninput="convertUnit('lpm')"></div>
+                </div>
+                <div class="tool-row mb-0">
+                    <div class="tool-input-group"><div class="tool-input-label">長度 (英吋)</div><input type="number" id="conv-inch" class="tool-input" oninput="convertUnit('inch')"></div>
+                    <div class="flex items-center text-gray-400">↔</div>
+                    <div class="tool-input-group"><div class="tool-input-label">長度 (cm)</div><input type="number" id="conv-cm" class="tool-input" oninput="convertUnit('cm')"></div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="tool-section-title">其他輔助</div>
+            <div class="space-y-3 bg-white rounded-xl p-4 shadow-sm">
+                <div>
+                    <div class="tool-input-label">RO 造水量檢查</div>
+                    <div class="flex gap-2">
+                        <input type="number" id="ro-gpd" class="tool-input flex-1" placeholder="輸入膜GPD (如:50)" oninput="calculateRO()">
+                        <div id="ro-result" class="flex-1 flex items-center justify-center font-bold text-gray-500">等待輸入...</div>
+                    </div>
+                </div>
+                <div class="h-[1px] bg-gray-100 my-2"></div>
+                <div>
+                    <div class="tool-input-label">日期推算 (幾個月後)</div>
+                    <div class="flex gap-2">
+                        <input type="date" id="calc-date-start" class="tool-input w-1/3">
+                        <input type="number" id="calc-date-month" class="tool-input w-20" placeholder="+月" oninput="calculateDate()">
+                        <div id="calc-date-result" class="flex-1 flex items-center justify-center font-bold text-primary"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="h-10"></div>
+    </div>
+  </div>
+</div>
+
 
 <div id="page-list" class="min-h-screen transition-colors duration-300">
   <div class="pt-10 pb-4 px-4 max-w-md mx-auto">
     <div class="flex justify-between items-center mb-3">
         <div class="text-3xl font-semibold">濾芯保養系統</div>
-        <button class="theme-toggle" onclick="toggleDarkMode()">
-            <span id="theme-icon" class="material-icons">dark_mode</span>
-        </button>
+        <div class="flex gap-2">
+            <button class="tool-toggle" onclick="document.getElementById('tools-modal').classList.remove('hidden')">
+                <span class="material-icons">construction</span>
+            </button>
+            <button class="theme-toggle" onclick="toggleDarkMode()">
+                <span id="theme-icon" class="material-icons">dark_mode</span>
+            </button>
+        </div>
     </div>
 
     <div class="stats-container">
@@ -604,7 +681,7 @@ const NOTE_OPTIONS = ["水壓正常", "管線更新", "更換接頭", "漏水處
 const PRICE_OPTIONS = ["500", "1000", "1800", "2500", "3500"];
 
 // 🔑 您的登入密碼 (可自行修改)
-const LOGIN_PIN = "1943";
+const LOGIN_PIN = "8888";
 
 let currentFilter = "全部";
 let dashboardFilter = null; 
@@ -626,7 +703,6 @@ let existingRecordPhotos = [];
 // ✨✨✨ PIN 鎖定邏輯 ✨✨✨
 let currentPinInput = "";
 function checkLogin() {
-    // 檢查 Session 是否已經解鎖過
     if (sessionStorage.getItem("isUnlocked") === "true") {
         document.getElementById("pin-lock-overlay").classList.add("unlocked");
     }
@@ -654,7 +730,7 @@ function verifyPin() {
     if (currentPinInput === LOGIN_PIN) {
         sessionStorage.setItem("isUnlocked", "true");
         document.getElementById("pin-lock-overlay").classList.add("unlocked");
-        currentPinInput = ""; // 清空以防下次鎖定
+        currentPinInput = ""; 
     } else {
         const dotsBox = document.getElementById("pin-dots");
         dotsBox.classList.add("shake-anim");
@@ -669,6 +745,107 @@ function verifyPin() {
         }, 500);
     }
 }
+
+// ✨✨✨ 工具箱邏輯 ✨✨✨
+function calculateSoftWater() {
+    const ppm = parseFloat(document.getElementById("soft-ppm").value);
+    const people = parseFloat(document.getElementById("soft-people").value);
+    const resin = parseFloat(document.getElementById("soft-resin").value);
+    
+    if (!ppm || !people || !resin) {
+        document.getElementById("soft-result").classList.add("hidden");
+        return;
+    }
+
+    // 1. 總能力 (格令) = 樹脂 * 3000
+    const totalGrains = resin * 3000;
+    // 2. 原水硬度 (GPG) = PPM / 17.1
+    const hardnessGPG = ppm / 17.1;
+    // 3. 總產水量 (加侖) -> 轉公升 -> 轉噸
+    const waterGallons = totalGrains / hardnessGPG;
+    const waterLiters = waterGallons * 3.785;
+    const waterTons = waterLiters / 1000;
+
+    // 4. 每日用水 (噸) = 人數 * 0.25
+    const dailyUsage = people * 0.25;
+    
+    // 5. 可用天數
+    const days = waterTons / dailyUsage;
+    
+    // 6. 再生週期 = 可用天數 - 1 (安全預留)
+    const cycle = Math.floor(days - 1);
+    
+    // 7. 耗鹽量 = 樹脂 * 0.15 kg
+    const saltPerRegen = resin * 0.15;
+    
+    // 8. 10kg 鹽可用幾次 = 10 / 耗鹽量
+    const regenPerBag = 10 / saltPerRegen;
+    
+    // 9. 10kg 鹽可用天數
+    const daysPerBag = Math.floor(regenPerBag * cycle);
+
+    const safeCycle = cycle > 0 ? cycle : "水質太硬需每天";
+
+    document.getElementById("soft-result").innerHTML = `
+        <div class="mb-1">🔄 建議再生週期：<span class="text-xl font-bold">${safeCycle}</span> 天</div>
+        <div class="text-sm opacity-80">每次再生耗鹽：${saltPerRegen.toFixed(2)} kg</div>
+        <div class="mt-2 pt-2 border-t border-blue-200">
+            🧂 <span class="font-bold">1包鹽(10kg)</span> 約可用 <span class="text-lg font-bold">${daysPerBag}</span> 天
+        </div>
+    `;
+    document.getElementById("soft-result").classList.remove("hidden");
+}
+
+function convertUnit(type) {
+    if(type === 'psi') {
+        const v = document.getElementById("conv-psi").value;
+        document.getElementById("conv-kg").value = v ? (v * 0.0703).toFixed(2) : "";
+    } else if (type === 'kg') {
+        const v = document.getElementById("conv-kg").value;
+        document.getElementById("conv-psi").value = v ? (v * 14.22).toFixed(1) : "";
+    } else if (type === 'gpd') {
+        const v = document.getElementById("conv-gpd").value;
+        // GPD -> L/min: GPD * 3.785 / 1440
+        document.getElementById("conv-lpm").value = v ? (v * 3.785 / 1440).toFixed(3) : "";
+    } else if (type === 'lpm') {
+        const v = document.getElementById("conv-lpm").value;
+        document.getElementById("conv-gpd").value = v ? (v * 1440 / 3.785).toFixed(0) : "";
+    } else if (type === 'inch') {
+        const v = document.getElementById("conv-inch").value;
+        document.getElementById("conv-cm").value = v ? (v * 2.54).toFixed(2) : "";
+    } else if (type === 'cm') {
+        const v = document.getElementById("conv-cm").value;
+        document.getElementById("conv-inch").value = v ? (v / 2.54).toFixed(2) : "";
+    }
+}
+
+function calculateRO() {
+    const gpd = document.getElementById("ro-gpd").value;
+    if(gpd) {
+        // GPD * 3785cc / 1440min
+        const cc = (gpd * 3785 / 1440).toFixed(0);
+        document.getElementById("ro-result").innerText = `約 ${cc} cc/分`;
+    } else {
+        document.getElementById("ro-result").innerText = "等待輸入...";
+    }
+}
+
+function calculateDate() {
+    const start = document.getElementById("calc-date-start").value;
+    const addMonth = parseInt(document.getElementById("calc-date-month").value);
+    
+    if(start && !isNaN(addMonth)) {
+        const d = new Date(start);
+        d.setMonth(d.getMonth() + addMonth);
+        const res = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        document.getElementById("calc-date-result").innerText = res;
+    } else {
+        document.getElementById("calc-date-result").innerText = "";
+    }
+}
+
+// 預設日期
+document.getElementById("calc-date-start").valueAsDate = new Date();
 
 
 window.onscroll = function() {
@@ -1056,7 +1233,6 @@ function renderSection(container, title, items) {
         const mapUrl = c.address ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.address)}` : null;
         
         // 如果有地址，顯示藍色導航鈕；沒有地址就不顯示
-        // 改成膠囊狀按鈕，加入 "導航" 文字
         const mapBtn = mapUrl 
             ? `<a href="${mapUrl}" target="_blank" onclick="event.stopPropagation()" class="action-btn-pill text-blue-600 bg-blue-50 ml-3">
                  <span class="material-icons text-lg">near_me</span> 導航
@@ -1064,7 +1240,6 @@ function renderSection(container, title, items) {
             : "";
         
         // 電話按鈕 (永遠顯示，因為電話是必填)
-        // 改成膠囊狀按鈕，加入 "電話" 文字
         const phoneBtn = `<a href="tel:${c.phone}" onclick="event.stopPropagation()" class="action-btn-pill text-green-600 bg-green-50">
                             <span class="material-icons text-lg">phone</span> 電話
                           </a>`;
