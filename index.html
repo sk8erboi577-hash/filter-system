@@ -2,8 +2,7 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>濾芯保養系統</title>
 
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -11,7 +10,6 @@
   <link rel="apple-touch-icon" href="icon.png">
 
   <script src="https://cdn.tailwindcss.com"></script>
-
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">
 
   <style>
@@ -24,8 +22,7 @@
       --milk-input: #F9F7F2;
       --text-main: #3A342E;
       --text-secondary: #6E655C;
-      /* ✨ 導航列改為實色，防止穿透 */
-      --nav-bg: #F5EFE7; 
+      --nav-bg: #F5EFE7; /* 實色背景，防止穿透 */
       --chip-bg: #EFEDE7;
     }
 
@@ -59,25 +56,22 @@
       background: var(--milk-bg);
       margin: 0;
       padding-bottom: 100px;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang TC",
-        Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang TC", Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       color: var(--text-main);
       transition: background 0.3s, color 0.3s;
     }
 
-    /* ✨ 頂部導航列 (實色背景，層級最高) */
+    /* 頂部導航列 (實色背景) */
     .ios-nav-bar {
       position: sticky; top: 0; 
       padding: 12px 16px; 
-      /* 關鍵：加上安全區域 padding，適配各種瀏海屏 */
-      padding-top: max(16px, env(safe-area-inset-top));
+      padding-top: max(16px, env(safe-area-inset-top)); /* 避開瀏海 */
       background: var(--nav-bg); 
       border-bottom: 1px solid var(--milk-border); 
-      z-index: 100; /* 確保蓋過所有內容 */
+      z-index: 100;
       display:flex; justify-content:space-between; align-items:center;
       transition: background 0.3s;
-      height: auto;
-      min-height: 60px;
+      height: auto; min-height: 60px;
     }
     .ios-nav-left, .ios-nav-right { display:flex; align-items:center; color:var(--primary); font-size:16px; gap:4px; cursor:pointer; }
     .ios-nav-title { font-size:18px; font-weight:600; color:var(--text-main); }
@@ -101,19 +95,15 @@
     .text-red-alert { color: #ff453a !important; }
     .text-orange-alert { color: #ff9f0a !important; }
 
-    /* ✨ 分類標題 (改為不沾黏，避免亂跑) */
+    /* ✨ 分類標題 (移除 sticky，解決重疊問題) */
     .section-header {
         font-size: 14px; font-weight: 700; color: var(--text-secondary);
         padding: 16px 4px 8px 4px; margin: 0; display: flex; align-items: center;
-        /* 移除 sticky，改為一般流動佈局，最穩定 */
-        position: relative; 
-        background: transparent; 
+        position: relative; /* 不黏貼 */
         z-index: 10;
         animation: slideUpFade 0.4s ease-out forwards;
     }
-    .section-header::after {
-        content: ""; flex: 1; height: 1px; background: var(--milk-border); margin-left: 10px;
-    }
+    .section-header::after { content: ""; flex: 1; height: 1px; background: var(--milk-border); margin-left: 10px; }
 
     .filter-scroll { display: flex; gap: 8px; overflow-x: auto; padding: 4px 0; margin-top: 12px; -webkit-overflow-scrolling: touch; }
     .filter-scroll::-webkit-scrollbar { display: none; }
@@ -134,12 +124,8 @@
       z-index: 1; 
       opacity: 0; transform: translateY(20px);
     }
-    @keyframes slideUpFade {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes slideUpFade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     .animate-enter { animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-
     .dashboard-card:active { transform:scale(.97); }
     .card-content-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
     
@@ -160,11 +146,7 @@
     .action-btn-pill:active { transform: scale(0.95); }
     body.dark-mode .action-btn-pill { border-color: rgba(255,255,255,0.1); }
 
-    /* 進度條樣式 */
-    .progress-track {
-        height: 4px; width: 100%; background: #F2F2F7; border-radius: 2px; margin-top: 12px;
-        overflow: hidden; display: flex;
-    }
+    .progress-track { height: 4px; width: 100%; background: #F2F2F7; border-radius: 2px; margin-top: 12px; overflow: hidden; display: flex; }
     body.dark-mode .progress-track { background: #3a3a3c; }
     .progress-bar { height: 100%; border-radius: 2px; transition: width 0.5s ease; }
     .bar-green { background-color: #30D158; }
@@ -279,10 +261,7 @@
     
     .pin-title { font-size: 20px; font-weight: 600; margin-bottom: 24px; color: var(--text-main); }
     .pin-dots { display: flex; gap: 16px; margin-bottom: 40px; }
-    .pin-dot {
-        width: 14px; height: 14px; border-radius: 50%;
-        border: 1px solid var(--text-secondary); transition: all 0.2s;
-    }
+    .pin-dot { width: 14px; height: 14px; border-radius: 50%; border: 1px solid var(--text-secondary); transition: all 0.2s; }
     .pin-dot.filled { background: var(--text-main); border-color: var(--text-main); }
     .pin-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px 32px; }
     .pin-btn {
@@ -303,7 +282,7 @@
     }
     .unlocked { opacity: 0; visibility: hidden; pointer-events: none; }
 
-    /* ✨✨✨ 工具箱 CSS ✨✨✨ */
+    /* 工具箱 CSS */
     .tool-section-title { font-size: 14px; font-weight: 700; color: var(--text-secondary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
     .tool-row { display: flex; gap: 12px; margin-bottom: 16px; }
     .tool-input-group { flex: 1; }
@@ -355,22 +334,20 @@
             <div class="bg-white rounded-xl p-5 shadow-sm flex flex-col items-center">
                 <div class="mb-4 text-center">
                     <div class="text-sm text-gray-500 mb-2">掃描加入官方 LINE</div>
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://line.me/ti/p/YOUR_LINE_ID" class="w-40 h-40 object-contain border border-gray-100 rounded-lg mx-auto">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://line.me/ti/p/sk8erboi577" class="w-40 h-40 object-contain border border-gray-100 rounded-lg mx-auto">
                 </div>
                 <div class="flex gap-2 w-full">
-                    <a href="https://line.me/ti/p/YOUR_LINE_ID" target="_blank" class="flex-1 bg-[#06C755] text-white py-2 rounded-lg font-bold text-center text-sm flex items-center justify-center decoration-0 no-underline">
+                    <a href="https://line.me/ti/p/sk8erboi577" target="_blank" class="flex-1 bg-[#06C755] text-white py-2 rounded-lg font-bold text-center text-sm flex items-center justify-center decoration-0 no-underline">
                         <span class="material-icons text-sm mr-1">person_add</span> 加好友
                     </a>
                 </div>
-                
                 <div class="w-full h-[1px] bg-gray-100 my-4"></div>
-
                 <div class="w-full">
                     <div class="text-xs text-gray-400 mb-1">收款帳號 (點擊複製)</div>
                     <div onclick="copyBankInfo()" class="bg-gray-50 border border-gray-200 rounded-lg p-3 flex justify-between items-center cursor-pointer active:bg-gray-100">
                         <div>
-                            <div class="text-xs text-gray-500">中國信託 (822)</div>
-                            <div class="font-mono font-bold text-lg text-gray-700 tracking-wide">1234-5678-9012</div>
+                            <div class="text-xs text-gray-500">渣打銀行 (052)</div>
+                            <div class="font-mono font-bold text-lg text-gray-700 tracking-wide">4377-2138-0359-3017</div>
                         </div>
                         <span class="material-icons text-gray-400">content_copy</span>
                     </div>
@@ -393,25 +370,22 @@
         <div>
             <div class="tool-section-title">單位換算</div>
             <div class="space-y-3 bg-white rounded-xl p-4 shadow-sm">
-                
                 <div class="tool-row mb-0">
                     <div class="tool-input-group"><div class="tool-input-label">壓力 (psi)</div><input type="number" id="conv-psi" class="tool-input" oninput="convertUnit('psi')"></div>
                     <div class="flex items-center text-gray-400">↔</div>
                     <div class="tool-input-group"><div class="tool-input-label">壓力 (kg/cm²)</div><input type="number" id="conv-kg" class="tool-input" oninput="convertUnit('kg')"></div>
                 </div>
-
                 <div>
                     <div class="tool-input-label">流量換算 (輸入 GPD)</div>
                     <div class="flex gap-2">
                         <input type="number" id="conv-gpd" class="tool-input w-1/3" placeholder="GPD" oninput="convertUnit('gpd')">
                         <div class="flex-1 space-y-1">
-                            <div class="bg-gray-100 p-2 rounded text-center text-sm"><span id="res-lpm" class="font-bold text-gray-800">-</span> L/min (公升/分)</div>
-                            <div class="bg-gray-100 p-2 rounded text-center text-sm"><span id="res-gpm" class="font-bold text-gray-800">-</span> GPM (加侖/分)</div>
+                            <div class="bg-gray-100 p-2 rounded text-center text-sm"><span id="res-lpm" class="font-bold text-gray-800">-</span> L/min</div>
+                            <div class="bg-gray-100 p-2 rounded text-center text-sm"><span id="res-gpm" class="font-bold text-gray-800">-</span> GPM</div>
                         </div>
                     </div>
                 </div>
-
-                <div class="tool-row mb-0">
+                <div class="tool-row mb-0 mt-3">
                     <div class="tool-input-group"><div class="tool-input-label">長度 (英吋)</div><input type="number" id="conv-inch" class="tool-input" oninput="convertUnit('inch')"></div>
                     <div class="flex items-center text-gray-400">↔</div>
                     <div class="tool-input-group"><div class="tool-input-label">長度 (cm)</div><input type="number" id="conv-cm" class="tool-input" oninput="convertUnit('cm')"></div>
@@ -426,19 +400,21 @@
 
 
 <div id="page-list" class="min-h-screen transition-colors duration-300">
-  <div class="pt-4 px-4 max-w-md mx-auto">
-    <div class="flex justify-between items-center mb-3">
-        <div class="text-3xl font-semibold">濾芯保養系統</div>
-        <div class="flex gap-2">
-            <button class="tool-toggle" onclick="document.getElementById('tools-modal').classList.remove('hidden')">
-                <span class="material-icons">construction</span>
-            </button>
-            <button class="theme-toggle" onclick="toggleDarkMode()">
-                <span id="theme-icon" class="material-icons">dark_mode</span>
-            </button>
-        </div>
+  <div class="ios-nav-bar">
+    <div class="flex items-center gap-2">
+        <div class="text-xl font-bold ml-1">濾芯保養系統</div>
     </div>
+    <div class="flex gap-2">
+        <button class="tool-toggle" onclick="document.getElementById('tools-modal').classList.remove('hidden')">
+            <span class="material-icons">construction</span>
+        </button>
+        <button class="theme-toggle" onclick="toggleDarkMode()">
+            <span id="theme-icon" class="material-icons">dark_mode</span>
+        </button>
+    </div>
+  </div>
 
+  <div class="pt-4 px-4 max-w-md mx-auto">
     <div class="stats-container">
       <div id="card-overdue" class="stat-card" onclick="toggleDashboardFilter('overdue')">
         <div id="stat-overdue-val" class="stat-value text-red-alert">0</div>
@@ -750,7 +726,7 @@ function verifyPin() {
     }
 }
 
-// ✨✨✨ 工具箱邏輯 (修正版：900格令/公升) ✨✨✨
+// ✨✨✨ 工具箱邏輯 ✨✨✨
 function calculateSoftWater() {
     const ppm = parseFloat(document.getElementById("soft-ppm").value);
     const people = parseFloat(document.getElementById("soft-people").value);
@@ -761,32 +737,20 @@ function calculateSoftWater() {
         return;
     }
 
-    // 1. 總能力 (格令) = 樹脂 * 900 (修正為家用安全值)
-    const totalGrains = resin * 900;
-    // 2. 原水硬度 (GPG) = PPM / 17.1
+    const totalGrains = resin * 900; // 900 grains/L (家用)
     const hardnessGPG = ppm / 17.1;
-    // 3. 總產水量 (加侖) -> 轉公升 -> 轉噸
     const waterGallons = totalGrains / hardnessGPG;
     const waterLiters = waterGallons * 3.785;
     const waterTons = waterLiters / 1000;
 
-    // 4. 每日用水 (噸) = 人數 * 0.25 (一人約250L)
     const dailyUsage = people * 0.25;
-    
-    // 5. 可用天數
     const days = waterTons / dailyUsage;
     
-    // 6. 再生週期 = 可用天數 - 1 (安全預留)
     let cycle = Math.floor(days - 1);
     if(cycle < 1) cycle = 1;
     
-    // 7. 耗鹽量 = 樹脂 * 0.15 kg (標準再生)
     const saltPerRegen = resin * 0.15;
-    
-    // 8. 10kg 鹽可用幾次 = 10 / 耗鹽量
     const regenPerBag = 10 / saltPerRegen;
-    
-    // 9. 10kg 鹽可用天數 = 可用次數 * 每次週期
     const daysPerBag = Math.floor(regenPerBag * cycle);
 
     document.getElementById("soft-result").innerHTML = `
@@ -807,12 +771,9 @@ function convertUnit(type) {
         const v = document.getElementById("conv-kg").value;
         document.getElementById("conv-psi").value = v ? (v * 14.22).toFixed(1) : "";
     } else if (type === 'gpd') {
-        // ✨ 修改：GPD 同時換算 L/min 和 GPM
         const v = parseFloat(document.getElementById("conv-gpd").value);
         if(v) {
-            // GPD -> L/min: GPD * 3.785 / 1440
             const lpm = (v * 3.785 / 1440).toFixed(2);
-            // GPD -> GPM: GPD / 1440
             const gpm = (v / 1440).toFixed(2);
             document.getElementById("res-lpm").innerText = lpm;
             document.getElementById("res-gpm").innerText = gpm;
@@ -1128,19 +1089,14 @@ function renderSection(container, title, items) {
             }
         }
 
-        /* ✨✨✨ 修改：建立導航按鈕和電話按鈕 (圖案+文字) ✨✨✨ */
         const mapUrl = c.address ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.address)}` : null;
         
-        // 如果有地址，顯示藍色導航鈕；沒有地址就不顯示
-        // 改成膠囊狀按鈕，加入 "導航" 文字
         const mapBtn = mapUrl 
             ? `<a href="${mapUrl}" target="_blank" onclick="event.stopPropagation()" class="action-btn-pill text-blue-600 bg-blue-50 ml-3">
                  <span class="material-icons text-lg">near_me</span> 導航
                </a>` 
             : "";
         
-        // 電話按鈕 (永遠顯示，因為電話是必填)
-        // 改成膠囊狀按鈕，加入 "電話" 文字
         const phoneBtn = `<a href="tel:${c.phone}" onclick="event.stopPropagation()" class="action-btn-pill text-green-600 bg-green-50">
                             <span class="material-icons text-lg">phone</span> 電話
                           </a>`;
