@@ -22,7 +22,7 @@
       --milk-input: #F9F7F2;
       --text-main: #3A342E;
       --text-secondary: #6E655C;
-      --nav-bg: #F5EFE7; /* 實色背景，防止穿透 */
+      --nav-bg: #F5EFE7; /* 實色背景 */
       --chip-bg: #EFEDE7;
     }
 
@@ -339,7 +339,6 @@
                     <div class="text-sm text-gray-500 mb-2">掃描加入官方 LINE</div>
                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://line.me/ti/p/sk8erboi577" class="w-40 h-40 object-contain border border-gray-100 rounded-lg mx-auto">
                 </div>
-                
                 <div class="w-full h-[1px] bg-gray-100 my-4"></div>
                 <div class="w-full">
                     <div class="text-xs text-gray-400 mb-1">收款帳號 (點擊複製)</div>
@@ -379,33 +378,6 @@
         </div>
 
         <div>
-            <div class="tool-section-title">現場筆記 (自動存檔)</div>
-            <div class="bg-white rounded-xl p-4 shadow-sm space-y-4">
-                <div>
-                    <div class="tool-input-label">📝 文字備忘錄</div>
-                    <textarea id="tool-memo" class="tool-textarea w-full p-3 border rounded-lg bg-yellow-50" rows="3" placeholder="隨手記..." oninput="saveMemo()"></textarea>
-                </div>
-                <div>
-                    <div class="flex justify-between items-center mb-1">
-                        <div class="tool-input-label">🎨 手繪草圖</div>
-                        <div class="flex gap-2">
-                             <button onclick="setPenColor('#000000')" class="w-8 h-8 rounded-full bg-black border-2 border-gray-200"></button>
-                             <button onclick="setPenColor('#EF4444')" class="w-8 h-8 rounded-full bg-red-500 border-2 border-gray-200"></button>
-                             <button onclick="setPenColor('#F97316')" class="w-8 h-8 rounded-full bg-orange-500 border-2 border-gray-200"></button>
-                             <button onclick="setPenColor('#EAB308')" class="w-8 h-8 rounded-full bg-yellow-500 border-2 border-gray-200"></button>
-                             <button onclick="setPenColor('#22C55E')" class="w-8 h-8 rounded-full bg-green-500 border-2 border-gray-200"></button>
-                             <button onclick="setPenColor('#3B82F6')" class="w-8 h-8 rounded-full bg-blue-500 border-2 border-gray-200"></button>
-                        </div>
-                    </div>
-                    <div class="relative w-full h-96">
-                        <button onclick="clearCanvas()" class="absolute top-2 right-2 text-xs bg-gray-200 px-3 py-1 rounded-full text-gray-600 font-bold shadow-sm z-10">清空</button>
-                        <canvas id="tool-canvas" class="w-full h-full border-2 border-gray-300 rounded-xl bg-white shadow-inner" style="touch-action: none;"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div>
             <div class="tool-section-title">軟水用鹽/週期計算</div>
             <div class="space-y-3 bg-white rounded-xl p-4 shadow-sm">
                 <div class="tool-row mb-0">
@@ -439,6 +411,33 @@
                     <div class="tool-input-group"><div class="tool-input-label">長度 (英吋)</div><input type="number" id="conv-inch" class="tool-input" oninput="convertUnit('inch')"></div>
                     <div class="flex items-center text-gray-400">↔</div>
                     <div class="tool-input-group"><div class="tool-input-label">長度 (cm)</div><input type="number" id="conv-cm" class="tool-input" oninput="convertUnit('cm')"></div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="tool-section-title">現場筆記 (自動存檔)</div>
+            <div class="bg-white rounded-xl p-4 shadow-sm space-y-4">
+                <div>
+                    <div class="tool-input-label">📝 文字備忘錄</div>
+                    <textarea id="tool-memo" class="tool-textarea w-full p-3 border rounded-lg bg-yellow-50" rows="3" placeholder="隨手記..." oninput="saveMemo()"></textarea>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <div class="tool-input-label">🎨 手繪草圖</div>
+                        <div class="flex gap-2">
+                             <button onclick="setPenColor('#000000')" class="w-8 h-8 rounded-full bg-black border-2 border-gray-200"></button>
+                             <button onclick="setPenColor('#EF4444')" class="w-8 h-8 rounded-full bg-red-500 border-2 border-gray-200"></button>
+                             <button onclick="setPenColor('#F97316')" class="w-8 h-8 rounded-full bg-orange-500 border-2 border-gray-200"></button>
+                             <button onclick="setPenColor('#EAB308')" class="w-8 h-8 rounded-full bg-yellow-500 border-2 border-gray-200"></button>
+                             <button onclick="setPenColor('#22C55E')" class="w-8 h-8 rounded-full bg-green-500 border-2 border-gray-200"></button>
+                             <button onclick="setPenColor('#3B82F6')" class="w-8 h-8 rounded-full bg-blue-500 border-2 border-gray-200"></button>
+                        </div>
+                    </div>
+                    <div class="relative w-full h-96">
+                        <button onclick="clearCanvas()" class="absolute top-2 right-2 text-xs bg-gray-200 px-3 py-1 rounded-full text-gray-600 font-bold shadow-sm z-10">清空</button>
+                        <canvas id="tool-canvas" class="w-full h-full border-2 border-gray-300 rounded-xl bg-white shadow-inner" style="touch-action: none;"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -610,7 +609,7 @@ const NOTE_OPTIONS = ["水壓正常", "管線更新", "更換接頭", "漏水處
 // 常用金額選項
 const PRICE_OPTIONS = ["500", "1000", "1800", "2500", "3500"];
 
-// 🔑 您的登入密碼 (可自行修改)
+// 🔑 您的登入密碼
 const LOGIN_PIN = "8888";
 
 let currentFilter = "全部";
@@ -966,6 +965,7 @@ async function fetchCustomers(){
   renderList(customers);
 }
 
+
 function updateDashboard(list) {
   let overdueCount = 0;
   let thisMonthCount = 0;
@@ -1228,7 +1228,7 @@ function renderSection(container, title, items) {
 
         const card = document.createElement("div");
         card.className = cardClass;
-        card.style.animationDelay = `${index * 0.05}s`; 
+        card.style.animationDelay = `${index * 0.05}s`; // ✨ 加上動畫延遲
         card.onclick = ()=> openDetail(c);
 
         card.innerHTML = `
