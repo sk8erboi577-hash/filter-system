@@ -393,7 +393,29 @@
                 </div>
             </div>
         </div>
-
+<div>
+            <div class="tool-section-title">稅額計算 (5%)</div>
+            <div class="space-y-3 bg-white rounded-xl p-4 shadow-sm">
+                <div class="flex gap-2 items-center mb-2">
+                    <div class="flex-1">
+                        <div class="tool-input-label">未稅金額</div>
+                        <input type="number" id="tax-exclude" class="tool-input text-blue-600" placeholder="輸入未稅" oninput="calcTax('exclude')">
+                    </div>
+                    <div class="text-gray-400 pt-4">➕</div>
+                    <div class="w-24">
+                        <div class="tool-input-label">稅金</div>
+                        <div id="tax-val" class="tool-input bg-gray-100 text-gray-500">0</div>
+                    </div>
+                </div>
+                <div class="flex gap-2 items-center">
+                    <div class="text-gray-400 pt-4">🟰</div>
+                    <div class="flex-1">
+                        <div class="tool-input-label">含稅總額</div>
+                        <input type="number" id="tax-include" class="tool-input text-green-600 font-bold" placeholder="輸入含稅" oninput="calcTax('include')">
+                    </div>
+                </div>
+            </div>
+</div>
         <div class="h-10"></div>
     </div>
   </div>
@@ -699,7 +721,39 @@ function convertUnit(type) {
         document.getElementById("conv-inch").value = v ? (v / 2.54).toFixed(2) : "";
     }
 }
+// ✨ 稅額計算器
+function calcTax(type) {
+    const rate = 0.05; // 稅率 5%
+    const excludeInput = document.getElementById("tax-exclude");
+    const includeInput = document.getElementById("tax-include");
+    const taxDisplay = document.getElementById("tax-val");
 
+    if (type === 'exclude') {
+        // 輸入未稅 -> 算含稅
+        const v = parseFloat(excludeInput.value);
+        if (!isNaN(v)) {
+            const tax = Math.round(v * rate);
+            taxDisplay.innerText = tax;
+            includeInput.value = v + tax;
+        } else {
+            taxDisplay.innerText = "0";
+            includeInput.value = "";
+        }
+    } else {
+        // 輸入含稅 -> 反推未稅
+        const v = parseFloat(includeInput.value);
+        if (!isNaN(v)) {
+            // 公式：含稅 / 1.05 = 未稅 (四捨五入)
+            const exclude = Math.round(v / (1 + rate));
+            const tax = v - exclude;
+            taxDisplay.innerText = tax;
+            excludeInput.value = exclude;
+        } else {
+            taxDisplay.innerText = "0";
+            excludeInput.value = "";
+        }
+    }
+}
 // ---------------------------
 // 核心邏輯區 (完全展開，不縮減)
 // ---------------------------
@@ -1545,4 +1599,5 @@ window.onload = () => {
 
 </body>
 </html>
+
 
