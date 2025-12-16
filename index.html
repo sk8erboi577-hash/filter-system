@@ -22,7 +22,7 @@
       --milk-input: #F9F7F2;
       --text-main: #3A342E;
       --text-secondary: #6E655C;
-      --nav-bg: #F5EFE7; /* 實色背景 */
+      --nav-bg: #F5EFE7; /* 實色背景，防止穿透 */
       --chip-bg: #EFEDE7;
     }
 
@@ -339,6 +339,7 @@
                     <div class="text-sm text-gray-500 mb-2">掃描加入官方 LINE</div>
                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://line.me/ti/p/sk8erboi577" class="w-40 h-40 object-contain border border-gray-100 rounded-lg mx-auto">
                 </div>
+                
                 <div class="w-full h-[1px] bg-gray-100 my-4"></div>
                 <div class="w-full">
                     <div class="text-xs text-gray-400 mb-1">收款帳號 (點擊複製)</div>
@@ -388,12 +389,18 @@
                     <div class="flex justify-between items-center mb-1">
                         <div class="tool-input-label">🎨 手繪草圖</div>
                         <div class="flex gap-2">
-                             <button onclick="setPenColor('#000000')" class="w-6 h-6 rounded-full bg-black border border-gray-200"></button>
-                             <button onclick="setPenColor('#ff0000')" class="w-6 h-6 rounded-full bg-red-600 border border-gray-200"></button>
-                             <button onclick="clearCanvas()" class="text-xs bg-gray-200 px-2 py-1 rounded text-gray-600">清除</button>
+                             <button onclick="setPenColor('#000000')" class="w-8 h-8 rounded-full bg-black border-2 border-gray-200"></button>
+                             <button onclick="setPenColor('#EF4444')" class="w-8 h-8 rounded-full bg-red-500 border-2 border-gray-200"></button>
+                             <button onclick="setPenColor('#F97316')" class="w-8 h-8 rounded-full bg-orange-500 border-2 border-gray-200"></button>
+                             <button onclick="setPenColor('#EAB308')" class="w-8 h-8 rounded-full bg-yellow-500 border-2 border-gray-200"></button>
+                             <button onclick="setPenColor('#22C55E')" class="w-8 h-8 rounded-full bg-green-500 border-2 border-gray-200"></button>
+                             <button onclick="setPenColor('#3B82F6')" class="w-8 h-8 rounded-full bg-blue-500 border-2 border-gray-200"></button>
                         </div>
                     </div>
-                    <canvas id="tool-canvas" class="w-full h-48 border border-gray-300 rounded-lg bg-white" style="touch-action: none;"></canvas>
+                    <div class="relative w-full h-96">
+                        <button onclick="clearCanvas()" class="absolute top-2 right-2 text-xs bg-gray-200 px-3 py-1 rounded-full text-gray-600 font-bold shadow-sm z-10">清空</button>
+                        <canvas id="tool-canvas" class="w-full h-full border-2 border-gray-300 rounded-xl bg-white shadow-inner" style="touch-action: none;"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -623,7 +630,7 @@ let lastScrollY = 0;
 let existingCustPhotos = [];
 let existingRecordPhotos = [];
 
-// ✨ 複製銀行帳號
+// ✨✨✨ 複製銀行帳號 ✨✨✨
 function copyBankInfo() {
     // ⚠️ 請在這裡輸入您真正的帳號
     const acc = "03420-000777561"; 
@@ -634,7 +641,7 @@ function copyBankInfo() {
     });
 }
 
-// ✨ PIN 鎖定邏輯
+// ✨✨✨ PIN 鎖定邏輯 ✨✨✨
 let currentPinInput = "";
 function checkLogin() {
     if (sessionStorage.getItem("isUnlocked") === "true") {
@@ -680,7 +687,7 @@ function verifyPin() {
     }
 }
 
-// ✨ 主題設定
+// ✨✨✨ 主題設定 (補回) ✨✨✨
 function checkTheme() {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
@@ -695,7 +702,7 @@ function toggleDarkMode() {
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
 }
 
-// ✨ 稅額計算器
+// ✨✨✨ 稅額計算器 (新功能) ✨✨✨
 function calcTax(type) {
     const rate = 0.05; // 稅率 5%
     const excludeInput = document.getElementById("tax-exclude");
@@ -729,7 +736,7 @@ function calcTax(type) {
     }
 }
 
-// ✨ 備忘錄 (自動存檔)
+// ✨✨✨ 備忘錄 (自動存檔) ✨✨✨
 function saveMemo() {
     const val = document.getElementById("tool-memo").value;
     localStorage.setItem("toolMemo", val);
@@ -739,7 +746,7 @@ function loadMemo() {
     if(val) document.getElementById("tool-memo").value = val;
 }
 
-// ✨ 手繪畫布 (Canvas)
+// ✨✨✨ 手繪畫布 (Canvas) ✨✨✨
 let isDrawing = false;
 let canvas, ctx;
 let lastX = 0;
@@ -823,8 +830,7 @@ function clearCanvas() {
     if(ctx && canvas) ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-
-// ✨ 工具箱邏輯 (修正版：900格令/公升)
+// ✨✨✨ 工具箱邏輯 (修正版：900格令/公升) ✨✨✨
 function calculateSoftWater() {
     const ppm = parseFloat(document.getElementById("soft-ppm").value);
     const people = parseFloat(document.getElementById("soft-people").value);
@@ -959,7 +965,6 @@ async function fetchCustomers(){
   renderFilterBar();
   renderList(customers);
 }
-
 
 function updateDashboard(list) {
   let overdueCount = 0;
@@ -1223,7 +1228,7 @@ function renderSection(container, title, items) {
 
         const card = document.createElement("div");
         card.className = cardClass;
-        card.style.animationDelay = `${index * 0.05}s`; // ✨ 加上動畫延遲
+        card.style.animationDelay = `${index * 0.05}s`; 
         card.onclick = ()=> openDetail(c);
 
         card.innerHTML = `
