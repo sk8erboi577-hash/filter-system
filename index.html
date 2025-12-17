@@ -22,7 +22,7 @@
       --milk-input: #F9F7F2;
       --text-main: #3A342E;
       --text-secondary: #6E655C;
-      --nav-bg: #F5EFE7; /* 實色背景 */
+      --nav-bg: #F5EFE7;
       --chip-bg: #EFEDE7;
     }
 
@@ -95,7 +95,7 @@
     .text-red-alert { color: #ff453a !important; }
     .text-orange-alert { color: #ff9f0a !important; }
 
-    /* 分類標題 (無 sticky) */
+    /* 分類標題 */
     .section-header {
         font-size: 14px; font-weight: 700; color: var(--text-secondary);
         padding: 16px 4px 8px 4px; margin: 0; display: flex; align-items: center;
@@ -296,6 +296,13 @@
     
     .qr-container { background: white; padding: 20px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; margin-bottom: 12px; border: 1px solid #eee; }
     .qr-img { width: 180px; height: 180px; object-fit: contain; margin-bottom: 16px; }
+    
+    /* Toggle Switch CSS */
+    .toggle-checkbox:checked { right: 0; border-color: #10B981; }
+    .toggle-checkbox:checked + .toggle-label { background-color: #10B981; }
+    .toggle-checkbox:checked + .toggle-label:before { transform: translateX(100%); }
+    .toggle-label { width: 44px; height: 24px; background-color: #E5E7EB; border-radius: 9999px; position: relative; cursor: pointer; transition: background-color 0.2s ease-in-out; }
+    .toggle-label:before { content: ''; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; background-color: white; border-radius: 50%; transition: transform 0.2s ease-in-out; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 
   </style>
 </head>
@@ -387,6 +394,14 @@
                     <div class="tool-input-group"><div class="tool-input-label">原水硬度 (PPM)</div><input type="number" id="soft-ppm" class="tool-input" placeholder="200" oninput="calculateSoftWater()"></div>
                 </div>
                 <div class="tool-input-group"><div class="tool-input-label">用水人數</div><input type="number" id="soft-people" class="tool-input" placeholder="4" oninput="calculateSoftWater()"></div>
+
+                <div class="flex justify-between items-center py-2 px-1">
+                    <span class="text-sm font-medium text-gray-700">啟用安全係數 (9折)</span>
+                    <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                        <input type="checkbox" name="toggle" id="soft-safe-mode" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" checked onchange="calculateSoftWater()"/>
+                        <label for="soft-safe-mode" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                    </div>
+                </div>
 
                 <div id="soft-result" class="hidden space-y-3">
                     <div class="bg-blue-50 p-3 rounded-lg border border-blue-100">
@@ -644,7 +659,7 @@ const NOTE_OPTIONS = ["水壓正常", "管線更新", "更換接頭", "漏水處
 // 常用金額選項
 const PRICE_OPTIONS = ["500", "1000", "1800", "2500", "3500"];
 
-// 🔑 您的登入密碼 (可自行修改)
+// 🔑 您的登入密碼
 const LOGIN_PIN = "8888";
 
 let currentFilter = "全部";
@@ -664,7 +679,7 @@ let lastScrollY = 0;
 let existingCustPhotos = [];
 let existingRecordPhotos = [];
 
-// ✨✨✨ 複製銀行帳號 ✨✨✨
+// ✨ 複製銀行帳號
 function copyBankInfo() {
     // ⚠️ 請在這裡輸入您真正的帳號
     const acc = "03420-000777561"; 
@@ -675,7 +690,7 @@ function copyBankInfo() {
     });
 }
 
-// ✨✨✨ PIN 鎖定邏輯 ✨✨✨
+// ✨ PIN 鎖定邏輯
 let currentPinInput = "";
 function checkLogin() {
     if (sessionStorage.getItem("isUnlocked") === "true") {
@@ -721,7 +736,7 @@ function verifyPin() {
     }
 }
 
-// ✨✨✨ 主題設定 (補回) ✨✨✨
+// ✨ 主題設定
 function checkTheme() {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
@@ -736,7 +751,7 @@ function toggleDarkMode() {
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
 }
 
-// ✨✨✨ 稅額計算器 (新功能) ✨✨✨
+// ✨ 稅額計算器
 function calcTax(type) {
     const rate = 0.05; // 稅率 5%
     const excludeInput = document.getElementById("tax-exclude");
@@ -770,7 +785,7 @@ function calcTax(type) {
     }
 }
 
-// ✨✨✨ 備忘錄 (自動存檔) ✨✨✨
+// ✨ 備忘錄 (自動存檔)
 function saveMemo() {
     const val = document.getElementById("tool-memo").value;
     localStorage.setItem("toolMemo", val);
@@ -780,7 +795,7 @@ function loadMemo() {
     if(val) document.getElementById("tool-memo").value = val;
 }
 
-// ✨✨✨ 手繪畫布 (Canvas) ✨✨✨
+// ✨ 手繪畫布 (Canvas)
 let isDrawing = false;
 let canvas, ctx;
 let lastX = 0;
@@ -924,7 +939,7 @@ function calcFlowRate() {
     }
 }
 
-// ✨✨✨ 工具箱邏輯 (修正版：50000 PPM 係數) ✨✨✨
+// ✨ 工具箱邏輯 (修正版：50000係數 + 9折開關)
 function calculateSoftWater() {
     const ppm = parseFloat(document.getElementById("soft-ppm").value);
     const people = parseFloat(document.getElementById("soft-people").value);
@@ -935,23 +950,22 @@ function calculateSoftWater() {
         return;
     }
 
+    const isSafeMode = document.getElementById("soft-safe-mode").checked;
+
     // 1. 總交換能力 (50000 係數)
-    // 修正公式: User specified 50L * 50000 = 2500000.
     const capacityTotal = resin * 50000; 
     
-    // 2. 安全折扣 (9折)
-    const safeCapacity = capacityTotal * 0.9;
+    // 2. 有效交換量 (是否打9折)
+    const effectiveCapacity = isSafeMode ? capacityTotal * 0.9 : capacityTotal;
 
     // 3. 可用水量 (公升 & 噸)
-    // Formula: Safe Capacity / PPM
-    const waterLiters = safeCapacity / ppm;
+    const waterLiters = effectiveCapacity / ppm;
     const waterTons = waterLiters / 1000;
 
     // 4. 每日用水 (假設每人每日 250L)
     const dailyUsage = people * 250;
 
     // 5. 可用天數
-    // Formula: Total Liters / Daily Usage
     const theoreticalDays = waterLiters / dailyUsage;
     
     // 6. 再生週期 (扣一天安全值)
@@ -959,11 +973,9 @@ function calculateSoftWater() {
     if(cycle < 1) cycle = 1;
     
     // 7. 耗鹽量 (kg)
-    // Formula: Resin * 0.15
     const saltKg = resin * 0.15;
     
     // 8. 需補水量 (公升)
-    // Formula: Salt / 0.3 (Standard saturation ratio)
     const refillWaterL = saltKg / 0.3;
 
     document.getElementById("res-days").innerText = cycle; // 天數
@@ -974,15 +986,23 @@ function calculateSoftWater() {
     document.getElementById("soft-result").classList.remove("hidden");
     
     // 更新詳細公式
-    document.getElementById("formula-detail").innerHTML = `
-        <p>1. 總交換能力 = 樹脂 ${resin}L x 50,000 = ${capacityTotal.toLocaleString()} PPM</p>
-        <p>2. 安全交換量 (9折) = ${capacityTotal.toLocaleString()} x 0.9 = ${safeCapacity.toLocaleString()} PPM</p>
-        <p>3. 可用水量 = ${safeCapacity.toLocaleString()} ÷ ${ppm} = ${waterLiters.toFixed(0)} L (${waterTons.toFixed(2)} 噸)</p>
+    let formulaHtml = `<p>1. 總交換能力 = 樹脂 ${resin}L x 50,000 = ${capacityTotal.toLocaleString()} PPM</p>`;
+    
+    if(isSafeMode) {
+         formulaHtml += `<p>2. 安全交換量 (9折) = ${capacityTotal.toLocaleString()} x 0.9 = ${effectiveCapacity.toLocaleString()} PPM</p>`;
+    } else {
+         formulaHtml += `<p>2. 交換量 (不打折) = ${effectiveCapacity.toLocaleString()} PPM</p>`;
+    }
+
+    formulaHtml += `
+        <p>3. 可用水量 = ${effectiveCapacity.toLocaleString()} ÷ ${ppm} = ${waterLiters.toFixed(0)} L (${waterTons.toFixed(2)} 噸)</p>
         <p>4. 每日用水 = ${people}人 x 250L = ${dailyUsage} L</p>
         <p>5. 再生週期 = ${waterLiters.toFixed(0)} ÷ ${dailyUsage} = ${theoreticalDays.toFixed(1)} 天 (減1天安全值 = ${cycle} 天)</p>
         <p>6. 耗鹽量 = ${resin}L x 0.15 = ${saltKg.toFixed(2)} kg</p>
         <p>7. 補水量 = ${saltKg.toFixed(2)}kg ÷ 0.3 = ${refillWaterL.toFixed(1)} L</p>
     `;
+    
+    document.getElementById("formula-detail").innerHTML = formulaHtml;
 
     // 若流速已計算，自動更新時間
     calcFlowRate(); 
