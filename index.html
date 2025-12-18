@@ -393,7 +393,20 @@
                     <div class="tool-input-group"><div class="tool-input-label">樹脂量 (公升)</div><input type="number" id="soft-resin" class="tool-input" placeholder="50" oninput="calculateSoftWater()"></div>
                     <div class="tool-input-group"><div class="tool-input-label">原水硬度 (PPM)</div><input type="number" id="soft-ppm" class="tool-input" placeholder="200" oninput="calculateSoftWater()"></div>
                 </div>
-                <div class="tool-input-group"><div class="tool-input-label">用水人數</div><input type="number" id="soft-people" class="tool-input" placeholder="4" oninput="calculateSoftWater()"></div>
+               <div class="tool-row mb-0 mt-3">
+    <div class="tool-input-group" style="flex: 0.8;">
+        <div class="tool-input-label">計算基準</div>
+        <select id="usage-mode" class="tool-input" onchange="calculateSoftWater()" style="padding: 10px 4px; font-size: 14px;">
+            <option value="people">人數估算 (250L/人)</option>
+            <option value="manual">每日用水 (公升)</option>
+            <option value="bill">水費單度數 (2個月)</option>
+        </select>
+    </div>
+    <div class="tool-input-group">
+        <div class="tool-input-label">數值</div>
+        <input type="number" id="usage-val" class="tool-input" placeholder="輸入人數/度數" oninput="calculateSoftWater()">
+    </div>
+</div>
 
                 <div class="flex justify-between items-center py-2 px-1">
                     <span class="text-sm font-medium text-gray-700">啟用安全係數 (9折)</span>
@@ -940,12 +953,17 @@ function calcFlowRate() {
 }
 
 // ✨ 工具箱邏輯 (修正版：50000係數 + 9折開關)
+// ✨ 工具箱邏輯 (修正版：支援多種用水量計算 + 900格令)
 function calculateSoftWater() {
     const ppm = parseFloat(document.getElementById("soft-ppm").value);
-    const people = parseFloat(document.getElementById("soft-people").value);
     const resin = parseFloat(document.getElementById("soft-resin").value);
     
-    if (!ppm || !people || !resin) {
+    // 🔴 修改開始：取得新的輸入值
+    const mode = document.getElementById("usage-mode").value;
+    const val = parseFloat(document.getElementById("usage-val").value);
+    // 🔴 修改結束
+
+    if (!ppm || !resin || !val) { // 檢查 val 是否有值
         document.getElementById("soft-result").classList.add("hidden");
         return;
     }
@@ -962,8 +980,25 @@ function calculateSoftWater() {
     const waterLiters = effectiveCapacity / ppm;
     const waterTons = waterLiters / 1000;
 
-    // 4. 每日用水 (假設每人每日 250L)
-    const dailyUsage = people * 250;
+    // 🔴 修改開始：計算每日用水量 (Daily Usage)
+    let dailyUsage = 0;
+    let usageText = ""; // 用於顯示在公式說明
+
+    if (mode === 'people') {
+        // 模式A: 人數 x 250L
+        dailyUsage = val * 250;
+        usageText = `${val}人 x 250L`;
+    } else if (mode === 'manual') {
+        // 模式B: 直接輸入公升
+        dailyUsage = val;
+        usageText = `自訂 ${val}L`;
+    } else if (mode === 'bill') {
+        // 模式C: 水費單度數 (1度=1000L, 一期2個月約60天)
+        // 公式: (度數 * 1000) / 60
+        dailyUsage = (val * 1000) / 60;
+        usageText = `水費單 ${val}度 (約 ${dailyUsage.toFixed(0)}L/日)`;
+    }
+    // 🔴 修改結束
 
     // 5. 可用天數
     const theoreticalDays = waterLiters / dailyUsage;
@@ -978,14 +1013,14 @@ function calculateSoftWater() {
     // 8. 需補水量 (公升)
     const refillWaterL = saltKg / 0.3;
 
-    document.getElementById("res-days").innerText = cycle; // 天數
+    document.getElementById("res-days").innerText = cycle; 
     document.getElementById("res-water").innerText = `${waterTons.toFixed(1)} 噸`;
     document.getElementById("res-salt").innerText = `${saltKg.toFixed(2)} kg`;
-    document.getElementById("res-refill-vol").innerText = refillWaterL.toFixed(1); // 存給計時器用
+    document.getElementById("res-refill-vol").innerText = `${refillWaterL.toFixed(1)} 公升(L)`;
 
     document.getElementById("soft-result").classList.remove("hidden");
     
-    // 更新詳細公式
+    // 🔴 修改開始：更新詳細公式顯示
     let formulaHtml = `<p>1. 總交換能力 = 樹脂 ${resin}L x 50,000 = ${capacityTotal.toLocaleString()} PPM</p>`;
     
     if(isSafeMode) {
@@ -996,18 +1031,18 @@ function calculateSoftWater() {
 
     formulaHtml += `
         <p>3. 可用水量 = ${effectiveCapacity.toLocaleString()} ÷ ${ppm} = ${waterLiters.toFixed(0)} L (${waterTons.toFixed(2)} 噸)</p>
-        <p>4. 每日用水 = ${people}人 x 250L = ${dailyUsage} L</p>
-        <p>5. 再生週期 = ${waterLiters.toFixed(0)} ÷ ${dailyUsage} = ${theoreticalDays.toFixed(1)} 天 (減1天安全值 = ${cycle} 天)</p>
+        <p>4. 每日用水 = ${usageText} = ${dailyUsage.toFixed(0)} L</p>
+        <p>5. 再生週期 = ${waterLiters.toFixed(0)} ÷ ${dailyUsage.toFixed(0)} = ${theoreticalDays.toFixed(1)} 天 (減1天安全值 = ${cycle} 天)</p>
         <p>6. 耗鹽量 = ${resin}L x 0.15 = ${saltKg.toFixed(2)} kg</p>
         <p>7. 補水量 = ${saltKg.toFixed(2)}kg ÷ 0.3 = ${refillWaterL.toFixed(1)} L</p>
     `;
+    // 🔴 修改結束
     
     document.getElementById("formula-detail").innerHTML = formulaHtml;
 
     // 若流速已計算，自動更新時間
     calcFlowRate(); 
 }
-
 function convertUnit(type) {
     if(type === 'psi') {
         const v = document.getElementById("conv-psi").value;
@@ -1866,3 +1901,4 @@ window.onload = () => {
 
 </body>
 </html>
+
