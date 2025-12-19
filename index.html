@@ -39,7 +39,6 @@
       --chip-bg: #2C2C2E;
     }
 
-    /* 強制覆蓋 Tailwind */
     body.dark-mode .bg-white { background-color: var(--milk-card) !important; color: var(--text-main); }
     body.dark-mode .bg-gray-50 { background-color: #000000 !important; }
     body.dark-mode .text-navy-900 { color: var(--text-main) !important; }
@@ -99,8 +98,7 @@
     .section-header {
         font-size: 14px; font-weight: 700; color: var(--text-secondary);
         padding: 16px 4px 8px 4px; margin: 0; display: flex; align-items: center;
-        position: relative; 
-        z-index: 10;
+        position: relative; z-index: 10;
         animation: slideUpFade 0.4s ease-out forwards;
     }
     .section-header::after { content: ""; flex: 1; height: 1px; background: var(--milk-border); margin-left: 10px; }
@@ -393,20 +391,21 @@
                     <div class="tool-input-group"><div class="tool-input-label">樹脂量 (公升)</div><input type="number" id="soft-resin" class="tool-input" placeholder="50" oninput="calculateSoftWater()"></div>
                     <div class="tool-input-group"><div class="tool-input-label">原水硬度 (PPM)</div><input type="number" id="soft-ppm" class="tool-input" placeholder="200" oninput="calculateSoftWater()"></div>
                 </div>
-               <div class="tool-row mb-0 mt-3">
-    <div class="tool-input-group" style="flex: 0.8;">
-        <div class="tool-input-label">計算基準</div>
-        <select id="usage-mode" class="tool-input" onchange="calculateSoftWater()" style="padding: 10px 4px; font-size: 14px;">
-            <option value="people">人數估算 (250L/人)</option>
-            <option value="manual">每日用水 (公升)</option>
-            <option value="bill">水費單度數 (2個月)</option>
-        </select>
-    </div>
-    <div class="tool-input-group">
-        <div class="tool-input-label">數值</div>
-        <input type="number" id="usage-val" class="tool-input" placeholder="輸入人數/度數" oninput="calculateSoftWater()">
-    </div>
-</div>
+                
+                <div class="tool-row mb-0 mt-3">
+                    <div class="tool-input-group" style="flex: 0.8;">
+                        <div class="tool-input-label">計算基準</div>
+                        <select id="usage-mode" class="tool-input" onchange="calculateSoftWater()" style="padding: 10px 4px; font-size: 14px;">
+                            <option value="people">人數估算 (250L/人)</option>
+                            <option value="manual">每日用水 (公升)</option>
+                            <option value="bill">水費單度數 (2個月)</option>
+                        </select>
+                    </div>
+                    <div class="tool-input-group">
+                        <div class="tool-input-label">數值</div>
+                        <input type="number" id="usage-val" class="tool-input" placeholder="輸入人數/度數" oninput="calculateSoftWater()">
+                    </div>
+                </div>
 
                 <div class="flex justify-between items-center py-2 px-1">
                     <span class="text-sm font-medium text-gray-700">啟用安全係數 (9折)</span>
@@ -451,7 +450,8 @@
                 </div>
             </div>
         </div>
-<div>
+
+        <div>
             <div class="tool-section-title">單位換算</div>
             <div class="space-y-3 bg-white rounded-xl p-4 shadow-sm">
                 
@@ -489,9 +489,9 @@
                         <input type="number" id="conv-us" class="tool-input" placeholder="0.055" oninput="convertUnit('us')">
                     </div>
                 </div>
-                </div>
 
-            </div> </div>
+            </div>
+        </div>
 
         <div>
             <div class="tool-section-title">現場筆記 (自動存檔)</div>
@@ -707,7 +707,7 @@ let lastScrollY = 0;
 let existingCustPhotos = [];
 let existingRecordPhotos = [];
 
-// ✨ 複製銀行帳號
+// ✨✨✨ 複製銀行帳號 ✨✨✨
 function copyBankInfo() {
     // ⚠️ 請在這裡輸入您真正的帳號
     const acc = "03420-000777561"; 
@@ -718,7 +718,7 @@ function copyBankInfo() {
     });
 }
 
-// ✨ PIN 鎖定邏輯
+// ✨✨✨ PIN 鎖定邏輯 ✨✨✨
 let currentPinInput = "";
 function checkLogin() {
     if (sessionStorage.getItem("isUnlocked") === "true") {
@@ -764,7 +764,7 @@ function verifyPin() {
     }
 }
 
-// ✨ 主題設定
+// ✨✨✨ 主題設定 (補回) ✨✨✨
 function checkTheme() {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
@@ -779,7 +779,7 @@ function toggleDarkMode() {
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
 }
 
-// ✨ 稅額計算器
+// ✨✨✨ 稅額計算器 (新功能) ✨✨✨
 function calcTax(type) {
     const rate = 0.05; // 稅率 5%
     const excludeInput = document.getElementById("tax-exclude");
@@ -813,7 +813,7 @@ function calcTax(type) {
     }
 }
 
-// ✨ 備忘錄 (自動存檔)
+// ✨✨✨ 備忘錄 (自動存檔) ✨✨✨
 function saveMemo() {
     const val = document.getElementById("tool-memo").value;
     localStorage.setItem("toolMemo", val);
@@ -823,7 +823,7 @@ function loadMemo() {
     if(val) document.getElementById("tool-memo").value = val;
 }
 
-// ✨ 手繪畫布 (Canvas)
+// ✨✨✨ 手繪畫布 (Canvas) ✨✨✨
 let isDrawing = false;
 let canvas, ctx;
 let lastX = 0;
@@ -967,18 +967,15 @@ function calcFlowRate() {
     }
 }
 
-// ✨ 工具箱邏輯 (修正版：50000係數 + 9折開關)
-// ✨ 工具箱邏輯 (修正版：支援多種用水量計算 + 900格令)
+// ✨ 工具箱邏輯 (修正版：50000係數 + 9折開關 + 多種用水模式)
 function calculateSoftWater() {
     const ppm = parseFloat(document.getElementById("soft-ppm").value);
     const resin = parseFloat(document.getElementById("soft-resin").value);
     
-    // 🔴 修改開始：取得新的輸入值
     const mode = document.getElementById("usage-mode").value;
     const val = parseFloat(document.getElementById("usage-val").value);
-    // 🔴 修改結束
 
-    if (!ppm || !resin || !val) { // 檢查 val 是否有值
+    if (!ppm || !resin || !val) {
         document.getElementById("soft-result").classList.add("hidden");
         return;
     }
@@ -995,25 +992,20 @@ function calculateSoftWater() {
     const waterLiters = effectiveCapacity / ppm;
     const waterTons = waterLiters / 1000;
 
-    // 🔴 修改開始：計算每日用水量 (Daily Usage)
+    // 4. 每日用水 (多種模式)
     let dailyUsage = 0;
-    let usageText = ""; // 用於顯示在公式說明
+    let usageText = ""; 
 
     if (mode === 'people') {
-        // 模式A: 人數 x 250L
         dailyUsage = val * 250;
         usageText = `${val}人 x 250L`;
     } else if (mode === 'manual') {
-        // 模式B: 直接輸入公升
         dailyUsage = val;
         usageText = `自訂 ${val}L`;
     } else if (mode === 'bill') {
-        // 模式C: 水費單度數 (1度=1000L, 一期2個月約60天)
-        // 公式: (度數 * 1000) / 60
         dailyUsage = (val * 1000) / 60;
         usageText = `水費單 ${val}度 (約 ${dailyUsage.toFixed(0)}L/日)`;
     }
-    // 🔴 修改結束
 
     // 5. 可用天數
     const theoreticalDays = waterLiters / dailyUsage;
@@ -1031,11 +1023,11 @@ function calculateSoftWater() {
     document.getElementById("res-days").innerText = cycle; 
     document.getElementById("res-water").innerText = `${waterTons.toFixed(1)} 噸`;
     document.getElementById("res-salt").innerText = `${saltKg.toFixed(2)} kg`;
-    document.getElementById("res-refill-vol").innerText = `${refillWaterL.toFixed(1)} 公升(L)`;
+    document.getElementById("res-refill-vol").innerText = refillWaterL.toFixed(1);
 
     document.getElementById("soft-result").classList.remove("hidden");
     
-    // 🔴 修改開始：更新詳細公式顯示
+    // 更新詳細公式
     let formulaHtml = `<p>1. 總交換能力 = 樹脂 ${resin}L x 50,000 = ${capacityTotal.toLocaleString()} PPM</p>`;
     
     if(isSafeMode) {
@@ -1051,49 +1043,40 @@ function calculateSoftWater() {
         <p>6. 耗鹽量 = ${resin}L x 0.15 = ${saltKg.toFixed(2)} kg</p>
         <p>7. 補水量 = ${saltKg.toFixed(2)}kg ÷ 0.3 = ${refillWaterL.toFixed(1)} L</p>
     `;
-    // 🔴 修改結束
     
     document.getElementById("formula-detail").innerHTML = formulaHtml;
 
-    // 若流速已計算，自動更新時間
     calcFlowRate(); 
 }
+
 function convertUnit(type) {
-    // 1. 壓力換算
-    if(type === 'psi') { 
-        const v = document.getElementById("conv-psi").value; 
-        document.getElementById("conv-kg").value = v ? (v * 0.0703).toFixed(2) : ""; 
-    }
-    else if (type === 'kg') { 
-        const v = document.getElementById("conv-kg").value; 
-        document.getElementById("conv-psi").value = v ? (v * 14.22).toFixed(1) : ""; 
-    }
-    // 2. 流量換算
-    else if (type === 'gpd') {
+    if(type === 'psi') {
+        const v = document.getElementById("conv-psi").value;
+        document.getElementById("conv-kg").value = v ? (v * 0.0703).toFixed(2) : "";
+    } else if (type === 'kg') {
+        const v = document.getElementById("conv-kg").value;
+        document.getElementById("conv-psi").value = v ? (v * 14.22).toFixed(1) : "";
+    } else if (type === 'gpd') {
         const v = parseFloat(document.getElementById("conv-gpd").value);
         if(v) {
-            document.getElementById("res-lpm").innerText = (v * 3.785 / 1440).toFixed(2);
-            document.getElementById("res-gpm").innerText = (v / 1440).toFixed(2);
-        } else { 
-            document.getElementById("res-lpm").innerText = "-"; 
-            document.getElementById("res-gpm").innerText = "-"; 
+            const lpm = (v * 3.785 / 1440).toFixed(2);
+            const gpm = (v / 1440).toFixed(2);
+            document.getElementById("res-lpm").innerText = lpm;
+            document.getElementById("res-gpm").innerText = gpm;
+        } else {
+            document.getElementById("res-lpm").innerText = "-";
+            document.getElementById("res-gpm").innerText = "-";
         }
-    } 
-    // 3. 長度換算
-    else if (type === 'inch') { 
-        const v = document.getElementById("conv-inch").value; 
-        document.getElementById("conv-cm").value = v ? (v * 2.54).toFixed(2) : ""; 
+    } else if (type === 'inch') {
+        const v = document.getElementById("conv-inch").value;
+        document.getElementById("conv-cm").value = v ? (v * 2.54).toFixed(2) : "";
+    } else if (type === 'cm') {
+        const v = document.getElementById("conv-cm").value;
+        document.getElementById("conv-inch").value = v ? (v / 2.54).toFixed(2) : "";
     }
-    else if (type === 'cm') { 
-        const v = document.getElementById("conv-cm").value; 
-        document.getElementById("conv-inch").value = v ? (v / 2.54).toFixed(2) : ""; 
-    }
-// ... (上面是 psi, kg, gpd, inch, cm 的代碼，保持不變) ...
-
-    // ✨ 4. 新增：電阻率 (MΩ) ↔ 導電度 (μS) 互轉
+    // ✨ 4. 電阻率 (MΩ) ↔ 導電度 (μS)
     else if (type === 'mohm') {
         const v = parseFloat(document.getElementById("conv-mohm").value);
-        // 輸入電阻率 -> 算導電度 (取小數4位，因為數值通常很小)
         if (v > 0) {
             document.getElementById("conv-us").value = (1 / v).toFixed(4);
         } else {
@@ -1102,7 +1085,6 @@ function convertUnit(type) {
     }
     else if (type === 'us') {
         const v = parseFloat(document.getElementById("conv-us").value);
-        // 輸入導電度 -> 算電阻率 (取小數2位)
         if (v > 0) {
             document.getElementById("conv-mohm").value = (1 / v).toFixed(2);
         } else {
@@ -1110,6 +1092,7 @@ function convertUnit(type) {
         }
     }
 }
+
 // ---------------------------
 // 核心邏輯區 (完全展開，不縮減)
 // ---------------------------
@@ -1940,10 +1923,3 @@ window.onload = () => {
 
 </body>
 </html>
-
-
-
-
-
-
-
