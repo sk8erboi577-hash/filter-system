@@ -474,6 +474,20 @@
                     <div class="tool-input-group"><div class="tool-input-label">長度 (英吋)</div><input type="number" id="conv-inch" class="tool-input" oninput="convertUnit('inch')"></div>
                     <div class="flex items-center text-gray-400">↔</div>
                     <div class="tool-input-group"><div class="tool-input-label">長度 (cm)</div><input type="number" id="conv-cm" class="tool-input" oninput="convertUnit('cm')"></div>
+                  <div class="tool-row mb-0 mt-3 pt-3 border-t border-gray-100">
+                    <div class="tool-input-group">
+                        <div class="tool-input-label">電阻率 (MΩ·cm)</div>
+                        <input type="number" id="conv-mohm" class="tool-input" placeholder="18.2" oninput="convertUnit('mohm')">
+                    </div>
+                    <div class="flex items-center text-gray-400 px-2">➜</div>
+                    <div class="tool-input-group">
+                        <div class="tool-input-label">導電度 / TDS</div>
+                        <div class="bg-gray-50 p-2 rounded text-center text-sm border border-gray-200">
+                            <div id="res-us" class="font-bold text-blue-700">- μS/cm</div>
+                            <div id="res-tds-high" class="text-xs text-gray-500 mt-1">- ppm</div>
+                        </div>
+                    </div>
+                </div>
                 </div>
             </div>
         </div>
@@ -1044,33 +1058,52 @@ function calculateSoftWater() {
     calcFlowRate(); 
 }
 function convertUnit(type) {
-    if(type === 'psi') {
-        const v = document.getElementById("conv-psi").value;
-        document.getElementById("conv-kg").value = v ? (v * 0.0703).toFixed(2) : "";
-    } else if (type === 'kg') {
-        const v = document.getElementById("conv-kg").value;
-        document.getElementById("conv-psi").value = v ? (v * 14.22).toFixed(1) : "";
-    } else if (type === 'gpd') {
-        // GPD 同時換算 L/min 和 GPM
+    // 1. 壓力換算
+    if(type === 'psi') { 
+        const v = document.getElementById("conv-psi").value; 
+        document.getElementById("conv-kg").value = v ? (v * 0.0703).toFixed(2) : ""; 
+    }
+    else if (type === 'kg') { 
+        const v = document.getElementById("conv-kg").value; 
+        document.getElementById("conv-psi").value = v ? (v * 14.22).toFixed(1) : ""; 
+    }
+    // 2. 流量換算
+    else if (type === 'gpd') {
         const v = parseFloat(document.getElementById("conv-gpd").value);
         if(v) {
-            const lpm = (v * 3.785 / 1440).toFixed(2);
-            const gpm = (v / 1440).toFixed(2);
-            document.getElementById("res-lpm").innerText = lpm;
-            document.getElementById("res-gpm").innerText = gpm;
-        } else {
-            document.getElementById("res-lpm").innerText = "-";
-            document.getElementById("res-gpm").innerText = "-";
+            document.getElementById("res-lpm").innerText = (v * 3.785 / 1440).toFixed(2);
+            document.getElementById("res-gpm").innerText = (v / 1440).toFixed(2);
+        } else { 
+            document.getElementById("res-lpm").innerText = "-"; 
+            document.getElementById("res-gpm").innerText = "-"; 
         }
-    } else if (type === 'inch') {
-        const v = document.getElementById("conv-inch").value;
-        document.getElementById("conv-cm").value = v ? (v * 2.54).toFixed(2) : "";
-    } else if (type === 'cm') {
-        const v = document.getElementById("conv-cm").value;
-        document.getElementById("conv-inch").value = v ? (v / 2.54).toFixed(2) : "";
+    } 
+    // 3. 長度換算
+    else if (type === 'inch') { 
+        const v = document.getElementById("conv-inch").value; 
+        document.getElementById("conv-cm").value = v ? (v * 2.54).toFixed(2) : ""; 
+    }
+    else if (type === 'cm') { 
+        const v = document.getElementById("conv-cm").value; 
+        document.getElementById("conv-inch").value = v ? (v / 2.54).toFixed(2) : ""; 
+    }
+    // ✨ 4. 新增：電阻率 (MΩ) 轉 導電度 (μS)
+    else if (type === 'mohm') {
+        const v = parseFloat(document.getElementById("conv-mohm").value);
+        if (v > 0) {
+            // 公式：導電度 (μS/cm) = 1 / 電阻率 (MΩ·cm)
+            const us = (1 / v).toFixed(4);
+            // TDS (ppm) 約為導電度的一半 (粗估)
+            const tds = (us * 0.5).toFixed(4);
+            
+            document.getElementById("res-us").innerText = `${us} μS/cm`;
+            document.getElementById("res-tds-high").innerText = `約 ${tds} ppm`;
+        } else {
+            document.getElementById("res-us").innerText = "- μS/cm";
+            document.getElementById("res-tds-high").innerText = "- ppm";
+        }
     }
 }
-
 // ---------------------------
 // 核心邏輯區 (完全展開，不縮減)
 // ---------------------------
@@ -1901,4 +1934,5 @@ window.onload = () => {
 
 </body>
 </html>
+
 
