@@ -478,18 +478,17 @@
                     <div class="tool-input-group"><div class="tool-input-label">長度 (cm)</div><input type="number" id="conv-cm" class="tool-input" oninput="convertUnit('cm')"></div>
                 </div>
 
-                <div class="tool-row mb-0 mt-3 pt-3 border-t border-gray-100">
+               <div class="tool-row mb-0 mt-3 pt-3 border-t border-gray-100">
                     <div class="tool-input-group">
                         <div class="tool-input-label">電阻率 (MΩ·cm)</div>
                         <input type="number" id="conv-mohm" class="tool-input" placeholder="18.2" oninput="convertUnit('mohm')">
                     </div>
-                    <div class="flex items-center text-gray-400 px-2">➜</div>
+                    <div class="flex items-center text-gray-400">↔</div>
                     <div class="tool-input-group">
-                        <div class="tool-input-label">導電度 / TDS</div>
-                        <div class="bg-gray-50 p-2 rounded text-center text-sm border border-gray-200">
-                            <div id="res-us" class="font-bold text-blue-700">- μS/cm</div>
-                            <div id="res-tds-high" class="text-xs text-gray-500 mt-1">- ppm</div>
-                        </div>
+                        <div class="tool-input-label">導電度 (μS/cm)</div>
+                        <input type="number" id="conv-us" class="tool-input" placeholder="0.055" oninput="convertUnit('us')">
+                    </div>
+                </div>
                     </div>
                 </div>
 
@@ -1090,20 +1089,25 @@ function convertUnit(type) {
         const v = document.getElementById("conv-cm").value; 
         document.getElementById("conv-inch").value = v ? (v / 2.54).toFixed(2) : ""; 
     }
-    // ✨ 4. 新增：電阻率 (MΩ) 轉 導電度 (μS)
+// ... (上面是 psi, kg, gpd, inch, cm 的代碼，保持不變) ...
+
+    // ✨ 4. 新增：電阻率 (MΩ) ↔ 導電度 (μS) 互轉
     else if (type === 'mohm') {
         const v = parseFloat(document.getElementById("conv-mohm").value);
+        // 輸入電阻率 -> 算導電度 (取小數4位，因為數值通常很小)
         if (v > 0) {
-            // 公式：導電度 (μS/cm) = 1 / 電阻率 (MΩ·cm)
-            const us = (1 / v).toFixed(4);
-            // TDS (ppm) 約為導電度的一半 (粗估)
-            const tds = (us * 0.5).toFixed(4);
-            
-            document.getElementById("res-us").innerText = `${us} μS/cm`;
-            document.getElementById("res-tds-high").innerText = `約 ${tds} ppm`;
+            document.getElementById("conv-us").value = (1 / v).toFixed(4);
         } else {
-            document.getElementById("res-us").innerText = "- μS/cm";
-            document.getElementById("res-tds-high").innerText = "- ppm";
+            document.getElementById("conv-us").value = "";
+        }
+    }
+    else if (type === 'us') {
+        const v = parseFloat(document.getElementById("conv-us").value);
+        // 輸入導電度 -> 算電阻率 (取小數2位)
+        if (v > 0) {
+            document.getElementById("conv-mohm").value = (1 / v).toFixed(2);
+        } else {
+            document.getElementById("conv-mohm").value = "";
         }
     }
 }
@@ -1937,6 +1941,7 @@ window.onload = () => {
 
 </body>
 </html>
+
 
 
 
