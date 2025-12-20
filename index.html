@@ -1183,7 +1183,7 @@ function renderSection(container, title, items) {
         const last = c.lastRecordDate ? normalizeDateStr(c.lastRecordDate) : "尚無紀錄";
         const machine = c.machine || "未填寫機型";
 
-        let cardClass = "dashboard-card border-l-4 animate-enter";
+        let cardClass = "dashboard-card border-l-4 animate-enter"; // ✨ 加上動畫 class
         let statusHtml = "";
         let btnHtml = ""; 
         let progressHtml = ""; 
