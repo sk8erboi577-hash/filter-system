@@ -1901,6 +1901,66 @@ function showToast(message) {
     setTimeout(function(){ x.className = "toast"; }, 3000);
 }
 
+  // ⬇️⬇️⬇️ 請補上這段被遺漏的照片處理函式 ⬇️⬇️⬇️
+
+// 1. 開啟照片大圖
+function openLightbox(url){
+  document.getElementById("lightbox-img").src = url;
+  document.getElementById("lightbox").classList.add("active");
+}
+
+// 2. 關閉照片大圖
+function closeLightbox(){
+  document.getElementById("lightbox").classList.remove("active");
+}
+
+// 3. 渲染照片編輯器 (顯示現有+新照片，並加上刪除鈕)
+function renderPhotoEditor(containerId, existing, newPhotos, type){
+  const box = document.getElementById(containerId);
+  box.innerHTML = "";
+  
+  // 顯示現有照片 (雲端連結)
+  existing.forEach((url, idx) => {
+    const div = document.createElement("div");
+    div.className = "photo-wrapper";
+    div.innerHTML = `<img src="${url}" class="photo-thumb-edit">
+                     <div class="btn-remove-photo" onclick="removeExistingPhoto('${type}', ${idx})">×</div>`;
+    box.appendChild(div);
+  });
+  
+  // 顯示新選擇照片 (Base64)
+  newPhotos.forEach((base64, idx) => {
+    const div = document.createElement("div");
+    div.className = "photo-wrapper";
+    div.innerHTML = `<img src="${base64}" class="photo-thumb-edit">
+                     <div class="btn-remove-photo" onclick="removeNewPhoto('${type}', ${idx})">×</div>`;
+    box.appendChild(div);
+  });
+}
+
+// 4. 刪除現有照片
+function removeExistingPhoto(type, idx){
+  if(type==='cust') {
+     existingCustPhotos.splice(idx, 1);
+     renderPhotoEditor("cust-photo-preview", existingCustPhotos, selectedCustPhotos, 'cust');
+  } else {
+     existingRecordPhotos.splice(idx, 1);
+     renderPhotoEditor("edit-record-photo-preview", existingRecordPhotos, selectedEditRecordPhotos, 'record');
+  }
+}
+
+// 5. 刪除新選擇照片
+function removeNewPhoto(type, idx){
+  if(type==='cust') {
+     selectedCustPhotos.splice(idx, 1);
+     renderPhotoEditor("cust-photo-preview", existingCustPhotos, selectedCustPhotos, 'cust');
+  } else {
+     selectedEditRecordPhotos.splice(idx, 1);
+     renderPhotoEditor("edit-record-photo-preview", existingRecordPhotos, selectedEditRecordPhotos, 'record');
+  }
+}
+
+// ⬆️⬆️⬆️ 補上這段即可恢復正常 ⬆️⬆️⬆️
 window.onload = () => {
   checkLogin(); // ✨ 啟動檢查：是否需要鎖定
   checkTheme();
@@ -1923,3 +1983,4 @@ window.onload = () => {
 
 </body>
 </html>
+
