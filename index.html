@@ -164,7 +164,7 @@
       border-radius:999px; font-size:14px; cursor:pointer; transition:0.15s;
       user-select:none; color:var(--text-secondary);
     }
-    .tag.active { background:var(--primary); border-color:var(--primary); color:white; }
+    .tag.active { background:var(--primary); color: white; border-color:var(--primary); font-weight: 600; }
     .item-chip { background-color: rgba(10, 132, 255, 0.15); color: var(--primary); border-color: var(--primary-light); font-weight: 600; margin-top: 4px; }
     .item-chip:active { background-color: var(--primary); color: white; }
 
@@ -215,7 +215,7 @@
       display: flex; align-items: center; justify-content: center;
     }
 
-    /* Lightbox (已修復 X 關閉) */
+    /* Lightbox 修正版 */
     .lightbox-overlay {
         position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 3000;
         display: flex; align-items: center; justify-content: center;
@@ -524,6 +524,146 @@
         </div>
 
         <div class="h-10"></div>
+    </div> </div> </div> <div id="page-list" class="min-h-screen transition-colors duration-300">
+  <div class="ios-nav-bar">
+    <div class="flex items-center gap-2">
+        <div class="text-xl font-bold ml-1">濾芯保養系統</div>
+    </div>
+    <div class="flex gap-2">
+        <button class="tool-toggle" onclick="document.getElementById('tools-modal').classList.remove('hidden'); initCanvas();">
+            <span class="material-icons">construction</span>
+        </button>
+        <button class="theme-toggle" onclick="toggleDarkMode()">
+            <span id="theme-icon" class="material-icons">dark_mode</span>
+        </button>
+    </div>
+  </div>
+
+  <div class="pt-4 px-4 max-w-md mx-auto">
+    <div class="stats-container">
+      <div id="card-overdue" class="stat-card" onclick="toggleDashboardFilter('overdue')">
+        <div id="stat-overdue-val" class="stat-value text-red-alert">0</div>
+        <div class="stat-label">🔴 逾期未保養</div>
+      </div>
+      <div id="card-month" class="stat-card" onclick="toggleDashboardFilter('month')">
+        <div id="stat-month-val" class="stat-value text-orange-alert">0</div>
+        <div class="stat-label">🟡 本月需保養</div>
+      </div>
+    </div>
+
+    <div class="search-bar">
+      <span class="material-icons text-gray-400">search</span>
+      <input id="search-input" type="text" placeholder="搜尋客戶名稱、電話、地址或備註…" oninput="renderList(customers)">
+    </div>
+    <div id="filter-container" class="filter-scroll"></div>
+  </div>
+
+  <div id="customer-list" class="max-w-md mx-auto px-4 pt-2 pb-20">
+    <div class="text-center text-gray-400 mt-20">載入中…</div>
+  </div>
+
+  <button id="scroll-to-top" class="fab-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+      <span class="material-icons">arrow_upward</span>
+  </button>
+
+  <button id="btn-add-customer" class="fab-btn" onclick="showAddCustomerModal()">
+    <span class="material-icons">add</span>
+  </button>
+</div>
+
+<div id="page-detail" class="hidden min-h-screen">
+  <div class="ios-nav-bar">
+    <div class="ios-nav-left" onclick="goBack()">
+      <span class="material-icons">arrow_back_ios</span> 返回
+    </div>
+    <div class="ios-nav-title">客戶資料</div>
+    <div class="ios-nav-right" onclick="showEditCustomerModal()">編輯</div>
+  </div>
+  <div class="pb-4 px-4 max-w-md mx-auto">
+    <div class="mt-4 mb-4"><div id="customer-photos-container" class="flex gap-3 overflow-x-auto"></div></div>
+    <div class="record-card mb-4">
+      <div class="font-bold mb-2 text-gray-500 text-xs tracking-widest">基本資料</div>
+      <div class="flex py-1"><span class="w-20 text-secondary">姓名</span><span id="detail-name"></span></div>
+      <div class="flex py-1"><span class="w-20 text-secondary">電話</span><span><a id="detail-phone-link" class="text-blue-600 font-medium flex items-center"><span class="material-icons mr-1 text-base">phone</span><span id="detail-phone"></span></a></span></div>
+      <div class="flex py-1"><span class="w-20 text-secondary">安裝日期</span><span id="detail-install-date" class="text-gray-400 italic">無紀錄</span></div>
+      <div class="flex py-1"><span class="w-20 text-secondary">累積消費</span><span id="detail-total-spend" class="font-bold text-primary">計算中...</span></div>
+      <div class="flex py-1 items-start"><span class="w-20 text-secondary pt-1">標籤</span><div id="detail-tags" class="flex flex-wrap gap-2 flex-1"></div></div>
+      <div class="flex py-1"><span class="w-20 text-secondary">保養週期</span><span id="detail-cycle" class="text-gray-800"></span></div>
+    </div>
+    <div class="record-card mb-4">
+      <div class="font-bold mb-2 text-gray-500 text-xs tracking-widest">設備資訊</div>
+      <div class="flex py-1 items-center">
+        <span class="w-20 text-secondary flex-shrink-0">地址</span>
+        <div class="flex-1 flex items-center justify-between"><span id="detail-address"></span><a id="detail-map-link" target="_blank" class="bg-blue-100 text-blue-600 px-3 py-1 rounded-lg text-sm font-bold flex items-center ml-2 hidden no-underline"><span class="material-icons text-base mr-1">near_me</span>導航</a></div>
+      </div>
+      <div class="flex py-1"><span class="w-20 text-secondary">機器</span><span id="detail-machine"></span></div>
+      <div class="flex py-1"><span class="w-20 text-secondary">濾芯</span><span id="detail-filter"></span></div>
+      <div id="note-container" class="flex py-1 hidden"><span class="w-20 text-secondary">備註</span><span id="detail-note"></span></div>
+    </div>
+    <div class="record-card mb-4">
+      <div class="font-bold mb-3 text-gray-500 text-xs tracking-widest">新增保養紀錄</div>
+      <div class="grid grid-cols-2 gap-3 mb-3">
+        <div><div class="text-secondary text-sm mb-1">日期</div><input type="date" id="record-date" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2"></div>
+        <div><div class="text-secondary text-sm mb-1">金額</div><input type="number" id="record-amount" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2" placeholder="0"></div>
+      </div>
+      <div id="new-record-price-chips" class="chip-container mb-3"></div>
+      <div class="mb-3">
+        <div class="text-secondary text-sm mb-1">更換項目</div><input id="record-items" type="text" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2" placeholder="例如：PP、活性碳"><div id="new-record-item-chips" class="chip-container"></div>
+      </div>
+      <div class="mb-3">
+        <div class="text-secondary text-sm mb-1">備註</div><input id="record-note" type="text" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2" placeholder="備註..."><div id="new-record-note-chips" class="chip-container mt-2"></div>
+      </div>
+      <div class="flex gap-3 mb-3 items-center">
+        <label class="bg-gray-100 text-blue-600 px-3 py-1 rounded cursor-pointer flex items-center font-medium"><span class="material-icons mr-1">camera_alt</span>拍照<input id="record-photo-input" type="file" accept="image/*" multiple class="hidden" onchange="handleRecordPhotoSelect(this)"></label><span id="record-photo-count" class="text-sm text-secondary">0 張</span>
+      </div>
+      <div id="new-record-photos" class="flex gap-2 overflow-x-auto mb-3"></div>
+      <button class="w-full bg-blue-600 text-white rounded-xl py-3 text-lg font-semibold shadow active:scale-95 transition-transform" onclick="saveRecord()">儲存紀錄</button>
+    </div>
+    <div><div class="font-bold text-gray-500 text-xs tracking-widest mb-2">歷史紀錄</div><div id="record-list" class="mt-3"></div></div>
+  </div>
+</div>
+
+<div id="customer-modal" class="fixed inset-0 sheet-backdrop hidden z-50 flex items-end sm:items-center justify-center">
+  <div class="sheet w-full max-w-md max-h-[90vh] overflow-hidden flex flex-col rounded-t-2xl sm:rounded-2xl">
+    <div class="sheet-grabber"></div>
+    <div class="sheet-header"><button onclick="closeModal('customer-modal')" class="sheet-btn-text">取消</button><h2 id="modal-title" class="sheet-title">新增客戶</h2><button onclick="saveCustomer()" class="sheet-btn-text font-semibold">儲存</button></div>
+    <div class="sheet-body space-y-4 bg-gray-50">
+      <input type="hidden" id="cust-id">
+      <div class="space-y-3 bg-white rounded-xl p-4 shadow-sm">
+        <div><label>姓名 <span class="text-red-500">*</span></label><input id="cust-name" type="text" class="w-full p-2 border rounded"></div>
+        <div><label>電話 <span class="text-red-500">*</span></label><input id="cust-phone" type="tel" class="w-full p-2 border rounded"></div>
+        <div><label>安裝日期</label><input id="cust-install-date" type="date" class="w-full p-2 border rounded"></div>
+      </div>
+      <div class="space-y-3 bg-white rounded-xl p-4 shadow-sm">
+        <div><label>保養週期</label><select id="cust-cycle" class="w-full p-2 border rounded bg-white"><option value="">未設定</option><option value="3">3 個月</option><option value="6">6 個月</option><option value="9">9 個月</option><option value="12">1 年</option><option value="24">2 年</option></select></div>
+        <div><label>地址</label><input id="cust-address" type="text" class="w-full p-2 border rounded"></div>
+        <div><label>機器型號</label><input id="cust-machine" type="text" class="w-full p-2 border rounded"></div>
+        <div><label>濾芯規格</label><input id="cust-filter" type="text" class="w-full p-2 border rounded"></div>
+      </div>
+      <div class="space-y-2 bg-white rounded-xl p-4 shadow-sm"><label>標籤（可多選）</label><div id="cust-tag-selector" class="tag-selector"></div></div>
+      <div class="bg-white rounded-xl p-4 shadow-sm"><label>備註</label><textarea id="cust-note" rows="2" class="w-full p-2 border rounded"></textarea></div>
+      <div class="bg-white rounded-xl p-4 shadow-sm text-center"><label class="text-blue-600 font-medium flex items-center justify-center cursor-pointer p-2 border-2 border-dashed border-blue-200 rounded-lg"><span class="material-icons mr-2">add_photo_alternate</span> 選擇機器照片<input id="cust-photo-input" type="file" accept="image/*" multiple class="hidden" onchange="handleCustPhotoSelect(this)"></label><div id="cust-photo-preview" class="flex gap-2 overflow-x-auto mt-2 justify-center"></div></div>
+      <button id="btn-delete-customer" onclick="deleteCustomer()" class="danger-btn hidden">刪除此客戶</button>
+      <div class="h-10"></div>
+    </div>
+  </div>
+</div>
+
+<div id="record-modal" class="fixed inset-0 sheet-backdrop hidden z-50 flex items-end sm:items-center justify-center">
+  <div class="sheet w-full max-w-md max-h-[90vh] overflow-hidden flex flex-col rounded-t-2xl sm:rounded-2xl">
+    <div class="sheet-grabber"></div>
+    <div class="sheet-header"><button onclick="closeModal('record-modal')" class="sheet-btn-text">取消</button><h2 class="sheet-title">修改紀錄</h2><button onclick="saveEditedRecord()" class="sheet-btn-text font-semibold">完成</button></div>
+    <div class="sheet-body space-y-4 bg-gray-50">
+      <input type="hidden" id="edit-record-id">
+      <div class="space-y-3 bg-white rounded-xl p-4 shadow-sm">
+        <div><label>日期</label><input id="edit-record-date" type="date" class="w-full p-2 border rounded"></div>
+        <div><label>項目</label><input id="edit-record-items" type="text" class="w-full p-2 border rounded font-medium"><div id="edit-record-item-chips" class="chip-container"></div></div>
+        <div><label>金額</label><input id="edit-record-amount" type="number" class="w-full p-2 border rounded text-green-600 font-bold"></div>
+        <div id="edit-record-price-chips" class="chip-container mb-3"></div>
+        <div><label>備註</label><textarea id="edit-record-note" rows="2" class="w-full p-2 border rounded"></textarea><div id="edit-record-note-chips" class="chip-container mt-2"></div></div>
+      </div>
+      <div class="bg-white rounded-xl p-4 shadow-sm"><label class="text-blue-600 font-medium flex items-center justify-center cursor-pointer p-2 border-2 border-dashed border-blue-200 rounded-lg"><span class="material-icons mr-2">add_a_photo</span> 加傳照片<input id="edit-record-photo-input" type="file" accept="image/*" multiple class="hidden" onchange="handleEditRecordPhotoSelect(this)"></label><div id="edit-record-photo-preview" class="photo-grid mt-2 justify-center flex gap-2 overflow-x-auto"></div></div>
+      <div class="h-10"></div>
     </div>
   </div>
 </div>
@@ -803,7 +943,7 @@ function calcFlowRate() {
     }
 }
 
-// ✨ 工具箱邏輯 (修正版：50000係數 + 9折開關 + 多種用水模式)
+// ✨ 工具箱邏輯
 function calculateSoftWater() {
     const ppm = parseFloat(document.getElementById("soft-ppm").value);
     const resin = parseFloat(document.getElementById("soft-resin").value);
