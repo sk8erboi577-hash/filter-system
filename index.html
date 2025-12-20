@@ -215,7 +215,7 @@
       display: flex; align-items: center; justify-content: center;
     }
 
-    /* Lightbox 修正版 */
+    /* Lightbox (已修復 X 關閉) */
     .lightbox-overlay {
         position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 3000;
         display: flex; align-items: center; justify-content: center;
@@ -803,7 +803,7 @@ function calcFlowRate() {
     }
 }
 
-// ✨ 工具箱邏輯
+// ✨ 工具箱邏輯 (修正版：50000係數 + 9折開關 + 多種用水模式)
 function calculateSoftWater() {
     const ppm = parseFloat(document.getElementById("soft-ppm").value);
     const resin = parseFloat(document.getElementById("soft-resin").value);
