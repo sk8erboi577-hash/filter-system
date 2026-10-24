@@ -1285,9 +1285,10 @@ function renderList(list){
   }
 
   filtered.sort((a, b) => {
-      const statusA = getServiceStatus(a.lastRecordDate, a.cycle).score;
-      const statusB = getServiceStatus(b.lastRecordDate, b.cycle).score;
-      return statusB - statusA; 
+      const priority = { soon: 3, normal: 2, overdue: 1 };
+      const statusA = getServiceStatus(a.lastRecordDate, a.cycle).type;
+      const statusB = getServiceStatus(b.lastRecordDate, b.cycle).type;
+      return priority[statusB] - priority[statusA]; 
   });
 
   if (!filtered.length){
@@ -1307,9 +1308,9 @@ function renderList(list){
           else groups.normal.push(c);
       });
       
-      renderSection(container, "🔴 逾期未保養", groups.overdue);
       renderSection(container, "🟡 即將到期 (14天內)", groups.soon);
       renderSection(container, "🟢 正常", groups.normal);
+      renderSection(container, "🔴 逾期未保養", groups.overdue);
   } else {
       renderSection(container, "", filtered);
   }
