@@ -641,7 +641,7 @@
         <div><label>安裝日期</label><input id="cust-install-date" type="date" class="w-full p-2 border rounded"></div>
       </div>
       <div class="space-y-3 bg-white rounded-xl p-4 shadow-sm">
-        <div><label>保養週期</label><select id="cust-cycle" class="w-full p-2 border rounded bg-white"><option value="">未設定</option><option value="3">3 個月</option><option value="6">6 個月</option><option value="9">9 個月</option><option value="12">1 年</option><option value="24">2 年</option></select></div>
+        <div><label>保養週期</label><select id="cust-cycle" class="w-full p-2 border rounded bg-white"><option value="">未設定</option><option value="3">3 個月</option><option value="6">6 個月</option><option value="9">9 個月</option><option value="12">1 年</option><option value="18">1 年半（18 個月）</option><option value="24">2 年</option></select></div>
         <div><label>地址</label><input id="cust-address" type="text" class="w-full p-2 border rounded"></div>
         <div><label>機器型號</label><input id="cust-machine" type="text" class="w-full p-2 border rounded"></div>
         <div><label>濾芯規格</label><input id="cust-filter" type="text" class="w-full p-2 border rounded"></div>
@@ -689,7 +689,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbyOzg78yqgVwWkKkQM2V67G
 // 標籤選項
 const TAG_OPTIONS = ["全部", "廚下型", "飲水機", "全戶式", "工業商業", "售服", "其他"];
 // 常用維修項目
-const ITEM_OPTIONS = ["PP", "UDFC","CTO","UDFR", "RO膜","大T", "小T", "保養","代更換", "維修"];
+const ITEM_OPTIONS = ["PP", "UDFC","CTO","UDFR", "RO膜","大T", "小T", "保養","代更換", "安裝", "代安裝", "維修"];
 // 常用備註選項
 const NOTE_OPTIONS = ["水壓正常", "管線更新", "更換接頭", "漏水處理", "無人在家", "客戶指定時間"];
 // 常用金額選項
