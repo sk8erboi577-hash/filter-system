@@ -1110,13 +1110,38 @@ async function apiCall(action, payload={}, method="POST"){
     const json = await res.json();
     return json;
   } catch(e){
-    alert("連線錯誤");
+    if (action !== "uploadImage") alert("連線錯誤");
     return null;
   } finally {
     if(!payload.photos && action !== "uploadImage") { 
         showLoading(false); 
     }
   }
+}
+
+// 同一操作期間保留已確認成功的圖片網址，避免失敗重試重複上傳。
+const confirmedImageUploads = new Map();
+async function uploadPhotosSafely(selected, existing=[]) {
+  const urls = [...existing];
+  for (let i=0; i<selected.length; i++) {
+    const base64 = selected[i];
+    showLoading(true, `正在上傳照片 (${i+1}/${selected.length})...`);
+    if (confirmedImageUploads.has(base64)) {
+      urls.push(confirmedImageUploads.get(base64));
+      continue;
+    }
+    let result;
+    try { result = await apiCall("uploadImage", {base64, type:"image/jpeg"}); }
+    catch(e) { result = null; }
+    if (result?.status !== "success" || !result.url) {
+      showLoading(false);
+      alert(`第 ${i+1} / ${selected.length} 張照片未確認上傳成功。\n已停止儲存，原本選取的照片仍保留，請稍後重試。\n${typeof result?.message === 'string' ? result.message.slice(0,180) : '可能是網路或圖片平台回應異常。'}`);
+      return null;
+    }
+    confirmedImageUploads.set(base64, result.url);
+    urls.push(result.url);
+  }
+  return urls;
 }
 
 async function fetchCustomers({silent=false}={}){
@@ -1643,17 +1668,8 @@ async function saveEditedRecord(){
   const date = document.getElementById("edit-record-date").value;
   if (!items){ alert("請輸入項目"); return; }
    
-  let photoUrls = [...existingRecordPhotos]; 
-  let uploadedCount = 0;
-  const totalUpload = selectedEditRecordPhotos.length;
-  if(totalUpload > 0) showLoading(true, `準備上傳 ${totalUpload} 張照片...`);
-
-  for (let base64 of selectedEditRecordPhotos){
-    uploadedCount++;
-    showLoading(true, `正在上傳照片 (${uploadedCount}/${totalUpload})...`);
-    const res = await apiCall("uploadImage", {base64, type:"image/jpeg"});
-    if (res?.status==="success") photoUrls.push(res.url);
-  }
+  const photoUrls = await uploadPhotosSafely(selectedEditRecordPhotos, existingRecordPhotos);
+  if (photoUrls === null) return;
 
   showLoading(true, "儲存資料中...");
   const payload = { id, date, items, amount: document.getElementById("edit-record-amount").value, note: document.getElementById("edit-record-note").value, photos: photoUrls };
@@ -1668,17 +1684,8 @@ async function saveRecord(){
   const items = document.getElementById("record-items").value.trim();
   if (!items){ alert("請輸入項目"); return; }
   
-  let photoUrls = [];
-  let uploadedCount = 0;
-  const totalUpload = selectedRecordPhotos.length;
-  if(totalUpload > 0) showLoading(true, `準備上傳 ${totalUpload} 張照片...`);
-
-  for (let base64 of selectedRecordPhotos){
-    uploadedCount++;
-    showLoading(true, `正在上傳照片 (${uploadedCount}/${totalUpload})...`);
-    const res = await apiCall("uploadImage", {base64, type:"image/jpeg"});
-    if (res?.status==="success") photoUrls.push(res.url);
-  }
+  const photoUrls = await uploadPhotosSafely(selectedRecordPhotos, []);
+  if (photoUrls === null) return;
 
   showLoading(true, "儲存資料中...");
   const payload = { customerId: currentCustomer.id, date: document.getElementById("record-date").value, items, amount: document.getElementById("record-amount").value, note: document.getElementById("record-note").value, photos: photoUrls };
@@ -1722,17 +1729,8 @@ async function saveCustomer(){
   if (!name || !phone){ alert("姓名、電話必填"); return; }
 
   let safeExisting = Array.isArray(existingCustPhotos) ? existingCustPhotos : [];
-  let photoUrls = [...safeExisting]; 
-  let uploadedCount = 0;
-  const totalUpload = selectedCustPhotos.length;
-  if(totalUpload > 0) showLoading(true, `準備上傳 ${totalUpload} 張照片...`);
-
-  for (let base64 of selectedCustPhotos){
-    uploadedCount++;
-    showLoading(true, `正在上傳照片 (${uploadedCount}/${totalUpload})...`);
-    const res = await apiCall("uploadImage", {base64, type:"image/jpeg"});
-    if (res?.status === "success") { photoUrls.push(res.url); }
-  }
+  const photoUrls = await uploadPhotosSafely(selectedCustPhotos, safeExisting);
+  if (photoUrls === null) return;
 
   showLoading(true, "儲存資料中...");
   const tags = getSelectedTags("cust-tag-selector");
@@ -1842,7 +1840,7 @@ function resizeImage(base64, maxW, cb){
   img.onload = ()=>{
     let w = img.width, h = img.height; if (w > maxW){ h *= maxW/w; w = maxW; }
     const c = document.createElement("canvas"); c.width = w; c.height = h;
-    c.getContext("2d").drawImage(img,0,0,w,h); cb(c.toDataURL("image/jpeg",0.8));
+    c.getContext("2d").drawImage(img,0,0,w,h); cb(c.toDataURL("image/jpeg",0.7));
   };
 }
 
