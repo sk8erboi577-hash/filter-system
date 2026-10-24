@@ -1119,8 +1119,18 @@ async function apiCall(action, payload={}, method="POST"){
   }
 }
 
-async function fetchCustomers(){
-  const data = await apiCall("getCustomers", {}, "GET");
+async function fetchCustomers({silent=false}={}){
+  // 背景同步不顯示全螢幕等待，也不覆蓋已存在的清單。
+  let data;
+  if (silent) {
+    try {
+      const res = await fetch(`${API_URL}?${new URLSearchParams({action:"getCustomers"})}`);
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      data = await res.json();
+    } catch(e) { console.warn("背景同步失敗", e); return; }
+  } else {
+    data = await apiCall("getCustomers", {}, "GET");
+  }
   const list = Array.isArray(data) ? data : (Array.isArray(data?.data) ? data.data : null);
 
   if (!list){
@@ -1684,7 +1694,8 @@ async function saveRecord(){
     document.getElementById("record-photo-count").innerText = "0 張";
 
     await fetchRecords(currentCustomer.id);
-    await fetchCustomers(); 
+    // 先完成使用者操作；完整清單改為背景同步，不再擋住結案提示。
+    void fetchCustomers({silent:true}); 
 
     let nextDateStr = "未設定";
     if (currentCustomer.cycle) { const status = getServiceStatus(payload.date, currentCustomer.cycle); nextDateStr = status.nextDate; }
@@ -1733,8 +1744,20 @@ async function saveCustomer(){
   if (res?.status === "success"){
     showToast("儲存成功");
     closeModal("customer-modal"); 
-    await fetchCustomers();
-    if(id && currentCustomer) { openDetail({...currentCustomer, ...payload, photos: photoUrls}); }
+    if (id) {
+      // 編輯現有客戶：伺服器確認成功後，只更新這筆資料。
+      const idx = customers.findIndex(c => String(c.id) === String(id));
+      const updated = {...(idx >= 0 ? customers[idx] : {}), ...payload, photos:photoUrls, tags:tags.join(",")};
+      if (idx >= 0) customers[idx] = updated;
+      updateDashboard(customers); renderList(customers);
+      if (currentCustomer && String(currentCustomer.id) === String(id)) {
+        // 保留原本詳細頁的更新流程。
+        openDetail(updated);
+      }
+    } else {
+      // 新客戶 ID 由後端產生，仍需讀回一次以確保 ID 正確。
+      await fetchCustomers();
+    }
   } else { alert("儲存失敗，請檢查網路或稍後再試"); }
 }
 
