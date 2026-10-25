@@ -1577,7 +1577,12 @@ async function fetchRecords(id){
   const box = document.getElementById("record-list");
   box.innerHTML = `<div class="text-center text-secondary py-4">讀取中…</div>`;
   const records = await apiCall("getRecords", {customerId:id}, "GET");
-  if (!Array.isArray(records) || !records.length){ 
+  if (!Array.isArray(records)) {
+      box.innerHTML = `<div class="text-red-500">紀錄讀取失敗，請稍後重試</div>`;
+      document.getElementById("detail-total-spend").innerText = "讀取失敗";
+      return;
+  }
+  if (!records.length){
       box.innerHTML = `<div class="text-secondary">尚無紀錄</div>`; 
       document.getElementById("detail-total-spend").innerText = "NT$0 (0次)"; 
       return; 
