@@ -559,7 +559,11 @@
 
     <div class="search-bar">
       <span class="material-icons text-gray-400">search</span>
-      <input id="search-input" type="text" placeholder="搜尋客戶名稱、電話、地址或備註…" oninput="renderList(customers)">
+      <input id="search-input" type="text" placeholder="搜尋姓名、電話、地址、設備、標籤…" oninput="renderList(customers)">
+    </div>
+    <div class="flex gap-2 mt-3 mb-2">
+      <select id="service-filter" aria-label="服務狀態" onchange="renderList(customers)" class="flex-1 p-2 rounded-lg border bg-white text-sm"><option value="active">服務中</option><option value="paused">暫停服務</option><option value="all">全部客戶</option></select>
+      <select id="type-filter" aria-label="客戶類型" onchange="renderList(customers)" class="flex-1 p-2 rounded-lg border bg-white text-sm"><option value="all">所有類型</option><option value="sale_install">自售安裝</option><option value="sub_install">代安裝</option><option value="maintenance">保養維修</option><option value="other">其他</option></select>
     </div>
     <div id="filter-container" class="filter-scroll"></div>
   </div>
@@ -641,6 +645,10 @@
         <div><label>安裝日期</label><input id="cust-install-date" type="date" class="w-full p-2 border rounded"></div>
       </div>
       <div class="space-y-3 bg-white rounded-xl p-4 shadow-sm">
+        <div class="grid grid-cols-2 gap-3">
+          <div><label>服務狀態</label><select id="cust-service-status" class="w-full p-2 border rounded bg-white"><option value="active">正常服務</option><option value="paused">暫停服務</option></select></div>
+          <div><label>客戶類型</label><select id="cust-customer-type" class="w-full p-2 border rounded bg-white"><option value="other">未分類／其他</option><option value="sale_install">自售安裝</option><option value="sub_install">代安裝</option><option value="maintenance">保養維修</option></select></div>
+        </div>
         <div><label>保養週期</label><select id="cust-cycle" class="w-full p-2 border rounded bg-white"><option value="">未設定</option><option value="3">3 個月</option><option value="6">6 個月</option><option value="9">9 個月</option><option value="12">1 年</option><option value="18">1 年半（18 個月）</option><option value="24">2 年</option></select></div>
         <div><label>地址</label><input id="cust-address" type="text" class="w-full p-2 border rounded"></div>
         <div><label>機器型號</label><input id="cust-machine" type="text" class="w-full p-2 border rounded"></div>
@@ -684,7 +692,7 @@
 
 <script>
 // ⚠️⚠️⚠️ 請務必確認這裡是你最新的 Google Apps Script 網址 ⚠️⚠️⚠️
-const API_URL = "https://script.google.com/macros/s/AKfycbyOzg78yqgVwWkKkQM2V67Gmaicrh-ilnZ5SZ1FXq449cO4iO1nU46i5tO1xiyVZ9s/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzdjmrz3t_duQtlH57Kx2vwatErTO9Qxt2baJlKknk/dev";
 
 // 標籤選項
 const TAG_OPTIONS = ["全部", "廚下型", "飲水機", "全戶式", "工業商業", "售服", "其他"];
@@ -702,6 +710,8 @@ let currentFilter = "全部";
 let dashboardFilter = null; 
 
 let customers = [];
+const isActiveCustomer = c => c.serviceStatus !== 'paused';
+const customerTypeLabel = {sale_install:'自售安裝',sub_install:'代安裝',maintenance:'保養維修',other:'其他'};
 let currentCustomer = null;
 
 let selectedCustPhotos = [];
@@ -1175,14 +1185,15 @@ function updateDashboard(list) {
   let overdueCount = 0;
   let thisMonthCount = 0;
   const currentMonth = new Date().getMonth();
+  const currentYear = new Date().getFullYear();
 
-  list.forEach(c => {
+  list.filter(isActiveCustomer).forEach(c => {
     const status = getServiceStatus(c.lastRecordDate, c.cycle);
     if (status.type === 'overdue') {
       overdueCount++;
     } else {
       const nextD = new Date(status.nextDate);
-      if (nextD.getMonth() === currentMonth) {
+      if (!isNaN(nextD.getTime()) && nextD.getMonth() === currentMonth && nextD.getFullYear() === currentYear) {
         thisMonthCount++;
       }
     }
@@ -1292,30 +1303,31 @@ function renderList(list){
   const container = document.getElementById("customer-list");
   container.innerHTML = "";
 
-  let filtered = list;
+  const serviceMode = document.getElementById('service-filter').value;
+  const typeMode = document.getElementById('type-filter').value;
+  let filtered = list.filter(c => serviceMode === 'all' || (serviceMode === 'paused' ? !isActiveCustomer(c) : isActiveCustomer(c)));
+  if (typeMode !== 'all') filtered = filtered.filter(c => (c.customerType || 'other') === typeMode);
   
   if (currentFilter !== "全部") {
       filtered = filtered.filter(c => c.tags && c.tags.includes(currentFilter));
   }
    
-  const searchTerm = document.getElementById("search-input").value.toLowerCase();
+  const searchTerm = document.getElementById("search-input").value.trim().toLowerCase();
   if (searchTerm) {
-      filtered = filtered.filter(c => 
-        c.name.toLowerCase().includes(searchTerm) || 
-        c.phone.includes(searchTerm) || 
-        (c.address && c.address.includes(searchTerm)) || 
-        (c.note && c.note.toLowerCase().includes(searchTerm))
-      );
+      filtered = filtered.filter(c => [c.name,c.phone,c.address,c.note,c.machine,c.filter,c.tags,customerTypeLabel[c.customerType||'other']]
+        .some(value => String(value ?? '').toLowerCase().includes(searchTerm)));
   }
 
   if (dashboardFilter === 'overdue') {
       filtered = filtered.filter(c => getServiceStatus(c.lastRecordDate, c.cycle).type === 'overdue');
   } else if (dashboardFilter === 'month') {
       const currentMonth = new Date().getMonth();
+      const currentYear = new Date().getFullYear();
       filtered = filtered.filter(c => {
           const status = getServiceStatus(c.lastRecordDate, c.cycle);
           if (status.type === 'overdue') return false; 
-          return new Date(status.nextDate).getMonth() === currentMonth;
+          const due = new Date(status.nextDate);
+          return !isNaN(due.getTime()) && due.getMonth() === currentMonth && due.getFullYear() === currentYear;
       });
   }
 
@@ -1331,7 +1343,7 @@ function renderList(list){
     return;
   }
 
-  const isSearching = searchTerm || dashboardFilter;
+  const isSearching = searchTerm || dashboardFilter || serviceMode !== 'active' || typeMode !== 'all';
   
   const groups = { overdue: [], soon: [], normal: [] };
   
@@ -1365,6 +1377,7 @@ function renderSection(container, title, items) {
     wrap.className = "space-y-3";
 
     items.forEach((c, index) => {
+        const paused = !isActiveCustomer(c);
         const status = getServiceStatus(c.lastRecordDate, c.cycle);
         const last = c.lastRecordDate ? normalizeDateStr(c.lastRecordDate) : "尚無紀錄";
         const machine = c.machine || "未填寫機型";
@@ -1395,7 +1408,10 @@ function renderSection(container, title, items) {
             progressHtml = `<div class="progress-track"><div class="progress-bar ${progressColor}" style="width: ${progressWidth}%"></div></div>`;
         }
 
-        if (status.type === 'overdue') {
+        if (paused) {
+            cardClass += ' border-l-gray-400 opacity-80';
+            statusHtml = '<span class="text-xs text-gray-500">暫停服務</span>';
+        } else if (status.type === 'overdue') {
             cardClass += " border-l-red-500 bg-red-50/30"; 
             statusHtml = `<div class="text-red-600 font-bold text-sm bg-red-100 px-2 py-1 rounded-md flex items-center">
                             <span class="material-icons text-sm mr-1">warning</span>過期 ${status.days} 天
@@ -1440,6 +1456,7 @@ function renderSection(container, title, items) {
           </div>
 
           <div class="flex gap-2 flex-wrap my-1 text-sm text-secondary">
+            <div class="dashboard-tag">${customerTypeLabel[c.customerType || 'other'] || '其他'}</div>
             ${c.tags ? c.tags.split(",").map(t=>`<div class="dashboard-tag">${t}</div>`).join("") : ""}
           </div>
 
@@ -1560,7 +1577,7 @@ async function fetchRecords(id){
   const box = document.getElementById("record-list");
   box.innerHTML = `<div class="text-center text-secondary py-4">讀取中…</div>`;
   const records = await apiCall("getRecords", {customerId:id}, "GET");
-  if (!records.length){ 
+  if (!Array.isArray(records) || !records.length){ 
       box.innerHTML = `<div class="text-secondary">尚無紀錄</div>`; 
       document.getElementById("detail-total-spend").innerText = "NT$0 (0次)"; 
       return; 
@@ -1574,7 +1591,7 @@ async function fetchRecords(id){
   document.getElementById("detail-total-spend").innerText = `NT$${total.toLocaleString()} (共 ${records.length} 次)`;
    
   records.forEach(r=>{
-    const photos = Array.isArray(r.photos) ? r.photos : [];
+    const photos = Array.isArray(r.photos) ? r.photos : (() => { try { const v = JSON.parse(r.photos || "[]"); return Array.isArray(v) ? v : []; } catch { return []; } })();
     const item = document.createElement("div"); item.className = "timeline-item";
     item.innerHTML = `
       <div class="timeline-dot"></div>
@@ -1734,7 +1751,7 @@ async function saveCustomer(){
 
   showLoading(true, "儲存資料中...");
   const tags = getSelectedTags("cust-tag-selector");
-  const payload = { id, name, phone, address: document.getElementById("cust-address").value, note: document.getElementById("cust-note").value, machine: document.getElementById("cust-machine").value, filter: document.getElementById("cust-filter").value, installDate: document.getElementById("cust-install-date").value, cycle: document.getElementById("cust-cycle").value, photos: photoUrls, tags };
+  const payload = { id, name, phone, address: document.getElementById("cust-address").value, note: document.getElementById("cust-note").value, machine: document.getElementById("cust-machine").value, filter: document.getElementById("cust-filter").value, installDate: document.getElementById("cust-install-date").value, cycle: document.getElementById("cust-cycle").value, photos: photoUrls, tags, serviceStatus: document.getElementById("cust-service-status").value, customerType: document.getElementById("cust-customer-type").value };
   const act = id ? "updateCustomer" : "addCustomer";
   const res = await apiCall(act, payload);
   showLoading(false);
@@ -1745,7 +1762,7 @@ async function saveCustomer(){
     if (id) {
       // 編輯現有客戶：伺服器確認成功後，只更新這筆資料。
       const idx = customers.findIndex(c => String(c.id) === String(id));
-      const updated = {...(idx >= 0 ? customers[idx] : {}), ...payload, photos:photoUrls, tags:tags.join(",")};
+      const updated = {...(idx >= 0 ? customers[idx] : {}), ...payload, photos:photoUrls, tags:tags};
       if (idx >= 0) customers[idx] = updated;
       updateDashboard(customers); renderList(customers);
       if (currentCustomer && String(currentCustomer.id) === String(id)) {
@@ -1768,6 +1785,8 @@ function showAddCustomerModal(){
   document.getElementById("cust-note").value = "";
   document.getElementById("cust-machine").value = "";
   document.getElementById("cust-filter").value = "";
+  document.getElementById("cust-service-status").value = "active";
+  document.getElementById("cust-customer-type").value = "other";
   document.getElementById("cust-cycle").value = ""; 
   const d = new Date();
   document.getElementById("cust-install-date").value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
@@ -1787,6 +1806,8 @@ function showEditCustomerModal(){
   document.getElementById("cust-note").value = c.note || "";
   document.getElementById("cust-machine").value = c.machine || "";
   document.getElementById("cust-filter").value = c.filter || "";
+  document.getElementById("cust-service-status").value = c.serviceStatus === "paused" ? "paused" : "active";
+  document.getElementById("cust-customer-type").value = customerTypeLabel[c.customerType] ? c.customerType : "other";
   document.getElementById("cust-cycle").value = c.cycle || "";
   document.getElementById("cust-install-date").value = c.installDate ? normalizeDateStr(c.installDate) : "";
   existingCustPhotos = [];
